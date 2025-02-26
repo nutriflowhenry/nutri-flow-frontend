@@ -2,7 +2,7 @@ import React from 'react'
 
 const LoginView = () => {
   return (
-    <div>log hola prueba</div>
+    <div>cambio </div>
   )
 }
 
