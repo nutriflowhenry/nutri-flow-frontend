@@ -12,7 +12,18 @@ export interface IRegisterErrors {
     confirmPassword?:string;
 }
 
+export interface IUserSession {
+    token: string;
+    user: {
+        email:string;
+        id: number;
+        name:string;
+        image?:string;
+    }
+}
+
 export interface IAlertState {
     type: 'success' | 'error';
     message: string; 
 }
+
