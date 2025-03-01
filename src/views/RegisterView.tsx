@@ -6,15 +6,13 @@ import { register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
 import { IAlertState } from '@/types';
 import Alert from '@/components/Alert';
-import { signIn } from "next-auth/react";
+import { useAuth } from '@/context/AuthContext';
 
 const RegisterView = () =>{
     const router = useRouter();
     const [alert, setAlert] = useState<IAlertState | null>(null); 
-    const handleGoogleLogin = async () => {
-        await signIn("google");
-      };
-
+    const { loginWithGoogle } = useAuth();
+   
     return (
 
         <div>
@@ -82,7 +80,7 @@ const RegisterView = () =>{
 
             <button disabled = { !isValid } type="submit" className="w-full text-white bg-amber-700 hover:bg-amber-900 focus:ring-4 focus:outline-none focus:ring-amber-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Submit</button>
             <div>or</div>
-            <button type="button" className="w-full text-white bg-blue-600 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5" onClick={handleGoogleLogin}>
+            <button type="button" className="w-full text-white bg-blue-600 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5" onClick={loginWithGoogle}>
                 Sign Up with Google
             </button>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">Already have an account? <a href="/login" className="font-medium text-amring-amber-700 hover:underline">Login here</a>

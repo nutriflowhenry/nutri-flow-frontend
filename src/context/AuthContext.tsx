@@ -1,6 +1,7 @@
 'use client'
 import { IUserSession } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, createContext, useContext } from "react"
 
 export interface AuthContextProps {
@@ -29,9 +30,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
     useEffect (() => {
         if (status === "authenticated" && session?.user) {
+            console.log("Sesión de NextAuth:", session);
+
+            const googleToken = session.accessToken as string;
+            console.log("token de gooogle:", googleToken);
+
+            // const userSession = registerWithGoogle(googleToken);
+            // console.log("Respuesta del backend:", userSession);
+
             setUserData({
               token: session.accessToken as string,
               user: {
+                id: (session.user as any)?.id || 0,
                 name: session.user.name || "",
                 email: session.user.email || "",
                 image: session.user.image || "",
