@@ -4,7 +4,7 @@ const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function register(userData: IRegisterProps) {
     try{
-        const response = await fetch(`${APIURL}/users/register`,{
+        const response = await fetch(`${APIURL}/users`,{
             method: 'POST',
             headers: {
                 "Content-type": "application/json"
@@ -24,23 +24,23 @@ export async function register(userData: IRegisterProps) {
     }
 };
 
-// export async function registerWithGoogle (googleToken: string) : Promise<IUserSession | null> {
-//     try {
-//         const userSession = await fetch(`${APIURL}/auth/google-login`, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ token: googleToken }),
-//         });
+export async function registerWithGoogle(googleToken: string) {
+    try {
+        const response = await fetch(`${APIURL}/users/google`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: googleToken }),
+        });
 
-//         if (!userSession.ok) throw new Error("Error en la autenticación");
-
-//         return await userSession.json();
-
-//     } catch (error) {
-//         console.error("Error al autenticar con el backend:", error);
-//         return null;
-//     }
-// };
-
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Google authentication failed");
+        }
+    } catch (error: any) {
+        console.error("Google registration error:", error);
+        throw new Error(error);
+    }
+}

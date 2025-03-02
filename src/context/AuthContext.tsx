@@ -1,16 +1,11 @@
 'use client'
-import { IUserSession } from "@/types";
+import { registerWithGoogle } from "@/helpers/auth.helper";
+import { AuthContextProps, IUserSession } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, createContext, useContext } from "react"
 
-export interface AuthContextProps {
-    userData: IUserSession | null;
-    setUserData: (userData: IUserSession | null) => void;
-    loginWithGoogle: () => void;
-    loginWithEmail: (user: IUserSession) => void;
-    logout: () => void;
-}
+
 
 export const AuthContext = createContext <AuthContextProps>({
     userData: null,
@@ -28,25 +23,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const {data:session, status} = useSession();
     const[userData, setUserData] = useState<IUserSession | null> (null)
 
-    useEffect (() => {
+    useEffect(() => {
         if (status === "authenticated" && session?.user) {
-            console.log("Sesión de NextAuth:", session);
+            
+            const googleToken = session?.accessToken;
+            
+            if (googleToken) {
+                registerWithGoogle(googleToken)
+                    .then((response) => {
+                        
+                        setUserData({
+                            token: response.token, //token devuelto por back
+                            user: {
+                                id: response.user.id,
+                                name: response.user.name,
+                                email: response.user.email,
+                                image: response.user.image,
+                            },
+                        });
 
-            const googleToken = session.accessToken as string;
-            console.log("token de gooogle:", googleToken);
-
-            // const userSession = registerWithGoogle(googleToken);
-            // console.log("Respuesta del backend:", userSession);
-
-            setUserData({
-              token: session.accessToken as string,
-              user: {
-                id: (session.user as any)?.id || 0,
-                name: session.user.name || "",
-                email: session.user.email || "",
-                image: session.user.image || "",
-             },
-            });
+                    });
+            }    
         } else {
             const storedUser = localStorage.getItem("userSession");
             if (storedUser) {
