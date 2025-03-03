@@ -34,3 +34,8 @@ export interface IAlertState {
     message: string; 
 }
 
+
+export interface IloginProps {
+    email: string;
+    password: string;
+}
