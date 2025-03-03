@@ -5,8 +5,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, createContext, useContext } from "react"
 
-
-
 export const AuthContext = createContext <AuthContextProps>({
     userData: null,
     setUserData: () => {},
@@ -45,7 +43,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                     });
             }    
         } else {
+            
             const storedUser = localStorage.getItem("userSession");
+            
+            
             if (storedUser) {
                 setUserData(JSON.parse(storedUser));
             } else {

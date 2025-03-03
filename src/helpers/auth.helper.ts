@@ -3,8 +3,9 @@ import { IRegisterProps, IUserSession } from "@/types"
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
 export async function register(userData: IRegisterProps) {
+    console.log(userData);
     try{
-        const response = await fetch(`${APIURL}/users`,{
+        const response = await fetch(`${APIURL}/auth/signup`,{
             method: 'POST',
             headers: {
                 "Content-type": "application/json"
