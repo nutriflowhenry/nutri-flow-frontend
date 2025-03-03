@@ -10,6 +10,7 @@ export async function register(userData: IRegisterProps) {
             headers: {
                 "Content-type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify(userData)
         }) 
 

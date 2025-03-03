@@ -21,10 +21,10 @@ export function validateRegisterForm(values: IRegisterProps){
         errors.password = "Password must be at least 8 characters long";
     }
 
-    if (!values.confirmPassword) {
-        errors.confirmPassword = "The confirmPassword field is required";
-    } else if (values.confirmPassword != values.password) {
-        errors.confirmPassword = 'The passwords dont match';
+    if (!values.passwordConfirmation) {
+        errors.passwordConfirmation = "The passwordConfirmation field is required";
+    } else if (values.passwordConfirmation != values.password) {
+        errors.passwordConfirmation = 'The passwords dont match';
     }    
     
     return errors;

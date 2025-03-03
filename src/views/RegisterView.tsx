@@ -23,7 +23,7 @@ const RegisterView = () =>{
             name: '',
             email: '',
             password: '',
-            confirmPassword:'',
+            passwordConfirmation:'',
             }}
 
             onSubmit = {async (values) => {
@@ -70,10 +70,10 @@ const RegisterView = () =>{
             </div>
 
             <div>
-                <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
-                <Field type="password" name="confirmPassword" id="confirmPassword" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-700 focus:border-amring-amber-700 block w-full p-2.5" placeholder="********" required=""/>
-                {errors.confirmPassword && touched.confirmPassword && (
-                    <Alert type="error" message={errors.confirmPassword}/>
+                <label htmlFor="passwordConfirmation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+                <Field type="password" name="passwordConfirmation" id="passwordConfirmation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-700 focus:border-amring-amber-700 block w-full p-2.5" placeholder="********" required=""/>
+                {errors.passwordConfirmation && touched.passwordConfirmation && (
+                    <Alert type="error" message={errors.passwordConfirmation}/>
                 )}
             </div>
 
