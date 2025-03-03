@@ -6,13 +6,12 @@ import { register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
 import { IAlertState } from '@/types';
 import Alert from '@/components/Alert';
-import { useAuth } from '@/context/AuthContext';
+import { LoginWhitGoogle } from '@/components/LoginButton';
 
 const RegisterView = () =>{
     const router = useRouter();
     const [alert, setAlert] = useState<IAlertState | null>(null); 
-    const { loginWithGoogle } = useAuth();
-   
+    
     return (
 
         <div>
@@ -46,7 +45,7 @@ const RegisterView = () =>{
             <Form className="space-y-4 md:space-y-6" action="#">
 
             <div>
-                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
                 <Field type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-700 focus:border-amring-amber-700 block w-full p-2.5" placeholder="Jhon" required=""/>
                 {errors.name && touched.name && (
                     <Alert type="error" message={errors.name}/>
@@ -62,7 +61,7 @@ const RegisterView = () =>{
             </div>   
 
             <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
                 <Field type="password" name="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-700 focus:border-amring-amber-700 block w-full p-2.5" placeholder="********" required=""/>
                 {errors.password && touched.password && (
                     <Alert type="error" message={errors.password} />
@@ -70,7 +69,7 @@ const RegisterView = () =>{
             </div>
 
             <div>
-                <label htmlFor="passwordConfirmation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+                <label htmlFor="passwordConfirmation" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirmar Contraseña</label>
                 <Field type="password" name="passwordConfirmation" id="passwordConfirmation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-amber-700 focus:border-amring-amber-700 block w-full p-2.5" placeholder="********" required=""/>
                 {errors.passwordConfirmation && touched.passwordConfirmation && (
                     <Alert type="error" message={errors.passwordConfirmation}/>
@@ -80,9 +79,7 @@ const RegisterView = () =>{
 
             <button disabled = { !isValid } type="submit" className="w-full text-white bg-amber-700 hover:bg-amber-900 focus:ring-4 focus:outline-none focus:ring-amber-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Submit</button>
             <div>or</div>
-            <button type="button" className="w-full text-white bg-blue-600 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5" onClick={loginWithGoogle}>
-                Sign Up with Google
-            </button>
+            <LoginWhitGoogle />
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">Already have an account? <a href="/login" className="font-medium text-amring-amber-700 hover:underline">Login here</a>
             </p>
             

@@ -25,24 +25,3 @@ export async function register(userData: IRegisterProps) {
         throw new Error(error)
     }
 };
-
-export async function registerWithGoogle(googleToken: string) {
-    try {
-        const response = await fetch(`${APIURL}/users/google`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: googleToken }),
-        });
-
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Google authentication failed");
-        }
-    } catch (error: any) {
-        console.error("Google registration error:", error);
-        throw new Error(error);
-    }
-}
