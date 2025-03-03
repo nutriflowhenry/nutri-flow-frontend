@@ -1,9 +1,10 @@
+import RegisterView from '@/views/RegisterView';
 import React from 'react'
 
-const page = () => {
+const page = () =>{
   return (
-    <div>page</div>
+    < RegisterView/>
   )
 }
 
-export default page
+export default page;
