@@ -56,3 +56,9 @@ export interface ICreateFoodTracker {
     calories: number; 
     description?: string;
 }
+
+export interface ICaloriesData {
+    consumed: number;
+    goal: number;
+  }
+  

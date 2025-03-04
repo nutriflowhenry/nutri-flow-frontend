@@ -69,6 +69,7 @@ export async function getDailyCalories(date: string, token: string) {
         },
       }
     );
+    console.log('Token enviado en la petición:', token);
 
     if (response.ok) {
       return await response.json();
