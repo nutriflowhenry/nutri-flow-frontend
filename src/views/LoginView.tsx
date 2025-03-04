@@ -83,17 +83,13 @@ const LoginView = () => {
         {session ? (
           <div className="text-center">
             <p>Bienvenido, {session.user?.name}</p>
-            <a
-              href="/api/auth/logout"
-              className="mt-4 inline-block bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
-            >
-              Cerrar sesión
-            </a>
+            <p>Correo: , {session.user?.email}</p>
+            
             <button
               className="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded"
               onClick={() => signOut()}
             >
-              Sign Out
+              Cerrar Sesión
             </button>
           </div>
         ) : (

@@ -50,7 +50,7 @@ export async function registerWithGoogle(googleToken: string) {
 
 export async function login(userData: IloginProps) {
     try {
-        const response = await fetch(`${APIURL}/users/login`, {
+        const response = await fetch(`${APIURL}/auth/login`, {
             method:'POST',
             headers: {
                 "Content-type": "application/json"
