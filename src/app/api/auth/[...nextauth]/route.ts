@@ -7,13 +7,16 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+      params: { scope: "openid email profile" }, // Ensure "openid" is included
+      }
     }),
   ],
   callbacks: {
     async jwt({ token, account }) {
       // Guardamos el token de Google cuando el usuario inicia sesión
       if (account) {
-        token.accessToken = account.access_token;
+        token.id_token = account.id_token; // ✅ Store id_token
       }
       return token;
     },
@@ -21,7 +24,7 @@ export const authOptions: NextAuthOptions = {
     
       return {
         ...session,
-        accessToken: token.accessToken as string | undefined,
+        accessToken: token.id_token as string | undefined,
       };
     },
   },

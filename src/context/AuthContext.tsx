@@ -25,9 +25,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         if (status === "authenticated" && session?.user) {
             
             const googleToken = session?.accessToken;
+            console.log("tokengoogle:",googleToken);
                                     
             if (googleToken) {
                 registerWithGoogle(googleToken)
+                
+
                     .then((response) => {
                         
                         setUserData({

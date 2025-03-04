@@ -29,7 +29,7 @@ export async function register(userData: IRegisterProps) {
 
 export async function registerWithGoogle(googleToken: string) {
     try {
-        const response = await fetch(`${APIURL}/users/google`, {
+        const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export async function registerWithGoogle(googleToken: string) {
 
 export async function login(userData: IloginProps) {
     try {
-        const response = await fetch(`${APIURL}/users/login`, {
+        const response = await fetch(`${APIURL}/auth/login`, {
             method:'POST',
             headers: {
                 "Content-type": "application/json"
