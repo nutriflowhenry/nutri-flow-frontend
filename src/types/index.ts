@@ -39,3 +39,20 @@ export interface IloginProps {
     email: string;
     password: string;
 }
+
+
+export interface IFoodTracker {
+    id: string; 
+    name: string; 
+    calories: number; 
+    description: string; 
+    createdAt: string;
+    userProfileId: string;
+  }
+  
+
+export interface ICreateFoodTracker {
+    name: string; 
+    calories: number; 
+    description?: string;
+}
