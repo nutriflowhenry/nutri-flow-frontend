@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';  
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const WaterCounterView = () => {
     const DAILY_GOAL = 2000;
@@ -11,28 +13,27 @@ const WaterCounterView = () => {
     useEffect(() => {
         const fetchWaterData = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = Cookies.get('token');  
+                console.log("Token en cookies:", token); 
+
                 if (!token) {
-                    console.error('No token found');
+                    console.error("No hay token en las cookies");
                     return;
                 }
 
-                const response = await fetch('http://localhost:3000/water-tracker/update', {
-                    method: 'POST',
+                const response = await fetch(`${APIURL}/water-tracker/daily`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ action: 'FETCH' }) 
                 });
 
-                console.log('Response status:', response.status);
+                console.log(response)
 
-                if (!response.ok) throw new Error(`Error al obtener los datos: ${response.statusText}`);
+                if (!response.ok) throw new Error('Error al obtener los datos');
 
                 const data = await response.json();
-                console.log('Data recibida:', data);
-
                 setWaterIntake(data.waterTracker?.amount || 0);
             } catch (error) {
                 console.error('Error obteniendo el consumo de agua:', error);
@@ -44,20 +45,24 @@ const WaterCounterView = () => {
 
     const updateWaterIntake = async (newIntake: number) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = Cookies.get('token');  
+            console.log("Token en cookies para actualización:", token); 
+
             if (!token) {
-                console.error('No token found');
+                console.error("No hay token en las cookies para la actualización");
                 return;
             }
 
-            const response = await fetch('http://localhost:3000/water-tracker/update', {
+            const response = await fetch(`${APIURL}/water-tracker/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ amount: newIntake, action: 'INCREMENT' }),
+                body: JSON.stringify({ action: 'increment' }),
             });
+
+            console.log(response)
 
             if (!response.ok) throw new Error('Error al actualizar el agua en el backend');
 
