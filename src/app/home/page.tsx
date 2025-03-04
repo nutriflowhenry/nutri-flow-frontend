@@ -4,7 +4,8 @@ import { useState } from "react";
 import CardList from "@/components/FoodEntriesCardList";
 import FoodForm from "@/components/FoodForm";
 import { createFoodTracker } from "@/helpers/foodEntriesHelper";
-import Cookies from "js-cookie"; // Importar js-cookie
+import Cookies from "js-cookie"; 
+import CaloriesCounter from "@/components/caloriesCounter";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,14 +15,13 @@ const Home = () => {
     calories: 0 ,
   });
 
+  const token = Cookies.get("token");
 
   const openModal = () => setIsModalOpen(true);
 
   const closeModal = () => setIsModalOpen(false);
 
- 
   const handleCreateFood = async () => {
-    const token = Cookies.get("token");
     if (token) {
       try {
         console.log(atob(token.split(".")[1]))
@@ -46,7 +46,8 @@ const Home = () => {
         Bienvenido al Tracker de Comidas
       </h1>
 
-      
+      {token && <CaloriesCounter token={token} />} 
+
       <button
         onClick={openModal}
         className="mt-6 px-6 py-3 bg-[#FF6B6B] text-white font-semibold rounded-lg shadow-md hover:bg-[#FF5252] transition-all duration-300"
@@ -54,12 +55,10 @@ const Home = () => {
         Crear Nueva Comida
       </button>
 
-      
       <div className="w-full max-w-4xl mt-6">
         <CardList />
       </div>
 
-      
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 pb-12 rounded-3xl shadow-2xl max-w-md w-full relative">
@@ -74,7 +73,6 @@ const Home = () => {
               Crear Nueva Comida
             </h2>
 
-            
             <FoodForm
               newFood={newFood}
               setNewFood={setNewFood}
