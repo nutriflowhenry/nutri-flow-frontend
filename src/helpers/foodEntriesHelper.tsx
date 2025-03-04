@@ -2,29 +2,61 @@ import { ICreateFoodTracker } from '@/types';
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function createFoodTracker(
-  foodTrackerData: ICreateFoodTracker,
+
+
+export const createFoodTracker = async (
+  foodData: ICreateFoodTracker,
   token: string
-) {
+) => {
   try {
-    const response = await fetch(`${APIURL}/food-tracker/create`, {
+    console.log("Token enviado:", token);
+
+    let caloriesValue: number;
+
+    if (typeof foodData.calories === 'number') {
+      caloriesValue = foodData.calories;
+    } else if (typeof foodData.calories === 'string') {
+      caloriesValue = parseFloat(foodData.calories);
+    } else {
+      throw new Error('El valor de las calorías es inválido.');
+    }
+
+    if (isNaN(caloriesValue) || caloriesValue <= 0) {
+      throw new Error(
+        'El valor de las calorías debe ser un número mayor que 0'
+      );
+    }
+
+    const foodDataWithValidCalories = {
+      ...foodData,
+      calories: caloriesValue,
+    };
+
+    const response = await fetch('http://localhost:3000/food-tracker/create', {
       method: 'POST',
       headers: {
-        'Content-type': 'application/json',
-        Authorization: token,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(foodTrackerData),
+      body: JSON.stringify(foodDataWithValidCalories),
     });
 
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al crear el food tracker');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(
+        `Error al crear el food tracker: ${
+          error.message || response.statusText
+        }`
+      );
     }
-  } catch (error: any) {
-    throw new Error(error);
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error al crear el food tracker:', error);
+    throw error;
   }
-}
+};
 
 export async function getDailyCalories(date: string, token: string) {
   try {
@@ -33,7 +65,7 @@ export async function getDailyCalories(date: string, token: string) {
       {
         method: 'GET',
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -45,10 +77,10 @@ export async function getDailyCalories(date: string, token: string) {
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-        console.log(error.message); // Manejo seguro de errores estándar
-      } else {
-        console.log("Error desconocido:", error);
-      }
+      console.log(error.message); // Manejo seguro de errores estándar
+    } else {
+      console.log('Error desconocido:', error);
+    }
   }
 }
 
@@ -57,7 +89,7 @@ export async function getDailyFoodTracker(date: string, token: string) {
     const response = await fetch(`${APIURL}/food-tracker/daily?date=${date}`, {
       method: 'GET',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -68,19 +100,19 @@ export async function getDailyFoodTracker(date: string, token: string) {
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
-        console.log(error.message); // Manejo seguro de errores estándar
-      } else {
-        console.log("Error desconocido:", error);
-      }
+      console.log(error.message); // Manejo seguro de errores estándar
+    } else {
+      console.log('Error desconocido:', error);
+    }
   }
 }
 
 export async function deleteFoodTracker(id: string, token: string) {
   try {
-    const response = await fetch(`${APIURL}/food-tracker/delete${id}`, {
+    const response = await fetch(`${APIURL}/food-tracker/delete/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -96,15 +128,15 @@ export async function deleteFoodTracker(id: string, token: string) {
 
 export async function updateFoodTracker(
   id: string,
-  foodTrackerData: UpdateFoodTrackerDto,
+  foodTrackerData: ICreateFoodTracker,
   token: string
 ) {
   try {
-    const response = await fetch(`${APIURL}/food-tracker/update${id}`, {
+    const response = await fetch(`${APIURL}/food-tracker/update/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json',
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(foodTrackerData),
     });
