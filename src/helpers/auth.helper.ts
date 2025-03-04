@@ -1,4 +1,5 @@
-import { IRegisterProps, IUserSession } from "@/types"
+import { IRegisterProps, IUserSession, IloginProps } from "@/types"
+import Swal from "sweetalert2";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
@@ -28,7 +29,7 @@ export async function register(userData: IRegisterProps) {
 
 export async function registerWithGoogle(googleToken: string) {
     try {
-        const response = await fetch(`${APIURL}/users/google`, {
+        const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,3 +47,34 @@ export async function registerWithGoogle(googleToken: string) {
         throw new Error(error);
     }
 }
+
+export async function login(userData: IloginProps) {
+    try {
+        const response = await fetch(`${APIURL}/auth/login`, {
+            method:'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        })
+        if(response.ok) {
+            return response.json()
+        } else {
+            await Swal.fire({
+                icon: "error",
+                title: "Error de inicio de sesión",
+                text: "Falló el login del usuario.",
+            });
+        }
+    }catch (error: unknown) {
+        await Swal.fire({
+            icon: "error",
+            title: "Error inesperado",
+            text: "catch:Falló el login del usuario.",
+        });
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        }
+        throw new Error("An unexpected error occurred");
+    }
+};
