@@ -9,6 +9,22 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  callbacks: {
+    async jwt({ token, account }) {
+      // Guardamos el token de Google cuando el usuario inicia sesión
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+    
+      return {
+        ...session,
+        accessToken: token.accessToken as string | undefined,
+      };
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
 };
 

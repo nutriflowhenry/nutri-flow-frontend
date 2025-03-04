@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         if (status === "authenticated" && session?.user) {
             
             const googleToken = session?.accessToken;
-            
+                                    
             if (googleToken) {
                 registerWithGoogle(googleToken)
                     .then((response) => {
@@ -45,7 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         } else {
             
             const storedUser = localStorage.getItem("userSession");
-            
             
             if (storedUser) {
                 setUserData(JSON.parse(storedUser));
