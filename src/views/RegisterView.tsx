@@ -75,8 +75,7 @@ const RegisterView = () =>{
                 {errors.passwordConfirmation && touched.passwordConfirmation && (
                     <Alert type="error" message={errors.passwordConfirmation}/>
                 )}
-            </div>e
-
+            </div>
 
             <button disabled = { !isValid } type="submit" className="w-full text-white bg-amber-700 hover:bg-amber-900 focus:ring-4 focus:outline-none focus:ring-amber-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Submit</button>
             <div>or</div>
