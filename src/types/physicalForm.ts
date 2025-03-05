@@ -1,4 +1,3 @@
-
 export interface IPhysicalForm {
     peso: number;
     altura: number;

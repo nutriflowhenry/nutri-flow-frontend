@@ -1,5 +1,5 @@
 import React from 'react'
-import PhysicalFormView from '@/views/PhysicalFormView' 
+import PhysicalFormView from '@/views/PhysicalFormView'
 
 const page = () => {
 return (
@@ -8,4 +8,3 @@ return (
 }
 
 export default page
-
