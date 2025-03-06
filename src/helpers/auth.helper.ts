@@ -1,10 +1,11 @@
 import { IRegisterProps, IUserSession, IloginProps } from "@/types"
 import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
 export async function register(userData: IRegisterProps) {
-    console.log(userData);
+    console.log("register manual",userData);
     try{
         const response = await fetch(`${APIURL}/auth/signup`,{
             method: 'POST',
@@ -28,9 +29,11 @@ export async function register(userData: IRegisterProps) {
 };
 
 export async function registerWithGoogle(googleToken: string) {
+    console.log("funcion registro con google")
     try {
         const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -38,7 +41,9 @@ export async function registerWithGoogle(googleToken: string) {
         });
 
         if (response.ok) {
+
             return response.json();
+
         } else {
             throw new Error("Google authentication failed");
         }

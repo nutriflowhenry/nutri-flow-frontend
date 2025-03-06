@@ -5,86 +5,82 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Router } from "next/router";
 import { useState, useEffect, createContext, useContext } from "react"
+import Cookies from 'js-cookie';
 
-export const AuthContext = createContext <AuthContextProps>({
+export const AuthContext = createContext<AuthContextProps>({
     userData: null,
-    setUserData: () => {},
-    loginWithGoogle: () => {},
-    loginWithEmail: () => {},
-    logout: () =>{},
+    setUserData: () => { },
+    loginWithGoogle: () => { },
+    loginWithEmail: () => { },
+    logout: () => { },
 });
 
 export interface AuthProviderProps {
     children: React.ReactNode
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const router = useRouter();
-    const {data:session, status} = useSession();
-    const[userData, setUserData] = useState<IUserSession | null> (null)
+    const { data: session, status } = useSession();
+    const [userData, setUserData] = useState<IUserSession | null>(null)
 
-    useEffect(() => {
+    useEffect(() => { 
+        console.log("iniciando hook")
+
         if (status === "authenticated" && session?.user) {
-            
+            console.log("autenticado...")
             const googleToken = session?.accessToken;
-            console.log(session.user)
-                                               
+            console.log("autenticado google" + session.user)
+
             if (googleToken) {
                 registerWithGoogle(googleToken)
-                
+
                     .then((response) => {
-                        
+
                         setUserData({
                             token: response.token, //token devuelto por back
-                            user: {
-                                id: response.userId,
-                                name: response.userName,
-                                email: response.email,
-                            },
+                            user: response.user
                         });
+
+                        Cookies.set("token", JSON.stringify(response.token), { expires: 7, secure: true });
+                  
                         router.push("/home");
                     });
-            }    
-        } else {
-            
-            const storedUser = localStorage.getItem("userSession");
-            
-            if (storedUser) {
-                setUserData(JSON.parse(storedUser));
-            } else {
-                setUserData(null);
-            }
+            } 
         }
-    }, [session, status,router]);
+        console.log("saliendo")
+    }, [session, status, router]);
 
     const loginWithEmail = (user: IUserSession) => {
+        console.log("login manual")
         setUserData(user);
-        localStorage.setItem("userSession", JSON.stringify(user));
+        Cookies.set("token", JSON.stringify(user.token), { expires: 7, secure: true });
     };
 
     const logout = () => {
-        localStorage.removeItem("userSession");
+        Cookies.remove("userSession");
         setUserData(null);
         signOut();
     };
 
     const loginWithGoogle = async () => {
         try {
-          const result = await signIn("google");
-          if (result?.error) {
-            console.error("Error durante el login con Google:", result.error);
-            return;
-          }
-    
-        router.push("/home");
+            const result = await signIn("google");
+            if (result?.error) {
+                console.error("Error durante el login con Google:", result.error);
+                return;
+            }
+
+            router.push("/home");
 
         } catch (error) {
-          console.error("Error en loginWithGoogle:", error);
+            console.error("Error en loginWithGoogle:", error);
         }
-      };
-    
+    };
+
     return (
-        <AuthContext.Provider value={{userData, setUserData, loginWithGoogle: () => signIn("google"),loginWithEmail,logout,
+        <AuthContext.Provider value={{
+            userData, setUserData, loginWithGoogle: () => signIn("google"), loginWithEmail, logout,
         }}>
             {children}
         </AuthContext.Provider>
