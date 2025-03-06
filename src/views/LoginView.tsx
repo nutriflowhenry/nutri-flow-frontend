@@ -89,8 +89,6 @@ const LoginView = () => {
           )}
         </Formik>
 
-
-        
           <div className="w-full h-px bg-gray-400 my-4" >
             <div className="flex justify-center space-x-6">
               <button
@@ -108,5 +106,3 @@ const LoginView = () => {
 };
 
 export default LoginView;
-
-

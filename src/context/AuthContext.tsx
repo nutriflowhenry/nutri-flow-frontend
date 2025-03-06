@@ -3,14 +3,15 @@ import { registerWithGoogle } from "@/helpers/auth.helper";
 import { AuthContextProps, IUserSession } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, createContext, useContext } from "react";
-import Cookies from "js-cookie";
+import { Router } from "next/router";
+import { useState, useEffect, createContext, useContext } from "react"
+import Cookies from 'js-cookie';
+
 
 export const AuthContext = createContext<AuthContextProps>({
     userData: null,
     setUserData: () => { },
     loginWithGoogle: () => { },
-    loginWithEmail: () => { },
     logout: () => { },
 });
 
@@ -23,47 +24,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const { data: session, status } = useSession();
     const [userData, setUserData] = useState<IUserSession | null>(null)
 
-    useEffect(() => {
+    useEffect(() => { 
+        console.log("iniciando")
+
         if (status === "authenticated" && session?.user) {
-            // Si el usuario está autenticado con Google
-            const googleToken = session.accessToken;
+            console.log("autenticado...")
+            
+            const googleToken = session?.accessToken;
+            console.log("autenticado google" + session.user)
+
             if (googleToken) {
                 registerWithGoogle(googleToken)
+
                     .then((response) => {
-                        const userSession = {
+
+                        setUserData({
                             token: response.token, //token devuelto por back
                             user: {
                                 id: response.userId,
                                 name: response.userName,
                                 email: response.email,
                             },
-                        }
-                        setUserData(userSession);
-                        Cookies.set("token", JSON.stringify(userSession));
-                        // router.push("/dashboard");
-                    })
-                    .catch((error) => {
-                        console.error("Error en autenticación con Google:", error);
+                        });
+
+                        Cookies.set("token", JSON.stringify(response.token), { expires: 7, secure: true });
+                        Cookies.set("nutriflowUser", JSON.stringify(response.user), { expires: 7, secure: true });
+                        
+                        router.push("/home");
                     });
-            }
-        } else {
-            // Verificar si hay una sesión almacenada en cookies
-            const storedUser = Cookies.get("token");
-            if (storedUser) {
-                setUserData(JSON.parse(storedUser));
-            } else {
-                setUserData(null);
-            }
+            } 
         }
+        console.log("saliendo")
     }, [session, status, router]);
 
-    const loginWithEmail = async (user: IUserSession) => {
-        setUserData(user);
-        Cookies.set("token", JSON.stringify(user)); // Guardado en cookies
-    };
-
     const logout = () => {
-        Cookies.remove("token"); // Eliminar la cookie
+        Cookies.remove("token");
         setUserData(null);
         signOut();
         router.push("/login");
@@ -71,7 +66,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const loginWithGoogle = async () => {
         try {
-            await signIn("google");
+            const result = await signIn("google");
+            if (result?.error) {
+                console.error("Error durante el login con Google:", result.error);
+                return;
+            }
+
         } catch (error) {
             console.error("Error en loginWithGoogle:", error);
         }
@@ -79,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            userData, setUserData, loginWithGoogle, loginWithEmail, logout,
+            userData, setUserData, loginWithGoogle, logout,
         }}>
             {children}
         </AuthContext.Provider>
