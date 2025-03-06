@@ -22,13 +22,13 @@ const PhysicalFormView = () => {
                 return;
             }
 
-            // Calculamos la fecha de nacimiento en función de la edad ingresada
+           
             const birthdate = new Date(new Date().getFullYear() - values.edad, 0, 1).toISOString().split("T")[0];
 
             const translatedValues = {
                 weight: values.peso,
                 height: values.altura,
-                birthdate: birthdate, // Fecha calculada
+                birthdate: birthdate, 
                 gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other",
                 user: userData.user.id, 
             };
