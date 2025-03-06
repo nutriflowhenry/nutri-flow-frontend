@@ -43,7 +43,7 @@ const RegisterView = () => {
 
                         } catch (error) {
                             setAlert({ type: 'error', message: 'There was an error registering the user' });
-                        }
+                        }   
                     }}
 
                     validate={validateRegisterForm}

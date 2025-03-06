@@ -58,28 +58,39 @@ export async function login(userData: IloginProps) {
         const response = await fetch(`${APIURL}/auth/login`, {
             method:'POST',
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json",
             },
-            body: JSON.stringify(userData)
-        })
-        if(response.ok) {
-            return response.json()
-        } else {
-            await Swal.fire({
-                icon: "error",
-                title: "Error de inicio de sesión",
-                text: "Falló el login del usuario.",
-            });
-        }
-    }catch (error: unknown) {
-        await Swal.fire({
-            icon: "error",
-            title: "Error inesperado",
-            text: "catch:Falló el login del usuario.",
+            body: JSON.stringify(userData),
         });
-        if (error instanceof Error) {
-            throw new Error(error.message);
+
+        if(response.ok) {
+            return response.json();
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error de inicio de sesión");
         }
-        throw new Error("An unexpected error occurred");
+    }catch (error: any) {
+        throw new Error(error.message || "Error inesperado");
     }
 };
+
+export async function getCurrentUser(token: string) {
+    try {
+        const response = await fetch(`${APIURL}/users/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("No se pudo obtener la información del usuario");
+        }
+    } catch (error) {
+        console.error("Error al obtener los datos del usuario:", error);
+        throw error;
+    }
+}

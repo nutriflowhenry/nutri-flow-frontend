@@ -7,6 +7,7 @@ import { Router } from "next/router";
 import { useState, useEffect, createContext, useContext } from "react"
 import Cookies from 'js-cookie';
 
+
 export const AuthContext = createContext<AuthContextProps>({
     userData: null,
     setUserData: () => { },
@@ -16,7 +17,7 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export interface AuthProviderProps {
-    children: React.ReactNode
+    children: React.ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -61,6 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         Cookies.remove("userSession");
         setUserData(null);
         signOut();
+        router.push("/login");
     };
 
     const loginWithGoogle = async () => {
@@ -80,7 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            userData, setUserData, loginWithGoogle: () => signIn("google"), loginWithEmail, logout,
+            userData, setUserData, loginWithGoogle, loginWithEmail, logout,
         }}>
             {children}
         </AuthContext.Provider>
