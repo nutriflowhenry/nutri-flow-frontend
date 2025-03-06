@@ -43,7 +43,7 @@ const WaterCounterView = () => {
         fetchWaterData();
     }, []);
 
-    const updateWaterIntake = async (newIntake: number) => {
+    const updateWaterIntake = async (newIntake, action) => {
         try {
             const token = Cookies.get('token');  
             console.log("Token en cookies para actualización:", token); 
@@ -59,10 +59,10 @@ const WaterCounterView = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ action: 'increment' }),
+                body: JSON.stringify({ action }),
             });
 
-            console.log(response)
+            console.log(response);
 
             if (!response.ok) throw new Error('Error al actualizar el agua en el backend');
 
@@ -75,11 +75,11 @@ const WaterCounterView = () => {
     };
 
     const addWater = () => {
-        updateWaterIntake(waterIntake + INCREMENT);
+        updateWaterIntake(waterIntake + INCREMENT, 'increment');
     };
 
     const subtractWater = () => {
-        updateWaterIntake(Math.max(waterIntake - DECREMENT, 0));
+        updateWaterIntake(Math.max(waterIntake - DECREMENT, 0), 'decrement');
     };
 
     return (
