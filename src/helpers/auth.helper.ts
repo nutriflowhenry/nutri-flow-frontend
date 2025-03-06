@@ -1,6 +1,5 @@
 import { IRegisterProps, IUserSession, IloginProps } from "@/types"
 import Swal from "sweetalert2";
-import Cookies from 'js-cookie';
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
@@ -33,7 +32,6 @@ export async function registerWithGoogle(googleToken: string) {
     try {
         const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

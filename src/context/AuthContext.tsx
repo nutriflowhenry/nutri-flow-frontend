@@ -12,7 +12,6 @@ export const AuthContext = createContext<AuthContextProps>({
     userData: null,
     setUserData: () => { },
     loginWithGoogle: () => { },
-    loginWithEmail: () => { },
     logout: () => { },
 });
 
@@ -26,10 +25,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [userData, setUserData] = useState<IUserSession | null>(null)
 
     useEffect(() => { 
-        console.log("iniciando hook")
+        console.log("iniciando")
 
         if (status === "authenticated" && session?.user) {
             console.log("autenticado...")
+            
             const googleToken = session?.accessToken;
             console.log("autenticado google" + session.user)
 
@@ -40,11 +40,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
                         setUserData({
                             token: response.token, //token devuelto por back
-                            user: response.user
+                            user: {
+                                id: response.userId,
+                                name: response.userName,
+                                email: response.email,
+                            },
                         });
 
                         Cookies.set("token", JSON.stringify(response.token), { expires: 7, secure: true });
-                  
+                        Cookies.set("nutriflowUser", JSON.stringify(response.user), { expires: 7, secure: true });
+                        
                         router.push("/home");
                     });
             } 
@@ -52,14 +57,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log("saliendo")
     }, [session, status, router]);
 
-    const loginWithEmail = (user: IUserSession) => {
-        console.log("login manual")
-        setUserData(user);
-        Cookies.set("token", JSON.stringify(user.token), { expires: 7, secure: true });
-    };
-
     const logout = () => {
-        Cookies.remove("userSession");
+        Cookies.remove("token");
         setUserData(null);
         signOut();
         router.push("/login");
@@ -73,8 +72,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 return;
             }
 
-            router.push("/home");
-
         } catch (error) {
             console.error("Error en loginWithGoogle:", error);
         }
@@ -82,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            userData, setUserData, loginWithGoogle, loginWithEmail, logout,
+            userData, setUserData, loginWithGoogle, logout,
         }}>
             {children}
         </AuthContext.Provider>

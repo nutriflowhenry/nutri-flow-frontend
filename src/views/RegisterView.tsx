@@ -8,14 +8,13 @@ import { IAlertState } from '@/types';
 import Alert from '@/components/Alert';
 import { useAuth } from '@/context/AuthContext';
 import { FaGoogle } from 'react-icons/fa';
-import Cookies from 'js-cookie';
+import Swal from "sweetalert2";
 
 const RegisterView = () => {
     const router = useRouter();
     const [alert, setAlert] = useState<IAlertState | null>(null);
     const { loginWithGoogle } = useAuth();
-    const { setUserData } = useAuth();
-
+    
     return (
 
         <div className="flex justify-center items-center mb-12 mt-12">
@@ -33,16 +32,21 @@ const RegisterView = () => {
                     onSubmit={async (values) => {
                         try {
                             const response = await register(values);
-                            const { token, user } = response;
-                            setUserData({ token, user });
-                            Cookies.set("token", token);
-                            setAlert({ type: 'success', message: 'User registered succesfully' });
+                            await Swal.fire({
+                                icon: "success",
+                                title: "Registro exitoso",
+                                text: "Ahora puedes iniciar sesion",
+                                });
                             setTimeout(() => {
                                 router.push('/login');
                             }, 2000);
 
                         } catch (error) {
-                            setAlert({ type: 'error', message: 'There was an error registering the user' });
+                            await Swal.fire({
+                            icon: "error",
+                            title: "Error en el registro nuevo usuario",
+                            text: "Credenciales incorrectas o error en el servidor.",
+                            });
                         }   
                     }}
 
