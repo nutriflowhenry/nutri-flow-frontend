@@ -31,6 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
             const googleToken = session?.accessToken;
             console.log("autenticado google" + session.user)
+            console.log("Google Token:", googleToken);
 
             if (googleToken) {
                 validateGoogleToken(googleToken)
@@ -49,7 +50,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                         Cookies.set("token", response.token, { expires: 7, secure: true });
                         Cookies.set("nutriflowUser", JSON.stringify(response.user), { expires: 7, secure: true });
                         
-                        router.push("/home");
+                        // Cerrar la sesión de NextAuth.js
+                        signOut();
                     });
             } 
         }
@@ -84,8 +86,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
      
     const logout = () => {
         Cookies.remove("token");
+        Cookies.remove("nutriflowUser");
         setUserData(null);
-        signOut();
         router.push("/login");
     };
 

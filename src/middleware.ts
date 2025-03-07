@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
 
     // Si el usuario está autenticado y trata de acceder a una ruta pública, redirigir al dashboard
     if (userSession && publicPaths.includes(path)) {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+        return NextResponse.redirect(new URL('/home', request.url));
     }
 
     // Si el usuario no está autenticado y trata de acceder a una ruta protegida, redirigir al login

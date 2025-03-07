@@ -1,9 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { getCurrentUser } from "@/helpers/auth.helper";
 import Cookies from 'js-cookie';
-import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 
 interface UserData {
@@ -15,31 +13,23 @@ interface UserData {
 }
 
 const DashboardView = () => {
-
     const { logout } = useAuth();
-    const { status } = useSession();
     const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchUserData = () => {
             try {
-                // Obtener la sesión del usuario desde las cookies
-                const userSession = Cookies.get("token");
-                if (!userSession) {
-                    throw new Error("No se encontró la sesión del usuario");
+                // Obtener los datos del usuario desde la cookie
+                const nutriflowUser = Cookies.get("nutriflowUser");
+                if (!nutriflowUser) {
+                    throw new Error("No se encontró la información del usuario");
                 }
 
-                // Obtener el token de la sesión
-                const token = JSON.parse(userSession).token;
-                if (!token) {
-                    throw new Error("No hay token de autenticación");
-                }
-                // Obtener los datos del usuario
-                console.log("este es el token",token)
-                const userInfo = await getCurrentUser(token);
+                // Parsear los datos del usuario
+                const userInfo = JSON.parse(nutriflowUser);
                 setUser(userInfo);
             } catch (error: any) {
                 setError(error.message);
@@ -49,7 +39,7 @@ const DashboardView = () => {
         };
 
         fetchUserData();
-    }, [status, router]);
+    }, []);
 
     if (loading) {
         return <p className="text-gray-700">Cargando...</p>;
@@ -78,13 +68,11 @@ const DashboardView = () => {
                 </div>
             ) : (
                 <div className="text-black">
-                    <p >No se encontraron datos del usuario.</p>
-
+                    <p>No se encontraron datos del usuario.</p>
                 </div>
             )}
         </div>
     );
 };
-
 
 export default DashboardView;
