@@ -25,7 +25,6 @@ export interface AuthContextProps {
     userData: IUserSession | null;
     setUserData: (userData: IUserSession | null) => void;
     loginWithGoogle: () => void;
-    loginWithEmail: (user: IUserSession) => void;
     logout: () => void;
 }
 
