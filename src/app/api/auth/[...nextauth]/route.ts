@@ -27,6 +27,10 @@ export const authOptions: NextAuthOptions = {
         accessToken: token.id_token as string | undefined,
       };
     },
+    async redirect({ url, baseUrl }) {
+      // Evitar redirecciones automáticas
+      return Promise.resolve(baseUrl);
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
