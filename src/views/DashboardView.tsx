@@ -38,6 +38,7 @@ const DashboardView = () => {
                     throw new Error("No hay token de autenticación");
                 }
                 // Obtener los datos del usuario
+                console.log("este es el token",token)
                 const userInfo = await getCurrentUser(token);
                 setUser(userInfo);
             } catch (error: any) {

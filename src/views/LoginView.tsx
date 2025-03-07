@@ -3,17 +3,17 @@ import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
 import { login } from "@/helpers/auth.helper";
 import { useRouter } from "next/navigation";
-import Cookies from 'js-cookie';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaGoogle } from 'react-icons/fa';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { IUserSession } from "@/types";
+import { useState } from "react";
 
 const LoginView = () => {
+  const { setUserData, userData } = useAuth();
   const router = useRouter();
-  const { setUserData } = useAuth();
-  // const { data: session } = useSession();
-
+ 
   // Esquema validación con Yup
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -37,8 +37,6 @@ const LoginView = () => {
               const response = await login(values);
               const { token, user } = response;
               setUserData({ token, user });
-              // Cookies.set("token", token);
-              Cookies.set("token", JSON.stringify({ token, user }));
               await Swal.fire({
                 icon: "success",
                 title: "Inicio de sesión exitoso",

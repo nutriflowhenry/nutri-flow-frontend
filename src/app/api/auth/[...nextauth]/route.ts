@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, account }) {
       // Guardamos el id token de Google cuando el usuario inicia sesión
       if (account) {
-        token.id_token = account.id_token; // ✅ Store id_token
+        token.id_token = account.id_token; // Store id_token
       }
       return token;
     },
