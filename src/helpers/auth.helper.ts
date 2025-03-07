@@ -27,7 +27,7 @@ export async function register(userData: IRegisterProps) {
     }
 };
 
-export async function registerWithGoogle(googleToken: string) {
+export async function validateGoogleToken(googleToken: string) {
     console.log("funcion registro con google")
     try {
         const response = await fetch(`${APIURL}/auth/google`, {
@@ -51,7 +51,29 @@ export async function registerWithGoogle(googleToken: string) {
     }
 }
 
-export async function login(userData: IloginProps) {
+export async function login(userData: IloginProps): Promise<IUserSession> {
+    try {
+        // Autenticar al usuario y obtener el token
+        const {token} = await getSessionToken(userData); 
+        
+        if (!token) throw new Error("No se recibió un token");
+
+        // Obtener los datos del usuario con el token
+        const user = await getCurrentUser(token);
+
+        if (!user) throw new Error("No se pudo obtener la información del usuario");
+
+        console.log("Usuario autenticado:", user);
+
+        return { token, user };
+
+    } catch (error) {
+        console.error("Error en login con email:", error);
+        throw error;
+    }
+};
+
+export async function getSessionToken(userData: IloginProps) {
     try {
         const response = await fetch(`${APIURL}/auth/login`, {
             method:'POST',
