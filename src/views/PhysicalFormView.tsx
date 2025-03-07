@@ -22,7 +22,7 @@ const PhysicalFormView = () => {
                 return;
             }
 
-            
+           
             const birthdate = new Date(new Date().getFullYear() - values.edad, 0, 1).toISOString().split("T")[0];
 
             const translatedValues = {
