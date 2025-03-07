@@ -22,15 +22,14 @@ const PhysicalFormView = () => {
                 return;
             }
 
-            // Calculamos la fecha de nacimiento en función de la edad ingresada
+            
             const birthdate = new Date(new Date().getFullYear() - values.edad, 0, 1).toISOString().split("T")[0];
 
             const translatedValues = {
                 weight: values.peso,
                 height: values.altura,
-                birthdate: birthdate, // Fecha calculada
-                gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other",
-                user: userData.user.id, 
+                birthdate: birthdate, 
+                gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other"
             };
 
             console.log("Datos enviados:", translatedValues);
@@ -40,6 +39,7 @@ const PhysicalFormView = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userData.token}`,// 
                     },
                     body: JSON.stringify(translatedValues),
                 });
