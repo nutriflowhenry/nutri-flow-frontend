@@ -11,7 +11,7 @@ import { IUserSession } from "@/types";
 import { useState } from "react";
 
 const LoginView = () => {
-  const { setUserData, userData } = useAuth();
+  const { setUserProfile, setUserData, userData } = useAuth();
   const router = useRouter();
  
   // Esquema validación con Yup
@@ -35,8 +35,12 @@ const LoginView = () => {
           onSubmit={async (values) => {
             try {
               const response = await login(values);
-              const { token, user } = response;
+              const { token, user, profileData } = response;
               setUserData({ token, user });
+              if (profileData) {
+                setUserProfile(profileData); // Actualizar el estado del perfil
+              }
+              
               await Swal.fire({
                 icon: "success",
                 title: "Inicio de sesión exitoso",

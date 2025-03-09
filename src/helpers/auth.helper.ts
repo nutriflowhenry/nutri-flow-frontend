@@ -1,4 +1,4 @@
-import { IRegisterProps, IUserSession, IloginProps } from "@/types"
+import { IRegisterProps, IUserSession, IloginProps,IUserProfile } from "@/types"
 import Swal from "sweetalert2";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
@@ -65,7 +65,17 @@ export async function login(userData: IloginProps): Promise<IUserSession> {
 
         console.log("Usuario autenticado:", user);
 
-        return { token, user };
+        // Intentar obtener el perfil del usuario, pero no lanzar error si no existe
+        let profileData: IUserProfile | undefined;
+        try {
+            profileData = await fetchUserProfile(token);
+            console.log("DATOOOS:", profileData);
+        } catch (error) {
+            console.warn("No se pudo obtener el perfil del usuario:", error);
+            // No lanzar error, el perfil es opcional
+        }
+
+        return { token, user, profileData };
 
     } catch (error) {
         console.error("Error en login con email:", error);
@@ -111,6 +121,31 @@ export async function getCurrentUser(token: string) {
         }
     } catch (error) {
         console.error("Error al obtener los datos del usuario:", error);
+        throw error;
+    }
+}
+
+export async function fetchUserProfile(token: string) {
+    try {
+        const response = await fetch(`${APIURL}/user-profiles`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json(); // Extrae la respuesta completa
+            return data.userProfile; // Devuelve solo userProfile
+        } else if (response.status === 404) {
+            // Si no se encuentra el perfil, devolver undefined
+            return undefined;
+        } else {
+            throw new Error("No se pudo obtener la información del usuario");
+        }
+    } catch (error) {
+        console.error("Error en fetchUserProfile:", error);
         throw error;
     }
 }

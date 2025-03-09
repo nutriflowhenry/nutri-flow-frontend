@@ -13,31 +13,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const DashboardView = () => {
-    const { userData, logout } = useAuth();
+    const { userData, userProfile, logout } = useAuth();
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (userData) {
             setLoading(false);
-            setError(null);
         } else {
             setLoading(false);
-            setError("No se encontraron datos del usuario.");
+
         }
     }, [userData]);
 
     if (loading) {
         return <p className="text-gray-700 text-center py-8">Cargando...</p>;
-    }
-
-    if (error) {
-        return (
-            <div className="p-6 bg-white shadow-md rounded-lg max-w-md mx-auto mt-8 text-center">
-                <h1 className="text-2xl font-bold mb-4 text-black">Perfil de Usuario</h1>
-                <p className="text-gray-700 mb-4">Error: {error}</p>
-            </div>
-        );
     }
 
     return (
@@ -68,21 +57,35 @@ const DashboardView = () => {
                         <div className="space-y-4 text-gray-700">
                             <p>
                                 <FontAwesomeIcon icon={faCakeCandles} className="mr-2 text-gray-600" />
-                                <strong>Edad:</strong> -- años
+                                <strong>Edad:</strong> {userProfile?.birthdate
+                                    ? new Date(userProfile.birthdate).toLocaleDateString("es-ES", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })
+                                    : "--"}
                             </p>
                             <p>
                                 <FontAwesomeIcon icon={faVenusMars} className="mr-2 text-gray-600" />
-                                <strong>Género:</strong> -----
+                                <strong>Género:</strong> {userProfile?.gender || "--"}
                             </p>
                             <p>
                                 <FontAwesomeIcon icon={faWeightScale} className="mr-2 text-gray-600" />
-                                <strong>Peso:</strong> ----- kg
+                                <strong>Peso:</strong> {userProfile?.weight || "--"} kg
                             </p>
                             <p>
                                 <FontAwesomeIcon icon={faChildReaching} className="mr-2 text-gray-600" />
-                                <strong>Altura:</strong> ---- cm
+                                <strong>Altura:</strong> {userProfile?.height || "--"} cm
                             </p>
                         </div>
+                    </div>
+                    <div className="col-span-1 md:col-span-2 flex justify-center mt-8">
+                        <button
+                            onClick={logout}
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+                        >
+                            Cerrar Sesión
+                        </button>
                     </div>
                 </div>
             ) : (
@@ -90,15 +93,7 @@ const DashboardView = () => {
                     <p>No se encontraron datos del usuario.</p>
                 </div>
             )}
-            
-            <div className="text-center mt-8">
-                <button
-                    onClick={logout}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
-                >
-                    Cerrar Sesión
-                </button>
-            </div>
+
         </div>
     );
 };

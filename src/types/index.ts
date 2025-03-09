@@ -19,11 +19,31 @@ export interface IUserSession {
         id: number;
         name:string;
         image?:string;
-    }
+    };
+    profileData?: IUserProfile;
 }
+
+export interface IUserProfile {
+    id?: string;
+    birthdate: Date | string;
+    gender: string;
+    weight: number | string;
+    height: number | string;
+}
+
+export enum Gender {
+    MALE = 'male',
+    FEMALE = 'female',
+    OTHER = 'other',
+}
+
+
+
 export interface AuthContextProps {
     userData: IUserSession | null;
+    userProfile: IUserProfile | null;
     setUserData: (userData: IUserSession | null) => void;
+    setUserProfile: (userProfile: IUserProfile | null) => void;
     loginWithGoogle: () => void;
     logout: () => void;
 }
