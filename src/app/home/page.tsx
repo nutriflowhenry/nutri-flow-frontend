@@ -45,8 +45,7 @@ const Home = () => {
 
   return (
     <div className="font-sora flex flex-col items-center py-8 relative">
-  {/* El contenido principal de la página */}
-  <h1 className="text-center text-3xl font-bold text-[#242424] font-sora">
+    <h1 className="text-center text-3xl font-bold text-[#242424] font-sora">
     Bienvenido al Tracker de Comidas
   </h1>
 
@@ -81,9 +80,6 @@ const Home = () => {
     </div>
   )}
 
-  {/* Asegúrate de que este botón esté fuera del flujo normal */}
- 
-  {/* Cambia <AddFoodButton /> a un div o span */}
   <button 
   onClick={openModal}
   className="fixed mb-24 bottom-[0px] right-[0px] flex justify-center items-center w-[100px] h-[100px] overflow-visible">

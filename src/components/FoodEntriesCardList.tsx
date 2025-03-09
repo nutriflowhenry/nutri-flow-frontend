@@ -26,7 +26,7 @@ const CardList = ({ refreshTrigger }: CardListProps) => {
   useEffect(() => {
     const token = Cookies.get('token');
     if (token) {
-      setIsLoading(true); // Activar carga al inicio
+      setIsLoading(true); 
       const now = new Date().toISOString();
       getDailyFoodTracker(now, token)
         .then((data) => {
@@ -38,7 +38,7 @@ const CardList = ({ refreshTrigger }: CardListProps) => {
           console.error('Error al obtener los datos de la API:', error);
         })
         .finally(() => {
-          setIsLoading(false); // Desactivar carga al final
+          setIsLoading(false); 
         });
     }
   }, [refreshTrigger]);
