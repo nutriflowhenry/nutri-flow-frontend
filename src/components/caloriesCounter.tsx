@@ -7,8 +7,9 @@ import { ICaloriesData } from '@/types';
 
 const CaloriesCounter: React.FC<{ token: string }> = ({ token }) => {
   
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState<string>(new Date().toISOString());
   const [calories, setCalories] = useState<ICaloriesData>({ consumed: 0, goal: 1500 });
+  
 
   useEffect(() => {
     const fetchCalories = async () => {
@@ -25,7 +26,7 @@ const CaloriesCounter: React.FC<{ token: string }> = ({ token }) => {
   const changeDate = (days: number) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + days);
-    setDate(newDate.toISOString().split('T')[0]);
+    setDate(newDate.toISOString());
   };
 
   const progress = (calories.consumed / calories.goal) * 100;
