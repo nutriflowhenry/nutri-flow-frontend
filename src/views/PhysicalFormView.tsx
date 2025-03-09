@@ -29,8 +29,7 @@ const PhysicalFormView = () => {
                 weight: values.peso,
                 height: values.altura,
                 birthdate: birthdate, 
-                gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other",
-                user: userData.user.id, 
+                gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other"
             };
 
             console.log("Datos enviados:", translatedValues);
@@ -40,6 +39,7 @@ const PhysicalFormView = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userData.token}`,// 
                     },
                     body: JSON.stringify(translatedValues),
                 });
