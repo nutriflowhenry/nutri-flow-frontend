@@ -1,4 +1,4 @@
-import { ICreateFoodTracker } from '@/types';
+import { ICaloriesData, ICreateFoodTracker } from '@/types';
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -65,8 +65,12 @@ export const createFoodTracker = async (
   }
 };
 
-export async function getDailyCalories(date: string, token: string) {
-  
+interface DailyCaloriesResponse {
+  consumed: number;
+  goal: number;
+}
+
+export async function getDailyCalories(date: string, token: string): Promise<ICaloriesData| undefined> {
   try {
     const response = await fetch(
       `${APIURL}/food-tracker/dailyCalories?date=${date}`,
@@ -77,20 +81,23 @@ export async function getDailyCalories(date: string, token: string) {
         },
       }
     );
-    console.log('Token enviado en la petición:', token);
-    console.log('Date enviado en la petición:', date);
 
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error('Error al obtener las calorías diarias');
+    if (!response.ok) {
+      throw new Error(`Error al obtener las calorías diarias: ${response.statusText}`);
     }
+
+    const data = await response.json();
+    return {
+      consumed: data.caloriesConsumed, 
+      goal: 1500 
+    };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.log(error.message); 
+      console.error(error.message); 
     } else {
-      console.log('Error desconocido:', error);
+      console.error('Error desconocido:', error);
     }
+    throw error; 
   }
 }
 
