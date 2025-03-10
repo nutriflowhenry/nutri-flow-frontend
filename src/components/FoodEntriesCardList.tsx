@@ -1,21 +1,17 @@
 'use client';
-
 import { useState, useEffect } from 'react';
-import {
-  getDailyFoodTracker,
-  deleteFoodTracker,
-  updateFoodTracker,
-} from '@/helpers/foodEntriesHelper';
+import { getDailyFoodTracker, deleteFoodTracker, updateFoodTracker } from '@/helpers/foodEntriesHelper';
 import Cookies from 'js-cookie';
 import { IFoodTracker } from '@/types';
 import FoodEntriesCard from './FoodEntriesCard';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface CardListProps {
-  refreshTrigger?: number;
+  refreshTrigger?: number; 
+  currentDate: string; 
 }
 
-const CardList = ({ refreshTrigger }: CardListProps) => {
+const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [foodEntries, setFoodEntries] = useState<IFoodTracker[]>([]);
   const [selectedFood, setSelectedFood] = useState<IFoodTracker | null>(null);
@@ -27,8 +23,7 @@ const CardList = ({ refreshTrigger }: CardListProps) => {
     const token = Cookies.get('token');
     if (token) {
       setIsLoading(true); 
-      const now = new Date().toISOString();
-      getDailyFoodTracker(now, token)
+      getDailyFoodTracker(currentDate, token) 
         .then((data) => {
           if (data?.data?.results) {
             setFoodEntries(data.data.results);
@@ -41,7 +36,7 @@ const CardList = ({ refreshTrigger }: CardListProps) => {
           setIsLoading(false); 
         });
     }
-  }, [refreshTrigger]);
+  }, [refreshTrigger, currentDate]); 
 
   const handleSaveChanges = () => {
     if (selectedFood) {
