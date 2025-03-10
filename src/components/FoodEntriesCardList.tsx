@@ -7,11 +7,15 @@ import FoodEntriesCard from './FoodEntriesCard';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface CardListProps {
-  refreshTrigger?: number; 
-  currentDate: string; 
+  refreshTrigger?: number;
+  currentDate: string;
+  onRefresh: () => void; 
 }
 
-const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
+
+
+
+const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [foodEntries, setFoodEntries] = useState<IFoodTracker[]>([]);
   const [selectedFood, setSelectedFood] = useState<IFoodTracker | null>(null);
@@ -75,6 +79,7 @@ const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
               prevEntries.filter((entry) => entry.id !== id)
             );
             setSelectedFood(null);
+            onRefresh(); // Llama a onRefresh para incrementar refreshTrigger
           })
           .catch((error) => {
             console.error('Error al eliminar el food tracker:', error);
@@ -82,7 +87,6 @@ const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
       }
     }
   };
-
   return (
     <div className="flex flex-wrap justify-center gap-6">
       {isLoading ? (
