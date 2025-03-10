@@ -26,7 +26,8 @@ const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
       getDailyFoodTracker(currentDate, token) 
         .then((data) => {
           if (data?.data?.results) {
-            setFoodEntries(data.data.results);
+            const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
+            setFoodEntries(activeFoodEntries);
           }
         })
         .catch((error) => {
