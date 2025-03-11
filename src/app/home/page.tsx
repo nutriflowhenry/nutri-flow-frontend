@@ -7,6 +7,7 @@ import { createFoodTracker } from "@/helpers/foodEntriesHelper";
 import Cookies from "js-cookie"; 
 import CaloriesCounter from "@/components/caloriesCounter";
 import AddFoodButton from "@/assets/AddFoodButton";
+import WaterCounterView from "@/views/WaterCounterView";
 
 const Home = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -64,6 +65,10 @@ const Home = () => {
   currentDate={currentDate}
   onRefresh={() => setRefreshTrigger((prev) => prev + 1)} 
 />
+      </div>
+
+      <div className="w-full max-w-4xl mt-6">
+  <WaterCounterView />
       </div>
 
       {/* Modal */}
