@@ -134,14 +134,11 @@ export async function fetchUserProfile(token: string) {
                 'Content-Type': 'application/json',
             },
         });
-
+        
         if (response.ok) {
             const data = await response.json(); // Extrae la respuesta completa
             return data.userProfile; // Devuelve solo userProfile
-        } else if (response.status === 404) {
-            // Si no se encuentra el perfil, devolver undefined
-            return undefined;
-        } else {
+        }  else {
             throw new Error("No se pudo obtener la información del usuario");
         }
     } catch (error) {

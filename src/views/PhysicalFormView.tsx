@@ -3,11 +3,13 @@ import React, { useContext } from 'react'
 import { useFormik } from 'formik'
 import { AuthContext } from '@/context/AuthContext'
 import { IPhysicalForm } from '@/types/physicalForm'
+import { useRouter } from 'next/navigation'
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const PhysicalFormView = () => {
-    const { userData } = useContext(AuthContext); 
+    const { userData } = useContext(AuthContext);
+    const router = useRouter(); 
 
     const formik = useFormik<IPhysicalForm>({
         initialValues: {
@@ -22,7 +24,7 @@ const PhysicalFormView = () => {
                 return;
             }
 
-           
+        
             const birthdate = new Date(new Date().getFullYear() - values.edad, 0, 1).toISOString().split("T")[0];
 
             const translatedValues = {
@@ -50,11 +52,13 @@ const PhysicalFormView = () => {
 
                 const data = await response.json();
                 console.log('Respuesta del backend:', data);
+                return router.push("/home");
             } catch (error) {
                 console.error('Hubo un problema con la solicitud:', error);
             }
         },
 
+        
         validate: (values) => {
             const errors: Partial<IPhysicalForm> = {}; 
             if (!values.peso) {
@@ -82,63 +86,73 @@ const PhysicalFormView = () => {
     });
 
     return (
-        <div>
-            <h2>Registro Físico</h2>
-            <form onSubmit={formik.handleSubmit}>
+        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Registro Físico</h2>
+            <form onSubmit={formik.handleSubmit} className="space-y-4">
                 <div>
-                    <label>Peso (kg)</label>
+                    <label className="block text-gray-700 font-medium">Peso (kg)</label>
                     <input
                         type="number"
                         name="peso"
                         value={formik.values.peso}
                         onChange={formik.handleChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {formik.errors.peso && <p>{formik.errors.peso}</p>}
+                    {formik.errors.peso && <p className="text-red-500 text-sm mt-1">{formik.errors.peso}</p>}
                 </div>
-
+    
                 <div>
-                    <label>Altura (m)</label>
+                    <label className="block text-gray-700 font-medium">Altura (m)</label>
                     <input
                         type="number"
                         name="altura"
                         value={formik.values.altura}
                         onChange={formik.handleChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {formik.errors.altura && <p>{formik.errors.altura}</p>}
+                    {formik.errors.altura && <p className="text-red-500 text-sm mt-1">{formik.errors.altura}</p>}
                 </div>
-
+    
                 <div>
-                    <label>Edad</label>
+                    <label className="block text-gray-700 font-medium">Edad</label>
                     <input
                         type="number"
                         name="edad"
                         value={formik.values.edad}
                         onChange={formik.handleChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {formik.errors.edad && <p>{formik.errors.edad}</p>}
+                    {formik.errors.edad && <p className="text-red-500 text-sm mt-1">{formik.errors.edad}</p>}
                 </div>
-
+    
                 <div>
-                    <label>Género</label>
+                    <label className="block text-gray-700 font-medium">Género</label>
                     <select
                         name="genero"
                         value={formik.values.genero}
                         onChange={formik.handleChange}
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">Seleccionar</option>
                         <option value="masculino">Masculino</option>
                         <option value="femenino">Femenino</option>
                         <option value="otro">Otro</option>
                     </select>
-                    {formik.errors.genero && <p>{formik.errors.genero}</p>}
+                    {formik.errors.genero && <p className="text-red-500 text-sm mt-1">{formik.errors.genero}</p>}
                 </div>
-
+    
                 <div>
-                    <button type="submit">Enviar</button>
+                    <button 
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
+                    >
+                        Enviar
+                    </button>
                 </div>
             </form>
         </div>
     );
+    
 };
 
 export default PhysicalFormView;
