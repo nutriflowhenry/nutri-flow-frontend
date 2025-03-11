@@ -37,6 +37,12 @@ const LoginView = () => {
               const response = await login(values);
               const { token, user, profileData } = response;
               setUserData({ token, user });
+
+              // Verificar si es administrador
+              if (user.role === 'admin') {
+                return router.push("/dashboard/admin");
+              } 
+
               if (profileData) {
                 setUserProfile(profileData); // Actualizar el estado del perfil
                 await Swal.fire({
@@ -44,11 +50,10 @@ const LoginView = () => {
                   title: "Inicio de sesión exitoso",
                   text: "Bienvenido de nuevo!",
                 });
-                router.push("/home");
-              } else {
+                return router.push("/home");
+              } 
                 router.push("/physical-form");
-              }
-              
+                
             } catch (error) {
               await Swal.fire({
                 icon: "error",

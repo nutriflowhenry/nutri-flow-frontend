@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, createContext, useContext } from "react"
 import Cookies from 'js-cookie';
+import Swal from "sweetalert2";
 
 export const AuthContext = createContext<AuthContextProps>({
     userData: null,
@@ -27,9 +28,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         if (status === "authenticated" && session?.user) {
-            
+
             const googleToken = session?.accessToken;
-            
+
             if (googleToken) {
                 validateGoogleToken(googleToken)
                     .then((response) => {
@@ -42,12 +43,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                             },
                         });
                         const nutriflowUser = response.user;
-                        
+
                         Cookies.set("token", response.token, { expires: 7, secure: true });
                         Cookies.set("nutriflowUser", JSON.stringify(nutriflowUser), { expires: 7, secure: true });
-                        
+
                         if (nutriflowUser.userProfile === null) {
-                            router.push("/physical-form"); 
+                            router.push("/physical-form");
                         } else {
                             router.push("/home");
                         }
@@ -87,14 +88,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             });
             
             //verificar si el usuario ya completó su perfil
-            if (nutriflowUser.userProfile === null) {
-                router.push("/physical-form"); 
+            if (nutriflowUser.userProfile === null && nutriflowUser.role !== "admin") {
+                console.log("El usuario no tiene perfil y no es admin");
+                    router.push("/physical-form");
+                if(nutriflowUser.role == "admin"){
+                    return router.push("/dashboardAdmin");
+                }
             } else {
                 router.push("/home");
             }
-            
-        } 
-    }, [])
+        } else {
+            console.log("No se encontró usuario o token.");
+        }
+    }, []);
 
     const logout = () => {
         Cookies.remove("token");

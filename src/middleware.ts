@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
 
     // Si el usuario está autenticado y trata de acceder a una ruta pública
     if (userSession && publicPaths.includes(path)) {
-        if(userSession.role == "admin"){
+        if(userSession.role == 'admin'){
             return NextResponse.redirect(new URL('/dashboard/admin', request.url));
         
         //y no es admin redirigir al Home
@@ -29,9 +29,10 @@ export function middleware(request: NextRequest) {
 
     // Si el usuario con rol 'user' está autenticado y trata de acceder al dashboard admnin
     const adminPath = ['/dashboard/admin'];
-    const isAdmin = userSession?.role === "admin";
+    const isUser = userSession?.role === 'user';
 
-    if (!isAdmin && adminPath.includes(path)) {
+    if (isUser && adminPath.includes(path)) {
+   
         return NextResponse.redirect(new URL('/dashboard', request.url));      
     }
 
