@@ -9,6 +9,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 interface CardListProps {
   refreshTrigger?: number;
   currentDate: string;
+
   onRefresh: () => void;
 }
 
@@ -30,7 +31,10 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         .then((data) => {
           if (data?.data?.results) {
             const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
-            setFoodEntries(activeFoodEntries); // Guarda todos los registros
+
+
+            setFoodEntries(activeFoodEntries);
+
           }
         })
         .catch((error) => {
@@ -104,7 +108,6 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
       }
     }
   };
-
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex flex-wrap justify-center gap-6">
