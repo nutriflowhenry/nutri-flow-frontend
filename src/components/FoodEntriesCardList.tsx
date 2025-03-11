@@ -7,36 +7,58 @@ import FoodEntriesCard from './FoodEntriesCard';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface CardListProps {
-  refreshTrigger?: number; 
-  currentDate: string; 
+  refreshTrigger?: number;
+  currentDate: string;
+  onRefresh: () => void;
 }
 
-const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
+const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [foodEntries, setFoodEntries] = useState<IFoodTracker[]>([]);
   const [selectedFood, setSelectedFood] = useState<IFoodTracker | null>(null);
   const [editedName, setEditedName] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedCalories, setEditedCalories] = useState('');
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Elementos por página
 
   useEffect(() => {
     const token = Cookies.get('token');
     if (token) {
-      setIsLoading(true); 
-      getDailyFoodTracker(currentDate, token) 
+      setIsLoading(true);
+      getDailyFoodTracker(currentDate, token)
         .then((data) => {
           if (data?.data?.results) {
-            setFoodEntries(data.data.results);
+            const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
+            setFoodEntries(activeFoodEntries); // Guarda todos los registros
           }
         })
         .catch((error) => {
           console.error('Error al obtener los datos de la API:', error);
         })
         .finally(() => {
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     }
-  }, [refreshTrigger, currentDate]); 
+  }, [refreshTrigger, currentDate]);
+
+  // Calcula los registros que se deben mostrar en la página actual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = foodEntries.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Cambia de página
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(foodEntries.length / itemsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const handleSaveChanges = () => {
     if (selectedFood) {
@@ -74,6 +96,7 @@ const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
               prevEntries.filter((entry) => entry.id !== id)
             );
             setSelectedFood(null);
+            onRefresh(); // Llama a onRefresh para incrementar refreshTrigger
           })
           .catch((error) => {
             console.error('Error al eliminar el food tracker:', error);
@@ -83,17 +106,41 @@ const CardList = ({ refreshTrigger, currentDate }: CardListProps) => {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-6">
-      {isLoading ? (
-        <p className='text-gray-600'>Cargando...</p>
-      ) : foodEntries.length > 0 ? (
-        foodEntries.map((foodEntry) => (
-          <button key={foodEntry.id} onClick={() => setSelectedFood(foodEntry)}>
-            <FoodEntriesCard key={foodEntry.id} {...foodEntry} />
+    <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-wrap justify-center gap-6">
+        {isLoading ? (
+          <p className='text-gray-600'>Cargando...</p>
+        ) : currentItems.length > 0 ? (
+          currentItems.map((foodEntry) => (
+            <button key={foodEntry.id} onClick={() => setSelectedFood(foodEntry)}>
+              <FoodEntriesCard key={foodEntry.id} {...foodEntry} />
+            </button>
+          ))
+        ) : (
+          <p className='text-gray-600'>No hay registros en esta fecha</p>
+        )}
+      </div>
+
+      {foodEntries.length > itemsPerPage && (
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-[#B3B19C] drop-shadow-lg text-white rounded-full disabled:hidden"
+          >
+            Anterior
           </button>
-        ))
-      ) : (
-        <p className='text-gray-600'>No hay registros en esta fecha</p>
+          <span className="flex text-gray-800 items-center">
+            Página {currentPage} de {Math.ceil(foodEntries.length / itemsPerPage)}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === Math.ceil(foodEntries.length / itemsPerPage)}
+            className="px-4 py-2 bg-[#B3B19C] drop-shadow-lg text-white rounded-full disabled:hidden"
+          >
+            Siguiente
+          </button>
+        </div>
       )}
 
       {selectedFood && (
