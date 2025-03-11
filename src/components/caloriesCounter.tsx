@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import { getDailyCalories } from '@/helpers/foodEntriesHelper';
 import { ICaloriesData } from '@/types';
@@ -6,11 +6,17 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface CaloriesCounterProps {
   token: string;
-  currentDate: string; 
-  setCurrentDate: (date: string) => void; 
+  currentDate: string;
+  setCurrentDate: (date: string) => void;
+  refreshTrigger: number; 
 }
 
-const CaloriesCounter: React.FC<CaloriesCounterProps> = ({ token, currentDate, setCurrentDate }) => {
+const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
+  token,
+  currentDate,
+  setCurrentDate,
+  refreshTrigger, 
+}) => {
   const [calories, setCalories] = useState<ICaloriesData>({ consumed: 0, goal: 1500 });
 
   useEffect(() => {
@@ -26,18 +32,20 @@ const CaloriesCounter: React.FC<CaloriesCounterProps> = ({ token, currentDate, s
     };
 
     fetchCalories();
-  }, [currentDate, token]);
+  }, [currentDate, token, refreshTrigger]); 
 
   const changeDate = (days: number) => {
     const newDate = new Date(currentDate);
     newDate.setDate(newDate.getDate() + days);
-    setCurrentDate(newDate.toISOString()); 
+    setCurrentDate(newDate.toISOString());
   };
 
   const progress = Math.min((calories.consumed / calories.goal) * 100, 100);
 
   const formattedDate = new Date(currentDate).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric'
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   });
 
   return (

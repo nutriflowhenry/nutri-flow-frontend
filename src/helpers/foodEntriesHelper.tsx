@@ -111,6 +111,7 @@ export async function getDailyFoodTracker(date: string, token: string) {
 
     if (response.ok) {
       console.log(date)
+      console.log(token)
       return await response.json();
     } else {
       throw new Error('Error al obtener el food tracker diario');
@@ -140,6 +141,26 @@ export async function deleteFoodTracker(id: string, token: string) {
     throw new Error(error);
   }
 }
+// export async function deactivateFoodTracker(id: string, token: string) {
+//   try {
+//     const response = await fetch(`${APIURL}/food-tracker/update/${id}`, {
+//       method: 'PATCH', // Usamos PATCH para actualizar el registro
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ isActive: false }), // Enviamos el nuevo valor de isActive
+//     });
+
+//     if (response.ok) {
+//       return await response.json();
+//     } else {
+//       throw new Error('Error al desactivar el food tracker');
+//     }
+//   } catch (error: any) {
+//     throw new Error(error);
+//   }
+// }
 
 export async function updateFoodTracker(
   id: string,
