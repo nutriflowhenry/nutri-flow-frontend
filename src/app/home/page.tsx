@@ -6,33 +6,35 @@ import FoodForm from "@/components/FoodForm";
 import { createFoodTracker } from "@/helpers/foodEntriesHelper";
 import Cookies from "js-cookie"; 
 import CaloriesCounter from "@/components/caloriesCounter";
+import AddFoodButton from "@/assets/AddFoodButton";
 
 const Home = () => {
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newFood, setNewFood] = useState({
     name: "",
     description: "",
-    calories: 0 ,
+    calories: 0,
   });
+  const [currentDate, setCurrentDate] = useState<string>(new Date().toISOString()); 
 
   const token = Cookies.get("token");
 
   const openModal = () => setIsModalOpen(true);
-
   const closeModal = () => setIsModalOpen(false);
 
   const handleCreateFood = async () => {
     if (token) {
       try {
-        console.log(atob(token.split(".")[1]))
         const response = await createFoodTracker(newFood, token);
         if (response) {
-          setIsModalOpen(false); 
+          setIsModalOpen(false);
           setNewFood({
             name: "",
             description: "",
-            calories: 0 ,
-          }); 
+            calories: 0,
+          });
+          setRefreshTrigger((prev) => prev + 1);
         }
       } catch (error) {
         console.error("Error al crear la comida:", error);
@@ -41,24 +43,30 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col items-center py-8">
+    <div className="font-sora flex flex-col items-center py-8 relative">
       <h1 className="text-center text-3xl font-bold text-[#242424] font-sora">
         Bienvenido al Tracker de Comidas
       </h1>
 
-      {token && <CaloriesCounter token={token} />} 
+      {token && (
+  <CaloriesCounter
+    token={token}
+    currentDate={currentDate}
+    setCurrentDate={setCurrentDate}
+    refreshTrigger={refreshTrigger} 
+  />
+)}
 
-      <button
-        onClick={openModal}
-        className="mt-6 px-6 py-3 bg-[#FF6B6B] text-white font-semibold rounded-lg shadow-md hover:bg-[#FF5252] transition-all duration-300"
-      >
-        Crear Nueva Comida
-      </button>
 
       <div className="w-full max-w-4xl mt-6">
-        <CardList />
+      <CardList
+  refreshTrigger={refreshTrigger}
+  currentDate={currentDate}
+  onRefresh={() => setRefreshTrigger((prev) => prev + 1)} 
+/>
       </div>
 
+      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 pb-12 rounded-3xl shadow-2xl max-w-md w-full relative">
@@ -82,6 +90,13 @@ const Home = () => {
           </div>
         </div>
       )}
+
+      <button 
+        onClick={openModal}
+        className="fixed mb-24 bottom-[0px] right-[0px] flex justify-center items-center w-[100px] h-[100px] overflow-visible"
+      >
+        <AddFoodButton />
+      </button>
     </div>
   );
 };
