@@ -3,11 +3,13 @@ import React, { useContext } from 'react'
 import { useFormik } from 'formik'
 import { AuthContext } from '@/context/AuthContext'
 import { IPhysicalForm } from '@/types/physicalForm'
+import { useRouter } from 'next/navigation'
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const PhysicalFormView = () => {
-    const { userData } = useContext(AuthContext); 
+    const { userData } = useContext(AuthContext);
+    const router = useRouter(); 
 
     const formik = useFormik<IPhysicalForm>({
         initialValues: {
@@ -50,6 +52,7 @@ const PhysicalFormView = () => {
 
                 const data = await response.json();
                 console.log('Respuesta del backend:', data);
+                return router.push("/home");
             } catch (error) {
                 console.error('Hubo un problema con la solicitud:', error);
             }
