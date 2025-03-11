@@ -28,13 +28,13 @@ const Home = () => {
       try {
         const response = await createFoodTracker(newFood, token);
         if (response) {
-          setIsModalOpen(false); 
+          setIsModalOpen(false);
           setNewFood({
             name: "",
             description: "",
             calories: 0,
-          }); 
-          setRefreshTrigger(prev => prev + 1);
+          });
+          setRefreshTrigger((prev) => prev + 1);
         }
       } catch (error) {
         console.error("Error al crear la comida:", error);
@@ -49,18 +49,21 @@ const Home = () => {
       </h1>
 
       {token && (
-        <CaloriesCounter
-          token={token}
-          currentDate={currentDate} 
-          setCurrentDate={setCurrentDate} 
-        />
-      )}
+  <CaloriesCounter
+    token={token}
+    currentDate={currentDate}
+    setCurrentDate={setCurrentDate}
+    refreshTrigger={refreshTrigger} 
+  />
+)}
+
 
       <div className="w-full max-w-4xl mt-6">
-        <CardList
-          refreshTrigger={refreshTrigger}
-          currentDate={currentDate} 
-        />
+      <CardList
+  refreshTrigger={refreshTrigger}
+  currentDate={currentDate}
+  onRefresh={() => setRefreshTrigger((prev) => prev + 1)} 
+/>
       </div>
 
       {/* Modal */}

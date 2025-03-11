@@ -68,6 +68,7 @@ export interface IFoodTracker {
     description: string; 
     createdAt: string;
     userProfileId: string;
+    isActive : boolean
   }
   
 
