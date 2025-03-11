@@ -5,7 +5,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, createContext, useContext } from "react"
 import Cookies from 'js-cookie';
-import Swal from "sweetalert2";
 
 export const AuthContext = createContext<AuthContextProps>({
     userData: null,
