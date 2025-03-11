@@ -39,14 +39,16 @@ const LoginView = () => {
               setUserData({ token, user });
               if (profileData) {
                 setUserProfile(profileData); // Actualizar el estado del perfil
+                await Swal.fire({
+                  icon: "success",
+                  title: "Inicio de sesión exitoso",
+                  text: "Bienvenido de nuevo!",
+                });
+                router.push("/home");
+              } else {
+                router.push("/physical-form");
               }
               
-              await Swal.fire({
-                icon: "success",
-                title: "Inicio de sesión exitoso",
-                text: "Bienvenido de nuevo!",
-              });
-              router.push("/home");
             } catch (error) {
               await Swal.fire({
                 icon: "error",
