@@ -14,10 +14,8 @@ const WaterCounterView = () => {
         const fetchWaterData = async () => {
             try {
                 const token = Cookies.get('token');  
-                console.log("Token en cookies:", token); 
-
+                
                 if (!token) {
-                    console.error("No hay token en las cookies");
                     return;
                 }
 

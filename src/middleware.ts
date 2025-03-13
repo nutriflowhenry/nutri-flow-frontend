@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+
 console.log("cargando midleware")
 
 export function middleware(request: NextRequest) {
@@ -11,6 +12,7 @@ export function middleware(request: NextRequest) {
 
     // Verificar si el usuario está autenticado
     const userJson = request.cookies.get('nutriflowUser')?.value;
+    console.log("Usuario en cookies",userJson)
     const userSession = userJson? JSON.parse(userJson) : null;
         
     // Rutas protegidas (solo para usuarios no autenticados)
@@ -18,15 +20,20 @@ export function middleware(request: NextRequest) {
 
     // Si el usuario está autenticado y trata de acceder a una ruta pública
     if (userSession && publicPaths.includes(path)) {
+        console.log("entro a middleware");
         if(userSession.role == 'admin'){
             return NextResponse.redirect(new URL('/dashboard/admin', request.url));
-        
+        }
         //y no es admin redirigir al Home
-        } else {
-            return NextResponse.redirect(new URL('/home', request.url));
+         
+        if(userSession.userProfile == null){ console.log("entro a middleware null");
+            return NextResponse.next();
+        } 
+        else {console.log("entro a middleware else");
+        return NextResponse.redirect(new URL('/home', request.url));
         }
     }
-
+      
     // Si el usuario con rol 'user' está autenticado y trata de acceder al dashboard admnin
     const adminPath = ['/dashboard/admin'];
     const isUser = userSession?.role === 'user';
@@ -37,7 +44,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Si el usuario no está autenticado y trata de acceder a una ruta protegida, redirigir al login
-    const protectedPaths = ['/dashboard', '/dashboard/admin','/home', '/water-counter','/Physical-form'];
+    const protectedPaths = ['/dashboard', '/dashboard/admin','/home', '/water-counter','/physical-form'];
     if (!userSession && protectedPaths.includes(path)) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -55,6 +62,6 @@ export const config = {
        '/home', 
        '/loggin',
        '/water-counter',
-       '/Physical-form',
+       '/physical-form',
     ],
 };
