@@ -42,17 +42,22 @@ const LoginView = () => {
               if (user.role === 'admin') {
                 return router.push("/dashboard/admin");
               } 
-
-              if (profileData) {
+              console.log("perfil del usuario",profileData);
+              if (profileData) { console.log("entra a  profile data");
                 setUserProfile(profileData); // Actualizar el estado del perfil
                 await Swal.fire({
                   icon: "success",
                   title: "Inicio de sesión exitoso",
                   text: "Bienvenido de nuevo!",
                 });
+
                 return router.push("/home");
-              } 
+
+              }
+              console.log("Perfil no encontrado, usuario nuevo. Redirigiendo a formulario.");
+              setTimeout(() => {
                 router.push("/physical-form");
+              }, 100);
                 
             } catch (error) {
               await Swal.fire({

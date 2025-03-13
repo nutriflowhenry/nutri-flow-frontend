@@ -20,6 +20,7 @@ export interface IUserSession {
         name:string;
         image?:string;
         role?:string;
+        userProfile?:{};
     };
     profileData?: IUserProfile;
 }
