@@ -1,5 +1,4 @@
 import { IRegisterProps, IUserSession, IloginProps,IUserProfile } from "@/types"
-import Swal from "sweetalert2";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
@@ -134,18 +133,20 @@ export async function fetchUserProfile(token: string) {
                 'Content-Type': 'application/json',
             },
         });
-
+        
         if (response.ok) {
             const data = await response.json(); // Extrae la respuesta completa
             return data.userProfile; // Devuelve solo userProfile
-        } else if (response.status === 404) {
-            // Si no se encuentra el perfil, devolver undefined
-            return undefined;
-        } else {
-            throw new Error("No se pudo obtener la información del usuario");
+        }  
+        
+        if (response.status === 404) {
+            console.info("Perfil de usuario no encontrado, esto es normal para usuarios nuevos.");
+            return null; // Devuelve null si el perfil no existe, evitando el error
         }
+
+        throw new Error("No se pudo obtener la información del usuario");
     } catch (error) {
-        console.error("Error en fetchUserProfile:", error);
-        throw error;
+        console.warn("No se pudo obtener el perfil del usuario:", error);
+        return null;
     }
 }

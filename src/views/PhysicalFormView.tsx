@@ -3,11 +3,16 @@ import React, { useContext } from 'react'
 import { useFormik } from 'formik'
 import { AuthContext } from '@/context/AuthContext'
 import { IPhysicalForm } from '@/types/physicalForm'
+import { useRouter } from 'next/navigation'
+import { IUserProfile } from '@/types'
+import { fetchUserProfile } from '@/helpers/auth.helper'
+import { createProfile } from '@/helpers/profile.helper'
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const PhysicalFormView = () => {
-    const { userData } = useContext(AuthContext); 
+    const { userData, setUserData } = useContext(AuthContext);
+    const router = useRouter(); 
 
     const formik = useFormik<IPhysicalForm>({
         initialValues: {
@@ -32,27 +37,29 @@ const PhysicalFormView = () => {
                 gender: values.genero === "masculino" ? "male" : values.genero === "femenino" ? "female" : "other"
             };
 
-            console.log("Datos enviados:", translatedValues);
+            await createProfile(userData.token, translatedValues);
 
+            // Actualizar el estado de `userData` con el nuevo `userProfile`
+            let profileData: IUserProfile | undefined;
             try {
-                const response = await fetch(`${APIURL}/user-profiles`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userData.token}`,// 
-                    },
-                    body: JSON.stringify(translatedValues),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud');
-                }
-
-                const data = await response.json();
-                console.log('Respuesta del backend:', data);
+                profileData = await fetchUserProfile(userData.token);
+               
             } catch (error) {
-                console.error('Hubo un problema con la solicitud:', error);
+                console.warn("No se pudo obtener el perfil del usuario:", error);
+            }    
+            
+            if (userData) { 
+                               
+                setUserData({
+                    ...userData,
+                    user: {
+                        ...userData.user,
+                        userProfile: profileData, // Reemplaza userProfile con los datos de la respuesta
+                    },
+                });
             }
+                
+            return router.push("/home");
         },
 
         

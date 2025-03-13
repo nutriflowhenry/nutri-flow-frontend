@@ -19,6 +19,8 @@ export interface IUserSession {
         id: number;
         name:string;
         image?:string;
+        role?:string;
+        userProfile?:{};
     };
     profileData?: IUserProfile;
 }

@@ -17,9 +17,9 @@ const WaterCounterView = () => {
     useEffect(() => {
         const fetchWaterData = async () => {
             try {
-                const token = Cookies.get('token');
+                const token = Cookies.get('token');  
+                
                 if (!token) {
-                    console.error("No hay token en las cookies");
                     return;
                 }
 
