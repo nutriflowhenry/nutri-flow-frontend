@@ -39,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                                 id: response.userId,
                                 name: response.userName,
                                 email: response.email,
+                                image: response.profilePicture,
                             },
                         });
                         const nutriflowUser = response.user;
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                         if (nutriflowUser.userProfile === null) {
                             router.push("/physical-form");
                         } else {
-                            router.push("/home");
+                            // router.push("/home");
                         }
                     });
             }
@@ -94,7 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     return router.push("/dashboardAdmin");
                 }
             } else {
-                router.push("/home");
+                // router.push("/home");
             }
         } else {
             console.log("No se encontró usuario o token.");

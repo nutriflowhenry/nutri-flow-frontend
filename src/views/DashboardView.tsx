@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,6 +13,7 @@ import {
     faEdit
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { uploadImage } from '@/helpers/uploadImage'; // Asegúrate de importar la función uploadImage
 
 interface FormData {
     birthdate: string;
@@ -21,7 +22,6 @@ interface FormData {
     height: string;
 }
 
-// Mapeo de géneros a español
 const genderMap = {
     male: 'Masculino',
     female: 'Femenino',
@@ -44,7 +44,6 @@ const DashboardView = () => {
         email: userData?.user.email || ''
     });
 
-    // Cargar datos del perfil y del usuario al montar el componente
     useEffect(() => {
         if (userData) {
             setLoading(false);
@@ -65,7 +64,6 @@ const DashboardView = () => {
         }
     }, [userData, userProfile]);
 
-    // Manejar cambios en el formulario del perfil
     const handleProfileInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProfileFormData({
@@ -74,7 +72,6 @@ const DashboardView = () => {
         });
     };
 
-    // Manejar cambios en el formulario de información del usuario
     const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUserInfoFormData({
@@ -83,7 +80,37 @@ const DashboardView = () => {
         });
     };
 
-    // Enviar actualización del perfil
+    const handleImageUpload = async (file: File | undefined) => {
+        if (!file || !userData) return;
+
+        try {
+            const imageUrl = await uploadImage(userData.user.id.toString(), file);
+
+            setUserData({
+                ...userData,
+                user: {
+                    ...userData.user,
+                    image: imageUrl,
+                },
+            });
+
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'Imagen de perfil actualizada con éxito',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+            });
+        } catch (error) {
+            console.error('Error al subir la imagen:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Error al subir la imagen de perfil',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            });
+        }
+    };
+
     const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -126,7 +153,6 @@ const DashboardView = () => {
         }
     };
 
-    // Enviar actualización de la información del usuario
     const handleUserInfoSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!userData) {
@@ -230,6 +256,17 @@ const DashboardView = () => {
                             </form>
                         ) : (
                             <div className="space-y-4 text-gray-700">
+                                <img
+                                    src={userData.user.image}
+                                    alt="Perfil"
+                                    className="w-24 h-24 rounded-full mb-4"
+                                />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
+                                />
                                 <p>
                                     <FontAwesomeIcon icon={faSpellCheck} className="mr-2 text-gray-600" />
                                     <strong>Nombre:</strong> {userData.user.name}
