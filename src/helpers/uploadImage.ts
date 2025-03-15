@@ -9,19 +9,14 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
                 'Content-Type': 'application/json',
             },
         });
-        console.log('Estado de la respuesta:', response.status, response.statusText);
-        console.log('response:', response);
 
         if (!response.ok) {
-            console.log('Entrooo a ok false');
             const errorData = await response.json();
             throw new Error(`Error al obtener la URL pre-firmada: ${errorData.message || response.statusText}`);
         }
 
         // Extrae la URL pre-firmada
-        // const uploadUrl = await response.text();
         const { uploadUrl } = await response.json();
-        console.log('URL pre-firmada:', uploadUrl);
 
         // 2. Subir la imagen directamente a S3
 
@@ -30,7 +25,6 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
         }
 
         try {
-            console.log('File:', file);
             const uploadResponse = await fetch(uploadUrl, {
                 method: 'PUT',
                 body: file,

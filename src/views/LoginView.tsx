@@ -6,14 +6,11 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaGoogle } from 'react-icons/fa';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { IUserSession } from "@/types";
-import { useState } from "react";
 
 const LoginView = () => {
-  const { setUserProfile, setUserData, userData } = useAuth();
+  const {setUserData, loginWithGoogle} = useAuth();
   const router = useRouter();
- 
+
   // Esquema validación con Yup
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -35,29 +32,23 @@ const LoginView = () => {
           onSubmit={async (values) => {
             try {
               const response = await login(values);
-              const { token, user, profileData } = response;
+              const { token, user } = response;
               setUserData({ token, user });
 
+              await Swal.fire({
+                icon: "success",
+                title: "Inicio de sesión exitoso",
+                text: "Bienvenido de nuevo!",
+              });
               // Verificar si es administrador
               if (user.role === 'admin') {
                 return router.push("/dashboard/admin");
-              } 
-              console.log("perfil del usuario",profileData);
-              if (profileData) { console.log("entra a  profile data");
-                setUserProfile(profileData); // Actualizar el estado del perfil
-                await Swal.fire({
-                  icon: "success",
-                  title: "Inicio de sesión exitoso",
-                  text: "Bienvenido de nuevo!",
-                });
-
-                return router.push("/home");
-
               }
-              console.log("Perfil no encontrado, usuario nuevo. Redirigiendo a formulario.");
-              setTimeout(() => {
-                router.push("/physical-form");
-              }, 100);
+
+              if (user.userProfile !== null) {
+                return router.push("/home");
+              }
+
                 
             } catch (error) {
               await Swal.fire({
@@ -107,7 +98,7 @@ const LoginView = () => {
             <div className="flex justify-center space-x-6">
               <button
                 className="flex items-center justify-center w-full bg-white text-gray-700 border border-gray-300 shadow-md hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105"
-                onClick={() => signIn('google')}
+                onClick={loginWithGoogle}
               >
                 <FaGoogle className="text-red-500 text-xl mr-2" />
                 <span className="font-medium">Ingresar con Google</span>

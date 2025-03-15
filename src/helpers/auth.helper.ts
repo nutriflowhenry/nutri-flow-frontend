@@ -3,7 +3,6 @@ import { IRegisterProps, IUserSession, IloginProps,IUserProfile } from "@/types"
 const APIURL = process.env.NEXT_PUBLIC_API_URL; 
 
 export async function register(userData: IRegisterProps) {
-    console.log("register manual",userData);
     try{
         const response = await fetch(`${APIURL}/auth/signup`,{
             method: 'POST',
@@ -27,7 +26,6 @@ export async function register(userData: IRegisterProps) {
 };
 
 export async function validateGoogleToken(googleToken: string) {
-    console.log("funcion registro con google")
     try {
         const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
@@ -38,9 +36,7 @@ export async function validateGoogleToken(googleToken: string) {
         });
 
         if (response.ok) {
-
             return response.json();
-
         } else {
             throw new Error("Google authentication failed");
         }
@@ -62,19 +58,7 @@ export async function login(userData: IloginProps): Promise<IUserSession> {
 
         if (!user) throw new Error("No se pudo obtener la información del usuario");
 
-        console.log("Usuario autenticado:", user);
-
-        // Intentar obtener el perfil del usuario, pero no lanzar error si no existe
-        let profileData: IUserProfile | undefined;
-        try {
-            profileData = await fetchUserProfile(token);
-            console.log("DATOOOS:", profileData);
-        } catch (error) {
-            console.warn("No se pudo obtener el perfil del usuario:", error);
-            // No lanzar error, el perfil es opcional
-        }
-
-        return { token, user, profileData };
+        return { token, user};
 
     } catch (error) {
         console.error("Error en login con email:", error);

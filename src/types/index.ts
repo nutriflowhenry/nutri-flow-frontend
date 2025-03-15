@@ -15,14 +15,20 @@ export interface IRegisterErrors {
 export interface IUserSession {
     token: string;
     user: {
+        id: string;
         email:string;
-        id: number;
         name:string;
-        image?:string;
+        profilePicture?:string;
+        userProfile?: IUserProfile;
+        auth0Id?: string;
+        createdAt?: Date;
+        isActive?: boolean;
+        provider?: string;
         role?:string;
-        userProfile?:{};
+        stripeCustomerId?: string;
+        subscriptionType?: string;
+        updatedAt?: Date;
     };
-    profileData?: IUserProfile;
 }
 
 export interface IUserProfile {
@@ -43,9 +49,7 @@ export enum Gender {
 
 export interface AuthContextProps {
     userData: IUserSession | null;
-    userProfile: IUserProfile | null;
     setUserData: (userData: IUserSession | null) => void;
-    setUserProfile: (userProfile: IUserProfile | null) => void;
     loginWithGoogle: () => void;
     logout: () => void;
 }
