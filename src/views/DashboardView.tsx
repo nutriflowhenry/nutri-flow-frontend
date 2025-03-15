@@ -4,7 +4,6 @@ import { useAuth } from "@/context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faVenusMars,
-    faCircleUser,
     faEnvelope,
     faChildReaching,
     faWeightScale,
@@ -13,10 +12,11 @@ import {
     faEdit
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import { uploadImage } from '@/helpers/uploadImage'; // Asegúrate de importar la función uploadImage
+import { uploadImage } from '@/helpers/uploadImage';
+import { getCurrentUser } from "@/helpers/auth.helper";
 
 interface FormData {
-    birthdate: string;
+    birthdate: Date | string;
     gender: string;
     weight: string;
     height: string;
@@ -29,7 +29,7 @@ const genderMap = {
 };
 
 const DashboardView = () => {
-    const { userData, userProfile, setUserData, setUserProfile, logout } = useAuth();
+    const { userData, setUserData, logout } = useAuth();
     const [loading, setLoading] = useState(true);
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [isEditingUserInfo, setIsEditingUserInfo] = useState(false);
@@ -46,23 +46,23 @@ const DashboardView = () => {
 
     useEffect(() => {
         if (userData) {
+            console.log("En el Dashboard", userData);
             setLoading(false);
-            if (userProfile) {
-                setProfileFormData({
-                    birthdate: userProfile.birthdate ? new Date(userProfile.birthdate).toISOString().split('T')[0] : '',
-                    gender: userProfile.gender || '',
-                    weight: userProfile.weight?.toString() || '',
-                    height: userProfile.height?.toString() || ''
-                });
-            }
             setUserInfoFormData({
                 name: userData.user.name,
                 email: userData.user.email
             });
+            // Inicializar profileFormData con los valores actuales de userData
+            setProfileFormData({
+                birthdate: userData.user.userProfile?.birthdate || '',
+                gender: userData.user.userProfile?.gender || '',
+                weight: userData.user.userProfile?.weight?.toString() || '',
+                height: userData.user.userProfile?.height?.toString() || ''
+            });
         } else {
             setLoading(false);
         }
-    }, [userData, userProfile]);
+    }, [userData]);
 
     const handleProfileInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -82,18 +82,21 @@ const DashboardView = () => {
 
     const handleImageUpload = async (file: File | undefined) => {
         if (!file || !userData) return;
-
+    
         try {
+            // Subir la imagen y obtener la URL
             const imageUrl = await uploadImage(userData.user.id.toString(), file);
-
+    
+            // Obtener los datos actualizados del usuario
+            const user = await getCurrentUser(userData.token);
+    
+            // Actualizar el estado de userData con los nuevos datos del usuario
             setUserData({
-                ...userData,
-                user: {
-                    ...userData.user,
-                    image: imageUrl,
-                },
+                token: userData.token, // Token devuelto por el back
+                user: user
             });
-
+    
+            // Mostrar mensaje de éxito
             Swal.fire({
                 title: '¡Éxito!',
                 text: 'Imagen de perfil actualizada con éxito',
@@ -101,6 +104,7 @@ const DashboardView = () => {
                 confirmButtonText: 'Aceptar',
             });
         } catch (error) {
+            // Manejar errores
             console.error('Error al subir la imagen:', error);
             Swal.fire({
                 title: 'Error',
@@ -113,11 +117,16 @@ const DashboardView = () => {
 
     const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!userData || !userData.token) {
+            console.error("userData o token es null");
+            return;
+        }
+    
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user-profiles`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${userData?.token}`,
+                    'Authorization': `Bearer ${userData.token}`, // Aquí token está garantizado
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -127,12 +136,24 @@ const DashboardView = () => {
                     height: parseFloat(profileFormData.height)
                 })
             });
-
+    
             if (response.ok) {
                 const updatedProfile = await response.json();
-                setUserProfile(updatedProfile.updatedUserProfile);
+                setUserData({
+                    ...userData,
+                    user: {
+                        ...userData.user,
+                        userProfile: {
+                            ...userData.user.userProfile,
+                            birthdate: updatedProfile.birthdate,
+                            gender: updatedProfile.gender,
+                            weight: updatedProfile.weight,
+                            height: updatedProfile.height
+                        }
+                    }
+                });
                 setIsEditingProfile(false);
-
+    
                 Swal.fire({
                     title: '¡Éxito!',
                     text: 'Perfil actualizado con éxito',
@@ -213,7 +234,7 @@ const DashboardView = () => {
             <h1 className="text-2xl font-bold mb-6 text-black text-center">Perfil de Usuario</h1>
             {userData ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Sección de Información del Usuario */}
+                    {/* FORMULARIO de Información del Usuario */}
                     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
                         <h2 className="text-xl font-semibold mb-4 text-gray-800">Información del Usuario</h2>
                         {isEditingUserInfo ? (
@@ -257,7 +278,7 @@ const DashboardView = () => {
                         ) : (
                             <div className="space-y-4 text-gray-700">
                                 <img
-                                    src={userData.user.image}
+                                    src={userData.user.profilePicture}
                                     alt="Perfil"
                                     className="w-24 h-24 rounded-full mb-4"
                                 />
@@ -286,7 +307,7 @@ const DashboardView = () => {
                         )}
                     </div>
 
-                    {/* Sección de Detalles del Perfil */}
+                    {/* FORMULARIO de Detalles del Perfil */}
                     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
                         <h2 className="text-xl font-semibold mb-4 text-gray-800">Detalles del Perfil</h2>
                         {isEditingProfile ? (
@@ -296,7 +317,12 @@ const DashboardView = () => {
                                     <input
                                         type="date"
                                         name="birthdate"
-                                        value={profileFormData.birthdate}
+                                        value={
+                                            // Si birthdate es un objeto Date, conviértelo a formato YYYY-MM-DD
+                                            profileFormData.birthdate instanceof Date
+                                                ? profileFormData.birthdate.toISOString().split('T')[0]
+                                                : profileFormData.birthdate || ''
+                                        }
                                         onChange={handleProfileInputChange}
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
                                     />
@@ -352,11 +378,12 @@ const DashboardView = () => {
                                 </div>
                             </form>
                         ) : (
+                            // * Detalles del Perfil *
                             <div className="space-y-4 text-gray-700">
                                 <p>
                                     <FontAwesomeIcon icon={faCakeCandles} className="mr-2 text-gray-600" />
-                                    <strong>Cumpleaños:</strong> {userProfile?.birthdate
-                                        ? new Date(userProfile.birthdate).toLocaleDateString("es-ES", {
+                                    <strong>Cumpleaños:</strong> {userData.user.userProfile?.birthdate
+                                        ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric",
@@ -365,15 +392,15 @@ const DashboardView = () => {
                                 </p>
                                 <p>
                                     <FontAwesomeIcon icon={faVenusMars} className="mr-2 text-gray-600" />
-                                    <strong>Género:</strong> {userProfile?.gender ? genderMap[userProfile.gender as keyof typeof genderMap] : "--"}
+                                    <strong>Género:</strong> {userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}
                                 </p>
                                 <p>
                                     <FontAwesomeIcon icon={faWeightScale} className="mr-2 text-gray-600" />
-                                    <strong>Peso:</strong> {userProfile?.weight || "--"} kg
+                                    <strong>Peso:</strong> {userData.user.userProfile?.weight || "--"} kg
                                 </p>
                                 <p>
                                     <FontAwesomeIcon icon={faChildReaching} className="mr-2 text-gray-600" />
-                                    <strong>Altura:</strong> {userProfile?.height || "--"} cm
+                                    <strong>Altura:</strong> {userData.user.userProfile?.height || "--"} cm
                                 </p>
                                 <button
                                     onClick={() => setIsEditingProfile(true)}

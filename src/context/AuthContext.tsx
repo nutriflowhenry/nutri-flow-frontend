@@ -8,9 +8,7 @@ import Cookies from 'js-cookie';
 
 export const AuthContext = createContext<AuthContextProps>({
     userData: null,
-    userProfile: null,
     setUserData: () => { },
-    setUserProfile: () => { },
     loginWithGoogle: () => { },
     logout: () => { },
 });
@@ -27,31 +25,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         if (status === "authenticated" && session?.user) {
-
             const googleToken = session?.accessToken;
 
             if (googleToken) {
                 validateGoogleToken(googleToken)
                     .then((response) => {
-                        setUserData({
-                            token: response.token, //token devuelto por back
-                            user: {
-                                id: response.userId,
-                                name: response.userName,
-                                email: response.email,
-                                image: response.profilePicture,
-                            },
-                        });
-                        const nutriflowUser = response.user;
 
-                        Cookies.set("token", response.token, { expires: 7, secure: true });
-                        Cookies.set("nutriflowUser", JSON.stringify(nutriflowUser), { expires: 7, secure: true });
+                        getCurrentUser(response.token)
+                            .then((respuesta) => {
+                                const user = respuesta;
+                                setUserData({
+                                    token: response.token, //token devuelto por back
+                                    user: user
+                                });
 
-                        if (nutriflowUser.userProfile === null) {
-                            router.push("/physical-form");
-                        } else {
-                            // router.push("/home");
-                        }
+                                const nutriflowUser = user;
+
+                                Cookies.set("token", response.token, { expires: 7, secure: true });
+                                Cookies.set("nutriflowUser", JSON.stringify(nutriflowUser), { expires: 7, secure: true });
+
+                                if (nutriflowUser.userProfile === null) {
+                                    router.push("/physical-form");
+                                }
+
+                            })
                     });
             }
         }
@@ -59,48 +56,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     //cuando el usuario se loguea de forma manual, guardamos en cookies
     useEffect(() => {
-        if (userData) {
+
+        if (userData && !session) {
             Cookies.set("token", userData.token, { expires: 7, secure: true });
             Cookies.set("nutriflowUser", JSON.stringify(userData.user), { expires: 7, secure: true });
-        }
-    }, [userData])
-
-    //el usuario entra tiempo despues y la app lee las cookies y da el acceso
-    useEffect(() => {
-        const userJson = Cookies.get("nutriflowUser");
-        const nutriflowUser = userJson? JSON.parse(userJson) : null;
-        const token = Cookies.get("token");
-        
-        if (nutriflowUser && token) {
-            setUserData({
-                token: token,
-                user: nutriflowUser,
-            });
-
-            // Obtener el perfil del usuario si existe
-            fetchUserProfile(token)
-            .then((profileData: IUserProfile) => {
-                setUserProfile(profileData); // Actualizar el estado del perfil
-            })
-            .catch((error) => {
-                console.error("Error al obtener el perfil del usuario:", error);
+            if (userData.user.userProfile === null && userData.user.role !== "admin") {
                 router.push("/physical-form");
-            });
-            
-            //verificar si el usuario ya completó su perfil
-            if (nutriflowUser.userProfile === null && nutriflowUser.role !== "admin") {
-                console.log("El usuario no tiene perfil y no es admin");
-                    router.push("/physical-form");
-                if(nutriflowUser.role == "admin"){
-                    return router.push("/dashboardAdmin");
-                }
-            } else {
-                // router.push("/home");
             }
-        } else {
-            console.log("No se encontró usuario o token.");
         }
-    }, []);
+    }, [userData, session])
+
+    //el usuario manual entra tiempo despues y la app lee las cookies y da el acceso
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            const userJson = Cookies.get("nutriflowUser");
+            const nutriflowUser = userJson ? JSON.parse(userJson) : null;
+            const token = Cookies.get("token");
+
+            if (nutriflowUser && token) {
+                setUserData({
+                    token: token,
+                    user: nutriflowUser,
+                });
+
+                //verificar si el usuario ya completó su perfil
+                if (nutriflowUser.userProfile === null && nutriflowUser.role !== "admin") {
+                    router.push("/physical-form");
+                }
+
+            } else {
+                console.log("No se encontró usuario o token.");
+            }
+        }
+    }, [status]);
 
     const logout = () => {
         Cookies.remove("token");
@@ -125,7 +113,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ userData, userProfile, setUserData, setUserProfile, loginWithGoogle, logout }}>
+        <AuthContext.Provider value={{ userData, setUserData, loginWithGoogle, logout }}>
             {children}
         </AuthContext.Provider>
     )
