@@ -1,13 +1,15 @@
 export interface IPhysicalForm {
-    peso: number;
-    altura: number;
-    edad: number;
-    genero: string;
+    weight: number | string;
+    height: number | string;
+    birthdate: Date | string;
+    gender: string;
+    activityLevel: 'sedentary' | 'moderate' | 'active' | 'very active';
+    weightGoal: 'lose weight' | 'maintain' | 'gain muscle';
 }
 
 export interface IPhysicalFormErrors {
-    peso?: number;
-    altura?: number;
-    edad?: number;
-    genero?: string;
+    weight?: number | string;
+    height?: number | string;
+    birthdate?: Date | string;
+    gender?: string;
 }
