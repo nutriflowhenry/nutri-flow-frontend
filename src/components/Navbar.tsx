@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Bars3Icon,
   LightBulbIcon,
@@ -14,9 +14,17 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
-  
   const router = useRouter();
-  const { userData, logout } = useAuth(); 
+  const { userData, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuOpen = () => {
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className="relative w-full">
@@ -37,16 +45,62 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {userData ? (
             <>
-              <button onClick={() => router.push('/dashboard')} aria-label="User profile">
-                <UserIcon className="w-6 h-6 text-gray-700" />
-              </button>
-              <button onClick={logout} className="text-gray-700">Cerrar Sesión</button>
+              <div
+                className="relative"
+                onMouseEnter={handleMenuOpen}
+                onMouseLeave={handleMenuClose}
+              >
+                {/* <button
+                      onClick={() => router.push("/home")}
+                      className=""
+                    >
+                      Home
+                    </button> */}
+                <button
+                  aria-label="User profile"
+                  className="px-4 py-2"
+                  onClick={() => router.push('/dashboard')}
+                  disabled={userData.user.userProfile === null}
+                >
+                  <UserIcon className="w-6 h-6 text-gray-700" />
+                </button>
+                {isMenuOpen && (
+                  <div className="absolute right-0 w-48 bg-white rounded-lg shadow-lg z-50">
+                    <button
+                      onClick={() => {
+                        if (userData.user.role !== "admin") {
+                          router.push('/dashboard');
+                        } else {
+                          router.push('/dashboard/admin');
+                        }
+                      }}
+                      className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                      disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                    >
+                      Mi Perfil
+                    </button>
+                    <button
+                      onClick={() => router.push("/dashboard/userSetting")}
+                      className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                      disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                    >
+                      Ajustes
+                    </button>
+                    <button
+                      onClick={logout}
+                      className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                    >
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
               <div className="hidden sm:flex space-x-4">
-                <button onClick={() => router.push('/login')} className="text-gray-700">Iniciar Sesión</button>
-                <button onClick={() => router.push('/register')} className="text-gray-700">Registrarse</button>
+                <button onClick={() => router.push('/login')} className="text-gray-700">Iniciar Sesión </button>
+                <button onClick={() => router.push('/register')} className="text-gray-700">| Registrarse</button>
               </div>
               <div className="sm:hidden flex space-x-8">
                 <button onClick={() => router.push('/login')} aria-label="Login">
