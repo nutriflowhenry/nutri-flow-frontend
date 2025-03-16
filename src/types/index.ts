@@ -1,3 +1,5 @@
+import { string } from "yup";
+
 export interface IRegisterProps {
     name: string;
     email: string;
@@ -83,4 +85,11 @@ export interface ICaloriesData {
     consumed: number;
     goal: number;
   }
-  
+export interface IUsers {
+    id: string,
+    name: string,
+    email: string,
+    role: string,
+    subscriptionType: string,
+    isActive: boolean
+}

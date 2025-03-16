@@ -1,49 +1,47 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext';
+import { IUsers } from '@/types';
+import { banUser, getAllUsers } from '@/helpers/admin.helper';
+import Swal from 'sweetalert2';
+import UsersList from '@/components/UsersList';
 
 
 const DashboardAdminView = () => {
-    const { userData, userProfile, logout } = useAuth();
+    const { userData } = useAuth();
+    const [allUsers, setAllUsers] = useState<IUsers[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (userData) {
-            setLoading(false);
-        } else {
-            setLoading(false);
+        const fetchUsers = async () => {
+            if (!userData?.token) {
+                setLoading(false);
+                return;
+            }
+            try {
+                setLoading(true);
+                const usersTable = await getAllUsers(userData?.token)
+                setAllUsers(usersTable);
+            } catch (error) {
+                console.error("Error al obtener usuarios:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        }
-    }, [userData]);
+        fetchUsers();
+    }, [userData?.token]);
 
     if (loading) {
-      return <p className="text-gray-700 text-center py-8">Cargando...</p>;
-  }
+        return <p className="text-gray-700 text-center py-8">Cargando...</p>;
+    }
 
-return (
-        <div className="p-6 bg-white shadow-md rounded-lg max-w-4xl mx-auto mt-8">
-            <h1 className="text-2xl font-bold mb-6 text-black text-center">Administrador Nutriflow</h1>
-            {userData ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
-                        
-                    </div>
-
-                    <div className="col-span-1 md:col-span-2 flex justify-center mt-8">
-                        <button
-                            onClick={logout}
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
-                        >
-                            Cerrar Sesión
-                        </button>
-                    </div>
+    return (
+        <div className="p-6 mx-10 bg-white shadow-md rounded-lg mt-8 max-w-full">
+            <h1 className="text-2xl font-bold mb-6 text-black text-center">¡Hola {userData?.user.name}!</h1>
+                <div>
+                    <UsersList/>
                 </div>
-            ) : (
-                <div className="text-black text-center">
-                    <p>No se encontraron datos del usuario.</p>
-                </div>
-            )}
-
         </div>
     );
 };
