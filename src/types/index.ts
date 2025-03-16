@@ -21,7 +21,7 @@ export interface IUserSession {
         profilePicture?:string;
         userProfile?: IUserProfile;
         auth0Id?: string;
-        createdAt?: Date;
+        createdAt?: string;
         isActive?: boolean;
         provider?: string;
         role?:string;
