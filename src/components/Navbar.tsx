@@ -45,17 +45,18 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {userData ? (
             <>
+                <button
+            onClick={() => router.push("/home")}
+            className="text-gray-700 hover:text-gray-900 transition-colors"
+            disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+          >
+            Home
+          </button>
               <div
                 className="relative"
                 onMouseEnter={handleMenuOpen}
                 onMouseLeave={handleMenuClose}
               >
-                {/* <button
-                      onClick={() => router.push("/home")}
-                      className=""
-                    >
-                      Home
-                    </button> */}
                 <button
                   aria-label="User profile"
                   className="px-4 py-2"
