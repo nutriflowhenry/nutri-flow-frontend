@@ -1,30 +1,39 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getDailyCalories } from '@/helpers/foodEntriesHelper';
-import { ICaloriesData } from '@/types';
+import { getDailyFoodTracker } from '@/helpers/foodEntriesHelper';
+import { ICaloriesData, IFoodTracker } from '@/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface CaloriesCounterProps {
   token: string;
-  currentDate: string;
+  currentDate: string; // Fecha en formato ISO (UTC)
   setCurrentDate: (date: string) => void;
-  refreshTrigger: number; 
+  refreshTrigger: number;
 }
 
 const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
   token,
   currentDate,
   setCurrentDate,
-  refreshTrigger, 
+  refreshTrigger,
 }) => {
   const [calories, setCalories] = useState<ICaloriesData>({ consumed: 0, goal: 1500 });
 
   useEffect(() => {
     const fetchCalories = async () => {
       try {
-        const data = await getDailyCalories(currentDate, token);
-        if (data) {
-          setCalories({ consumed: data.consumed, goal: data.goal });
+        const foodData = await getDailyFoodTracker(currentDate, token);
+        if (foodData?.data?.results) {
+          const activeFoodEntries: IFoodTracker[] = foodData.data.results.filter(
+            (entry: IFoodTracker) => entry.isActive
+          );
+
+          const consumedCalories = activeFoodEntries.reduce(
+            (sum: number, entry: IFoodTracker) => sum + entry.calories,
+            0
+          );
+
+          setCalories({ consumed: consumedCalories, goal: 1500 });
         }
       } catch (error) {
         console.error('Failed to fetch calories data:', error);
@@ -32,20 +41,21 @@ const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
     };
 
     fetchCalories();
-  }, [currentDate, token, refreshTrigger]); 
+  }, [currentDate, token, refreshTrigger]);
 
   const changeDate = (days: number) => {
     const newDate = new Date(currentDate);
-    newDate.setDate(newDate.getDate() + days);
+    newDate.setUTCDate(newDate.getUTCDate() + days);
     setCurrentDate(newDate.toISOString());
   };
 
   const progress = Math.min((calories.consumed / calories.goal) * 100, 100);
 
-  const formattedDate = new Date(currentDate).toLocaleDateString('en-GB', {
+  const formattedDate = new Date(currentDate).toLocaleDateString('es-ES', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
+    timeZone: 'UTC',
   });
 
   return (
