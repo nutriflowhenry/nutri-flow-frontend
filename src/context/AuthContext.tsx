@@ -1,5 +1,5 @@
 'use client'
-import { validateGoogleToken, fetchUserProfile, getCurrentUser } from "@/helpers/auth.helper";
+import { validateGoogleToken, getCurrentUser } from "@/helpers/auth.helper";
 import { AuthContextProps, IUserSession, IUserProfile } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

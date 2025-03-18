@@ -1,25 +1,25 @@
-import { IRegisterProps, IUserSession, IloginProps,IUserProfile } from "@/types"
+import { IRegisterProps, IUserSession, IloginProps } from "@/types"
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL; 
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function register(userData: IRegisterProps) {
-    try{
-        const response = await fetch(`${APIURL}/auth/signup`,{
+    try {
+        const response = await fetch(`${APIURL}/auth/signup`, {
             method: 'POST',
             headers: {
                 "Content-type": "application/json"
             },
             credentials: "include",
             body: JSON.stringify(userData)
-        }) 
+        })
 
-        if(response.ok){
+        if (response.ok) {
             return response.json()
         } else {
             alert("The new user register have failed")
         }
-        
-    } catch (error:any){
+
+    } catch (error: any) {
         alert("The new user register have failed")
         throw new Error(error)
     }
@@ -49,8 +49,8 @@ export async function validateGoogleToken(googleToken: string) {
 export async function login(userData: IloginProps): Promise<IUserSession> {
     try {
         // Autenticar al usuario y obtener el token
-        const {token} = await getSessionToken(userData); 
-        
+        const { token } = await getSessionToken(userData);
+
         if (!token) throw new Error("No se recibió un token");
 
         // Obtener los datos del usuario con el token
@@ -58,7 +58,7 @@ export async function login(userData: IloginProps): Promise<IUserSession> {
 
         if (!user) throw new Error("No se pudo obtener la información del usuario");
 
-        return { token, user};
+        return { token, user };
 
     } catch (error) {
         console.error("Error en login con email:", error);
@@ -69,20 +69,20 @@ export async function login(userData: IloginProps): Promise<IUserSession> {
 export async function getSessionToken(userData: IloginProps) {
     try {
         const response = await fetch(`${APIURL}/auth/login`, {
-            method:'POST',
+            method: 'POST',
             headers: {
                 "Content-type": "application/json",
             },
             body: JSON.stringify(userData),
         });
 
-        if(response.ok) {
+        if (response.ok) {
             return response.json();
         } else {
             const errorData = await response.json();
             throw new Error(errorData.message || "Error de inicio de sesión");
         }
-    }catch (error: any) {
+    } catch (error: any) {
         throw new Error(error.message || "Error inesperado");
     }
 };
@@ -117,12 +117,12 @@ export async function fetchUserProfile(token: string) {
                 'Content-Type': 'application/json',
             },
         });
-        
+
         if (response.ok) {
             const data = await response.json(); // Extrae la respuesta completa
             return data.userProfile; // Devuelve solo userProfile
-        }  
-        
+        }
+
         if (response.status === 404) {
             console.info("Perfil de usuario no encontrado, esto es normal para usuarios nuevos.");
             return null; // Devuelve null si el perfil no existe, evitando el error
@@ -134,3 +134,56 @@ export async function fetchUserProfile(token: string) {
         return null;
     }
 }
+
+//<------- PASARELA DE PAGOS -------->
+
+// Crear una sesión de pago
+export async function handleSubscription(token: string) {
+    try {
+        const response = await fetch(`${APIURL}/payments`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        return data;
+    } catch (error: any) {
+        console.error('Error al crear la sesión de pago:', error);
+        throw error;
+    }
+};
+
+// Cancelar suscripción
+export async function handleCancelSubscription(token: string) {
+    try {
+        const response = await fetch(`${APIURL}/payments`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        return data;
+    } catch (error: any) {
+        console.error('Error al cancelar la suscripción:', error);
+        throw error;
+    }
+};
+
+// Obtener pagos del usuario
+export async function fetchUserPayments(token: string, page = 1, limit = 10) {
+    try {
+        const response = await fetch(`${APIURL}/payments?page=${page}&limit=${limit}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        return data;
+    } catch (error: any) {
+        console.error('Error al obtener los pagos:', error);
+        throw error;
+    }
+};
