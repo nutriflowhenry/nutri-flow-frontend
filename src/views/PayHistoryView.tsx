@@ -98,6 +98,7 @@ const PayHistoryView = () => {
             ) : (
                 <p className="text-gray-700 text-center">No hay compras registradas.</p>
             )}
+            
         </div>
     );
 };
