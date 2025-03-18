@@ -99,3 +99,10 @@ export interface IUsers {
     subscriptionType: string,
     isActive: boolean
 }
+
+export interface IUsersStatistics {
+    usersNumber: number,
+    premiumUsers: number,
+    freeUsers:number
+}
+

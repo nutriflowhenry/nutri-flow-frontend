@@ -1,47 +1,70 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext';
-import { IUsers } from '@/types';
-import { banUser, getAllUsers } from '@/helpers/admin.helper';
-import Swal from 'sweetalert2';
+import { IUsersStatistics } from '@/types';
+import { getUserStatistics } from '@/helpers/admin.helper';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import UsersList from '@/components/UsersList';
-
+import VerticalGraphic from '@/components/VerticalGraphic';
 
 const DashboardAdminView = () => {
     const { userData } = useAuth();
-    const [allUsers, setAllUsers] = useState<IUsers[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [userStatistics, setUserStatistics] = useState<IUsersStatistics | null>(null);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchUserStatistics = async () => {
             if (!userData?.token) {
-                setLoading(false);
                 return;
             }
             try {
-                setLoading(true);
-                const usersTable = await getAllUsers(userData?.token)
-                setAllUsers(usersTable);
+                const statistics = await getUserStatistics(userData?.token);
+                setUserStatistics(statistics);
+
             } catch (error) {
                 console.error("Error al obtener usuarios:", error);
-            } finally {
-                setLoading(false);
             }
         };
-
-        fetchUsers();
-    }, [userData?.token]);
-
-    if (loading) {
-        return <p className="text-gray-700 text-center py-8">Cargando...</p>;
-    }
+        fetchUserStatistics();
+    }, [userData]);
 
     return (
-        <div className="p-6 mx-10 bg-white shadow-md rounded-lg mt-8 max-w-full">
-            <h1 className="text-2xl font-bold mb-6 text-black text-center">¡Hola {userData?.user.name}!</h1>
-                <div>
-                    <UsersList/>
+
+        <div>
+            <div className="relative mx-auto bg-white shadow-md rounded-lg mt-8 max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-col justify-end">
+
+                <h1 className="text-2xl mb-24 md:mb-28 font-bold text-black text-center">¡Hola admin!</h1>
+
+                <div className="absolute left-1/2 -translate-x-1/2 mb-4 translate-y-2/3 flex justify-center gap-2 md:gap-8 lg:gap-12">
+                    <div className="bg-[#9ead89] text-white shadow-md rounded-lg p-2 w-32 h-44 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 text-center flex items-center justify-center font-bold flex-col gap-1 text-1xl">
+                        <div className="w-16 h-16 bg-[#d0dfbd] flex items-center justify-center rounded-full">
+                            <FontAwesomeIcon icon={faUsers} className="text-2xl text-[#faf9f8dc]" />
+                        </div>
+                        Usuarios Nutriflow
+                        <p className="text-3xl">{userStatistics?.usersNumber}</p>
+                    </div>
+                    <div className="bg-[#bed290] text-white shadow-md rounded-lg p-2 w-32 h-44 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 text-center flex items-center justify-center font-bold flex-col gap-3 md:gap-1 text-1xl">
+                        <div className="w-16 h-16 bg-[#e3ead3] flex items-center justify-center rounded-full">
+                            <FontAwesomeIcon icon={faUser} className="text-2xl text-[#faf9f8dc]" />
+                        </div>
+                        Usuarios Free
+                        <p className="text-3xl">{userStatistics?.freeUsers}</p>
+                    </div>
+                    <div className="bg-[#e3d6b8] text-white shadow-md rounded-lg p-2 w-32 h-44 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 text-center flex items-center justify-center font-bold flex-col gap-1 text-1xl">
+                        <div className="w-16 h-16 bg-[#eee6d3] flex items-center justify-center rounded-full">
+                            <FontAwesomeIcon icon={faUserPlus} className="text-2xl text-[#faf9f8dc]" />
+                        </div>
+                        Usuarios Premium
+                        <p className="text-3xl">{userStatistics?.premiumUsers}</p>
+                    </div>
                 </div>
+            </div>
+            <div className="mx-auto mt-32 md:mt-32 lg:mt-36 xl:mt-40 mb-5 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex items-center justify-center">
+                <VerticalGraphic />
+            </div>
+            <div className="relative mx-auto mb-8 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-col justify-between">
+                <UsersList />
+            </div>
         </div>
     );
 };

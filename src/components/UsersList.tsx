@@ -17,8 +17,9 @@ const UsersList = () => {
                 return;
             }
             try {
+                setLoading(true);
                 const usersTable = await getAllUsers(userData?.token)
-                setAllUsers(usersTable);
+                setAllUsers(usersTable || []);
             } catch (error) {
                 console.error("Error al obtener usuarios:", error);
             } finally {
@@ -49,7 +50,9 @@ const UsersList = () => {
 
     return (
         <div>
-            {allUsers.length ? (
+            {loading ? (
+                <p>Cargando usuarios...</p>
+            ) : allUsers.length  >= 0? (
                 <div>
                     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
 
@@ -104,7 +107,7 @@ const UsersList = () => {
                 </div>
             ) : (
                 <div className="text-black text-center">
-                    <p>No se enconron usuarios registrados</p>
+                    <p>No se encontraron usuarios registrados</p>
                 </div>
             )}
         </div>
