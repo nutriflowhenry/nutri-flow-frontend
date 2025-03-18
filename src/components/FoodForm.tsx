@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 type FoodFormProps = {
@@ -5,12 +7,14 @@ type FoodFormProps = {
     name: string;
     description: string;
     calories: number;
+    createdAt: string; // Ahora es obligatorio
   };
   setNewFood: React.Dispatch<
     React.SetStateAction<{
       name: string;
       description: string;
       calories: number;
+      createdAt: string; // Ahora es obligatorio
     }>
   >;
   handleCreateFood: () => void;
@@ -25,12 +29,15 @@ const FoodForm: React.FC<FoodFormProps> = ({
 }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewFood((prev) => ({ ...prev, [name]: value }));
+    setNewFood((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
     <div>
-      <label className="block my-3 text-sm text-gray-600 font-semibold">
+      <label className="block my-3 text-sm text-gray-800 font-semibold">
         Nombre:
       </label>
       <input
@@ -38,10 +45,10 @@ const FoodForm: React.FC<FoodFormProps> = ({
         name="name"
         value={newFood.name}
         onChange={handleInputChange}
-        className="w-full p-2  border rounded-full"
+        className="w-full p-2 border rounded-full text-gray-800"
       />
 
-      <label className="block my-3 text-gray-600 text-sm font-semibold">
+      <label className="block my-3 text-gray-800 text-sm font-semibold">
         Descripción:
       </label>
       <input
@@ -49,10 +56,10 @@ const FoodForm: React.FC<FoodFormProps> = ({
         name="description"
         value={newFood.description}
         onChange={handleInputChange}
-        className="w-full p-2 border rounded-full"
+        className="w-full p-2 border rounded-full text-gray-800"
       />
 
-      <label className="block my-3 text-sm text-gray-600 font-semibold">
+      <label className="block my-3 text-sm text-gray-800 font-semibold">
         Calorías:
       </label>
       <input
@@ -60,23 +67,34 @@ const FoodForm: React.FC<FoodFormProps> = ({
         name="calories"
         value={newFood.calories}
         onChange={handleInputChange}
-        className="w-full p-2 border rounded-full"
+        className="w-full p-2 border rounded-full text-gray-800"
+      />
+
+      <label className="block my-3 text-sm text-gray-800 font-semibold">
+        Fecha: <span className="text-red-500">*</span>
+      </label>
+      <input
+        type="date"
+        name="createdAt"
+        value={newFood.createdAt}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded-full text-gray-800"
+        required // Hacer el campo obligatorio
       />
 
       <div className="flex justify-end gap-2 mt-4">
         <button
           onClick={closeModal}
-          className="px-4 py-2 bg-gray-400 drop-shadow-lg text-white rounded-full transition-all duration-100 hover:shadow-inner hover:bg-gray-500"        >
+          className="px-4 py-2 bg-gray-400 drop-shadow-lg text-white rounded-full transition-all duration-100 hover:shadow-inner hover:bg-gray-500"
+        >
           Cerrar
         </button>
         <button
-  onClick={handleCreateFood}
-  className="px-4 py-2 bg-[#9DC08B] drop-shadow-lg text-white rounded-full transition-all duration-100 hover:shadow-inner hover:bg-[#8BA978] "
->
-  Crear
-</button>
-
-
+          onClick={handleCreateFood}
+          className="px-4 py-2 bg-[#9DC08B] drop-shadow-lg text-white rounded-full transition-all duration-100 hover:shadow-inner hover:bg-[#8BA978]"
+        >
+          Crear
+        </button>
       </div>
     </div>
   );
