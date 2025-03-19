@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext';
 import { IUsersStatistics } from '@/types';
@@ -7,11 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import UsersList from '@/components/UsersList';
 import VerticalGraphic from '@/components/VerticalGraphic';
+import UsersPaymentsList from '@/components/UsersPaymentsList';
 
 const DashboardAdminView = () => {
     const { userData } = useAuth();
     const [userStatistics, setUserStatistics] = useState<IUsersStatistics | null>(null);
-
+    const [activeTab, setActiveTab] = useState("payments");
+    
     useEffect(() => {
         const fetchUserStatistics = async () => {
             if (!userData?.token) {
@@ -40,7 +43,7 @@ const DashboardAdminView = () => {
                         <div className="w-16 h-16 bg-[#d0dfbd] flex items-center justify-center rounded-full">
                             <FontAwesomeIcon icon={faUsers} className="text-2xl text-[#faf9f8dc]" />
                         </div>
-                        Usuarios Nutriflow
+                        Usuarios Activos
                         <p className="text-3xl">{userStatistics?.usersNumber}</p>
                     </div>
                     <div className="bg-[#bed290] text-white shadow-md rounded-lg p-2 w-32 h-44 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 text-center flex items-center justify-center font-bold flex-col gap-3 md:gap-1 text-1xl">
@@ -59,13 +62,35 @@ const DashboardAdminView = () => {
                     </div>
                 </div>
             </div>
+            
             <div className="mx-auto mt-32 md:mt-32 lg:mt-36 xl:mt-40 mb-5 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex items-center justify-center">
-                <VerticalGraphic />
+                    <VerticalGraphic />
             </div>
+
+            <div className="mx-auto mt-9 md:mt-10 lg:mt-12 xl:mt-20 mb-5 max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[50px] flex justify-between">
+                <button
+                    className={`w-1/2 bg-[#929a5e] text-white font-semibold h-full min-h-[50px] mr-2 rounded-lg shadow-md flex items-center justify-center  hover:bg-[#7f8654] hover:shadow-lg ${
+                        activeTab === "users" ? "opacity-100" : "opacity-70"
+                    }`}
+                    onClick={() => setActiveTab("users")}
+                >
+                    Listado Usuarios Nutriflow
+                </button>
+                <button
+                    className={`w-1/2 bg-[#ebc46f] text-white font-semibold h-full min-h-[50px] ml-2 rounded-lg shadow-md flex items-center justify-center hover:bg-[#d4ad60] hover:shadow-lg ${
+                        activeTab === "payments" ? "opacity-100" : "opacity-70"
+                    }`}
+                    onClick={() => setActiveTab("payments")}
+                >
+                    Listado Pagos Efectuados
+                </button>
+            </div>
+
             <div className="relative mx-auto mb-8 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-col justify-between">
-                <UsersList />
+                {activeTab === "users" ? <UsersList /> : <UsersPaymentsList />}
             </div>
         </div>
+        
     );
 };
 

@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/AuthContext';
-import { banUser, getAllUsers } from '@/helpers/admin.helper';
+import { activateUser, banUser, getAllUsers } from '@/helpers/admin.helper';
 import { IUsers } from '@/types';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
@@ -30,21 +30,26 @@ const UsersList = () => {
         fetchUsers();
     }, [userData?.token]);
 
-    const handleBanUser = async (id: string) => {
+    const handleUserStatus = async (id: string, isActive: boolean) => {
         if (userData?.token) {
-            await banUser(userData?.token, id)
-
+            if (isActive) {
+                await banUser(userData?.token, id);
+            } else {
+                await activateUser(userData?.token, id);
+            }
+    
             setAllUsers((prevUsers) =>
                 prevUsers.map((user) =>
-                    user.id === id ? { ...user, isActive: !user.isActive } : user
+                    user.id === id ? { ...user, isActive: isActive ? false : true } : user
                 )
             );
             Swal.fire({
                 title: '¡Éxito!',
-                text: 'La cuenta del usuario ha sido suspedida',
+                text: isActive ? 'La cuenta del usuario ha sido suspendida' : 'La cuenta del usuario ha sido activada',
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
             });
+            
         }
     };
 
@@ -87,11 +92,11 @@ const UsersList = () => {
                                                 <td className="px-6 py-2 text-center">{user.subscriptionType}</td>
                                                 <td className="px-6 py-2 flex items-center gap-3">
                                                     <span
-                                                        className={`w-3 h-3 rounded-full  ${user.isActive ? "bg-green-500" : "bg-red-500"
+                                                        className={`w-3 h-3 rounded-full  ${user.isActive === true ? "bg-green-500" : "bg-red-500"
                                                             }`}
                                                     ></span>
                                                     {user.role !== "admin" && (
-                                                        <button onClick={() => handleBanUser(user.id)}
+                                                        <button onClick={() => handleUserStatus(user.id, user.isActive)}
                                                             className="text-white px-4 py-1 rounded bg-[#e7c46b] hover:bg-[#d4b058] w-[100px] text-center">
                                                             {user.isActive ? "Suspender" : "Restaurar"}
                                                         </button>
