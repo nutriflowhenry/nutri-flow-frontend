@@ -1,5 +1,5 @@
 'use client'
-import { validateGoogleToken, fetchUserProfile, getCurrentUser } from "@/helpers/auth.helper";
+import { validateGoogleToken, getCurrentUser } from "@/helpers/auth.helper";
 import { AuthContextProps, IUserSession, IUserProfile } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ export const AuthContext = createContext<AuthContextProps>({
     setUserData: () => { },
     loginWithGoogle: () => { },
     logout: () => { },
+    isLoading: true, 
 });
 
 export interface AuthProviderProps {
@@ -21,13 +22,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const router = useRouter();
     const { data: session, status } = useSession();
     const [userData, setUserData] = useState<IUserSession | null>(null);
-    const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
+    // const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
+    const [isLoading, setIsLoading] = useState(true); // Estado de carga
 
     useEffect(() => {
         if (status === "authenticated" && session?.user) {
             const googleToken = session?.accessToken;
 
             if (googleToken) {
+                setIsLoading(true); // Activar el estado de carga
                 validateGoogleToken(googleToken)
                     .then((response) => {
 
@@ -49,10 +52,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                                 }
 
                             })
+                            .finally(() => setIsLoading(false)); // Desactivar el estado de 
                     });
             }
+        } else {
+            setIsLoading(false); // Desactivar el estado de carga si no hay sesión
         }
-    }, [session]);
+    }, [session, status]);
 
     //cuando el usuario se loguea de forma manual, guardamos en cookies
     useEffect(() => {
@@ -94,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         Cookies.remove("token");
         Cookies.remove("nutriflowUser");
         setUserData(null);
-        setUserProfile(null);
+        // setUserProfile(null);
         signOut();
         router.push("/");
     };
@@ -113,7 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ userData, setUserData, loginWithGoogle, logout }}>
+        <AuthContext.Provider value={{ userData, setUserData, loginWithGoogle, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     )

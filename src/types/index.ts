@@ -56,6 +56,7 @@ export interface AuthContextProps {
     setUserData: (userData: IUserSession | null) => void;
     loginWithGoogle: () => void;
     logout: () => void;
+    isLoading: boolean;
 }
 
 export interface IAlertState {
