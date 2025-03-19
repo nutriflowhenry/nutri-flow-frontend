@@ -41,6 +41,9 @@ export interface IUserProfile {
     height: number | string;
     activityLevel?: 'sedentary' | 'moderate' | 'active' | 'very active';
     weightGoal?: 'lose weight' | 'maintain' | 'gain muscle';
+    caloriesGoal?: number | string;
+    hydrationGoal?: number | string;
+
 }
 
 export enum Gender {
