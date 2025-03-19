@@ -57,47 +57,25 @@ const FoodForm: React.FC<FoodFormProps> = ({
       alert("Selecciona una imagen antes de subir.");
       return;
     }
-
-    if (!newFood.name) {
-      alert("El nombre de la comida es obligatorio.");
-      return;
-    }
-
+  
     if (!userData || !userData.token) {
       alert("No tienes un token válido para subir la imagen. Inicia sesión nuevamente.");
       return;
     }
-
+  
     setIsUploading(true);
     try {
-      // 1. Crear el registro de comida primero
-      console.log('Creando registro de comida...'); // Depuración
-      const foodTrackerId = await handleCreateFood(); // Crear la comida sin imagen
-      console.log('foodTrackerId recibido:', foodTrackerId); // Depuración
-
-      if (!foodTrackerId) {
-        throw new Error("No se pudo obtener el ID del registro de comida.");
-      }
-
-      // 2. Subir la imagen con el foodTrackerId correcto
-      console.log('Subiendo imagen...'); // Depuración
+      console.log('Subiendo imagen antes de crear la comida...');
+      const foodTrackerId = crypto.randomUUID(); // Generar un ID temporal
       const imageUrl = await uploadMealImage(foodTrackerId, imageFile, userData.token);
-      console.log('Imagen subida con éxito. URL:', imageUrl); // Depuración
-
-      // 3. Actualizar el registro de comida con la URL de la imagen
-      const updatedFood = {
-        ...newFood,
-        imageUrl: imageUrl,
-      };
-      await handleCreateFood(imageUrl); // Actualizar la comida con la URL de la imagen
-
-      // 4. Actualizar el estado con la URL de la imagen
-      setNewFood((prev) => ({ ...prev, imageUrl }));
+      console.log('Imagen subida. URL:', imageUrl);
+  
+      setNewFood((prev) => ({
+        ...prev,
+        imageUrl, // Guardar la URL de la imagen antes de crear la comida
+      }));
+      
       alert('Imagen subida con éxito');
-
-      // 5. Cerrar el modal y refrescar la lista de comidas
-      closeModal();
-      onRefresh(); // Llama a onRefresh para actualizar la lista de comidas
     } catch (error) {
       console.error('Error al subir la imagen:', error);
       alert('Error al subir la imagen');
@@ -105,6 +83,18 @@ const FoodForm: React.FC<FoodFormProps> = ({
       setIsUploading(false);
     }
   };
+  
+  const handleSubmit = async () => {
+    if (!newFood.imageUrl) {
+      alert("Sube una imagen antes de crear la comida.");
+      return;
+    }
+  
+    await handleCreateFood(newFood.imageUrl);
+    closeModal();
+    onRefresh();
+  };
+  
 
   return (
     <div>
@@ -190,8 +180,7 @@ const FoodForm: React.FC<FoodFormProps> = ({
         >
           Cerrar
         </button>
-        <button
-          onClick={() => handleCreateFood(newFood.imageUrl)} // Pasa imageUrl como parámetro
+        <button onClick={() => handleCreateFood(newFood.imageUrl)}
           className="px-4 py-2 bg-[#9DC08B] drop-shadow-lg text-white rounded-full transition-all duration-100 hover:shadow-inner hover:bg-[#8BA978]"
         >
           Crear

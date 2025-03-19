@@ -29,6 +29,8 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         setIsLoading(true);
         try {
           const data = await getDailyFoodTracker(currentDate, token);
+          console.log("Food Entries Data:", data); // <-- Agregar esto
+  
           if (data?.data?.results) {
             const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
             setFoodEntries(activeFoodEntries);
@@ -40,9 +42,10 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         }
       }
     };
-
+  
     fetchFoodEntries();
   }, [refreshTrigger, currentDate]);
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
