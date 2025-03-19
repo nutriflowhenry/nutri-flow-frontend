@@ -1,3 +1,5 @@
+import { string } from "yup";
+
 export interface IRegisterProps {
     name: string;
     email: string;
@@ -68,7 +70,6 @@ export interface IloginProps {
     password: string;
 }
 
-
 export interface IFoodTracker {
     id: string; 
     name: string; 
@@ -78,8 +79,6 @@ export interface IFoodTracker {
     userProfileId: string;
     isActive : boolean
   }
-  
-
 export interface ICreateFoodTracker {
     name: string; 
     calories: number; 
@@ -90,4 +89,35 @@ export interface ICaloriesData {
     consumed: number;
     goal: number;
   }
-  
+export interface IUsers {
+    id: string,
+    name: string,
+    email: string,
+    role: string,
+    subscriptionType: string,
+    isActive: boolean
+}
+
+export interface IUsersStatistics {
+    usersNumber: number,
+    premiumUsers: number,
+    freeUsers:number
+}
+
+export interface IUsersPayments {
+    data:{
+        id:string,
+        status: string,
+        created_at:Date,
+        currentPeriodStart:string,
+        currentPeriodEnd:string,
+        canceled_at?: string;
+        user:{
+            id:string,
+            name:string,
+            subscriptionType:string,
+            isActive:boolean
+        }
+    }[];
+}
+
