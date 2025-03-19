@@ -59,3 +59,72 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
         throw error;
     }
 };
+
+
+
+export const uploadMealImage = async (
+  foodTrackerId: string, // Usar foodTrackerId en lugar de name
+  file: File,
+  token: string,
+): Promise<string> => {
+  try {
+    if (!foodTrackerId) {
+      throw new Error('El ID del registro de comida no es válido.');
+    }
+
+    if (!token) {
+      throw new Error('No se encontró el token de autenticación.');
+    }
+
+    console.log('Iniciando subida de imagen...');
+    console.log('foodTrackerId:', foodTrackerId);
+    console.log('file.type:', file.type);
+    console.log('token:', token);
+
+    // 1. Obtener la URL pre-firmada del backend
+    const response = await fetch(
+      `${APIURL}/upload/meal/upload-url/${foodTrackerId}?type=${file.type.split('/')[1]}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error al obtener la URL pre-firmada: ${errorData.message || response.statusText}`);
+    }
+
+    const { uploadUrl } = await response.json();
+    console.log('URL pre-firmada obtenida:', uploadUrl);
+
+    // 2. Subir la imagen directamente a S3
+    if (!uploadUrl) {
+      throw new Error('No se pudo obtener la URL pre-firmada del backend');
+    }
+
+    console.log('Subiendo imagen a S3...');
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error('Error al subir la imagen a S3');
+    }
+
+    console.log('Imagen subida a S3 correctamente.');
+
+    // 3. Retorna la URL de la imagen subida
+    return uploadUrl.split('?')[0];
+  } catch (error) {
+    console.error('Error al subir la imagen:', error);
+    throw error;
+  }
+};

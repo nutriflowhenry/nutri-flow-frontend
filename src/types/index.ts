@@ -69,13 +69,13 @@ export interface IloginProps {
 
 
 export interface IFoodTracker {
-    id: string; 
-    name: string; 
-    calories: number; 
-    description: string; 
+    id: string;
+    name: string;
+    description?: string; // Opcional
+    calories: number;
     createdAt: string;
-    userProfileId: string;
-    isActive : boolean
+    isActive: boolean;
+    imageUrl?: string; // Nueva propiedad opcional para la URL de la imagen
   }
   
 

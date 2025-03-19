@@ -8,7 +8,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface CardListProps {
   refreshTrigger?: number;
-  currentDate: string; // Fecha en formato ISO (UTC)
+  currentDate: string;
   onRefresh: () => void;
 }
 
@@ -19,8 +19,8 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   const [editedName, setEditedName] = useState('');
   const [editedDescription, setEditedDescription] = useState('');
   const [editedCalories, setEditedCalories] = useState('');
-  const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Elementos por página
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchFoodEntries = async () => {
@@ -44,12 +44,10 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
     fetchFoodEntries();
   }, [refreshTrigger, currentDate]);
 
-  // Calcula los registros que se deben mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = foodEntries.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cambia de página
   const handleNextPage = () => {
     if (currentPage < Math.ceil(foodEntries.length / itemsPerPage)) {
       setCurrentPage(currentPage + 1);
@@ -69,7 +67,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         description: editedDescription,
         calories: Number(editedCalories),
       };
-  
+
       const token = Cookies.get('token');
       if (token) {
         try {
@@ -80,14 +78,13 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
             )
           );
           setSelectedFood(null);
-          onRefresh(); // Esto forzará un nuevo fetch de los datos
+          onRefresh();
         } catch (error) {
           console.error('Error al actualizar el food tracker:', error);
         }
       }
     }
   };
-  
 
   const handleDeactivate = async (id: string) => {
     if (confirm('¿Estás seguro de que quieres desactivar este registro?')) {
@@ -124,7 +121,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
           <p className='text-gray-600'>Cargando...</p>
         ) : currentItems.length > 0 ? (
           currentItems.map((foodEntry) => (
-            <div key={foodEntry.id}> {/* Key única en el div más externo */}
+            <div key={foodEntry.id}>
               <button onClick={() => {
                 setSelectedFood(foodEntry);
                 setEditedName(foodEntry.name);

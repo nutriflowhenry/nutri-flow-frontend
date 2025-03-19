@@ -9,14 +9,14 @@ const FoodEntriesCard: React.FC<IFoodTracker> = ({
   calories,
   description,
   isActive,
+  imageUrl, // Ahora está definido en la interfaz
 }) => {
-  // Si la comida no está activa, no la mostramos
   if (!isActive) return null;
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-2 w-[156px] h-[229px] flex flex-col items-center">
       <img
-        src="https://img.freepik.com/foto-gratis/vista-superior-plato-vacio-cubiertos_23-2148496913.jpg?size=626&ext=jpg"
+        src={imageUrl || "https://img.freepik.com/foto-gratis/vista-superior-plato-vacio-cubiertos_23-2148496913.jpg?size=626&ext=jpg"}
         alt={name}
         className="w-full h-[120px] object-cover rounded-xl"
       />
