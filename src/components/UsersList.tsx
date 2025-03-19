@@ -9,6 +9,9 @@ const UsersList = () => {
     const { userData } = useAuth();
     const [allUsers, setAllUsers] = useState<IUsers[]>([]);
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState(""); 
+    const [filterSubscription, setFilterSubscription] = useState(""); 
+    const [filterEmail, setFilterEmail] = useState("");    
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -53,6 +56,14 @@ const UsersList = () => {
         }
     };
 
+    const filteredUsers = allUsers.filter((user) => {
+        const matchesStatus = filterStatus === "" || (filterStatus === "activo" ? user.isActive : !user.isActive);
+        const matchesSubscription = filterSubscription === "" || user.subscriptionType.includes(filterSubscription);
+        const matchesEmail = filterEmail === "" || user.email.toLowerCase().includes(filterEmail.toLowerCase());
+    
+        return matchesStatus && matchesSubscription && matchesEmail;
+    });
+
     return (
         <div>
             {loading ? (
@@ -60,6 +71,33 @@ const UsersList = () => {
             ) : allUsers.length  >= 0? (
                 <div>
                     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+                        <div className="flex gap-2 mb-4 justify-center">
+                            <select 
+                                value={filterStatus} 
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                                className="border px-3 py-1 rounded-lg">
+                                <option value="">Todos</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+
+                            <select 
+                                value={filterSubscription} 
+                                onChange={(e) => setFilterSubscription(e.target.value)}
+                                className="border px-3 py-1 rounded-lg">
+                                <option value="">Todas las suscripciones</option>
+                                <option value="premium">Premium</option>
+                                <option value="free">Free</option>
+                            </select>
+
+                            <input
+                                type="text"
+                                placeholder="Buscar por email"
+                                value={filterEmail}
+                                onChange={(e) => setFilterEmail(e.target.value)}
+                                className="border px-3 py-1 rounded-lg w-44"
+                            />
+                        </div>
 
                         {/* tabla usuarios */}
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -67,6 +105,9 @@ const UsersList = () => {
                                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                                     <thead className="text-xs text-gray-700 uppercase bg-[#b9c4a4]">
                                         <tr>
+                                            <th scope="col" className="px-6 py-3 text-center">
+                                                N°
+                                            </th>
                                             <th scope="col" className="px-6 py-3 text-center">
                                                 Nombre
                                             </th>
@@ -83,8 +124,11 @@ const UsersList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allUsers?.map((user: IUsers) => (
+                                        {filteredUsers?.map((user: IUsers,index) => (
                                             <tr key={user.id} className="bg-white border-b border-gray-200 hover:bg-[#eeedeb73]">
+                                                <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                                                    {index + 1}
+                                                </th>
                                                 <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                                                     {user.name}
                                                 </th>

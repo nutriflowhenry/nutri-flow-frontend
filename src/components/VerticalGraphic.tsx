@@ -1,12 +1,13 @@
 import { ApexOptions } from 'apexcharts';
 import React, { useEffect, useState } from 'react'
-import Chart from "react-apexcharts";
 import { IUsersPayments } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { getAllPayments } from '@/helpers/admin.helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FaMoneyBillTrendUp } from 'react-icons/fa6';
 import { faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
+import dynamic from 'next/dynamic';
+
+const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const VerticalGraphic = () => {
   const { userData } = useAuth();
@@ -100,8 +101,7 @@ const VerticalGraphic = () => {
       </div>
 
       {/* Chart */}
-      <Chart options={chartOptions} series={chartSeries} type="bar" height={250} />
-
+      <ApexChart options={chartOptions} series={chartSeries} type="bar" height={250} />
     </div>
   );
 };

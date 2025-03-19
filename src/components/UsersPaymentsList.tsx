@@ -8,6 +8,7 @@ const UsersPaymentsList = () => {
     const { userData } = useAuth();
     const [allPayments, setAllPayments] = useState<IUsersPayments>({ data: [] });
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState("");
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -29,6 +30,11 @@ const UsersPaymentsList = () => {
         fetchUsers();
     }, [userData?.token]);
 
+    const filteredUsers = allPayments.data.filter((user) => {
+        const matchesStatus = filterStatus === "" || user.status === filterStatus;
+        return matchesStatus;
+    });
+
     return (
         <div>
             {loading ? (
@@ -36,6 +42,17 @@ const UsersPaymentsList = () => {
             ) : allPayments?.data.length  >= 0? (
                 <div>
                     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+
+                        <div className="flex gap-2 mb-4 justify-center">
+                                <select 
+                                    value={filterStatus} 
+                                    onChange={(e) => setFilterStatus(e.target.value)}
+                                    className="border px-3 py-1 rounded-lg">
+                                    <option value="">Todos</option>
+                                    <option value="active">Activo</option>
+                                    <option value="canceled">Cancelado</option>
+                                </select>
+                        </div>        
 
                         {/* tabla usuarios */}
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -59,7 +76,7 @@ const UsersPaymentsList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allPayments?.data.map((payment) => (
+                                        {filteredUsers?.map((payment) => (
                                             <tr key={payment.id} className="bg-white border-b border-gray-200 hover:bg-[#eeedeb73]">
                                                 <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                                                     {payment.user.name}
