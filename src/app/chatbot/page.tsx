@@ -30,9 +30,10 @@ const handleMessage = async () => {
 
     try {
     const response = await createChatCompletion(updatedMessages, token);
+        console.log(response);
 
-    if (response && response.choices && response.choices[0]?.message) {
-        setMessages([...updatedMessages, response.choices[0].message]);
+    if (response && response.content) {
+        setMessages([...updatedMessages, { role: "assistant", content: response.content }]);
     } else {
         setError("No se pudo obtener una respuesta del servidor.");
     }
