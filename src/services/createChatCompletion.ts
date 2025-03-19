@@ -6,7 +6,7 @@ export default async function createChatCompletion(
 messages: ChatCompletionMessage[], 
 token: string 
 ) {
-const response = await fetch(`${process.env.API_URL}/openai/chatCompletion`, {
+const response = await fetch(`${process.env.API_URL}/chatbot/chat-completion`, {
     method: "POST",
     headers: {
     "Content-Type": "application/json",
