@@ -13,7 +13,8 @@ import {
     faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from "next/navigation";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
+import LoadingModal from '@/components/LoadingModal';
 
 const genderMap = {
     male: 'Masculino',
@@ -25,27 +26,29 @@ const DashboardView = () => {
     const { userData, setUserData } = useAuth();
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     // Función para crear una sesión de pago
     const handleSubscribe = async () => {
         if (!userData) return;
-  
 
-        handleSubscription(userData.token)
-            .then((respuesta) => {
-                console.log("Redireccion del pay: ", respuesta.url);
-                if (respuesta.url) {
-                    window.location.href = respuesta.url;
-                } else {
-                    throw new Error('URL de redirección no encontrada');
-                }
-            })
-            .catch((error) => {
-                console.error('Error en la suscripción:', error);
-                setError('Error al procesar la suscripción. Inténtalo de nuevo.');
-            });
+        setIsLoading(true); // Mostrar el modal de carga
 
+        try {
+            const respuesta = await handleSubscription(userData.token);
+            console.log("Redireccion del pay: ", respuesta.url);
+            if (respuesta.url) {
+                window.location.href = respuesta.url;
+            } else {
+                throw new Error('URL de redirección no encontrada');
+            }
+        } catch (error) {
+            console.error('Error en la suscripción:', error);
+            setError('Error al procesar la suscripción. Inténtalo de nuevo.');
+        } finally {
+            setIsLoading(false); // Ocultar el modal de carga
+        }
     };
 
     // Función para abrir el modal de cancelación
@@ -78,7 +81,9 @@ const DashboardView = () => {
         } catch (error) {
             console.error('Error al cancelar la suscripción:', error);
             setError('Error al cancelar la suscripción. Inténtalo de nuevo.');
-        } 
+        }  finally {
+            setIsLoading(false); // Ocultar el modal de carga
+        }
     };
 
 
@@ -108,6 +113,7 @@ const DashboardView = () => {
 
     return (
         <div className="p-6 bg-white shadow-md rounded-lg max-w-4xl mx-auto mt-8">
+            {isLoading && <LoadingModal />}
             <h1 className="text-2xl font-bold mb-6 text-black text-center">Mi Perfil</h1>
             {userData ? (
                 <div className="flex flex-col items-center space-y-6">
