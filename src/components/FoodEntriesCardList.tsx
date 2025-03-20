@@ -29,10 +29,11 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         setIsLoading(true);
         try {
           const data = await getDailyFoodTracker(currentDate, token);
-          console.log("Food Entries Data:", data); // <-- Agregar esto
+          console.log("Food Entries Data:", data);
   
           if (data?.data?.results) {
             const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
+            console.log('Registros activos:', activeFoodEntries);
             setFoodEntries(activeFoodEntries);
           }
         } catch (error) {

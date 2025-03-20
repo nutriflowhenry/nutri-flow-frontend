@@ -26,6 +26,8 @@ export const createFoodTracker = async (
       calories: caloriesValue,
     };
 
+    console.log('Enviando datos al backend para crear el food tracker:', foodDataWithValidCalories);
+
     const response = await fetch(`${APIURL}/food-tracker/create`, {
       method: 'POST',
       headers: {
@@ -41,13 +43,13 @@ export const createFoodTracker = async (
     }
 
     const data = await response.json();
+    console.log('Respuesta del backend al crear el food tracker:', data);
     return data;
   } catch (error) {
     console.error('Error al crear el food tracker:', error);
     throw error;
   }
 };
-
 export const getDailyCalories = async (date: string, token: string): Promise<ICaloriesData | undefined> => {
   try {
     const response = await fetch(`${APIURL}/food-tracker/dailyCalories?date=${date}`, {
