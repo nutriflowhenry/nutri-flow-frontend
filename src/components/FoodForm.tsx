@@ -81,7 +81,7 @@ const FoodForm: React.FC<FoodFormProps> = ({
                 image: imageUrl,
             }));
 
-            alert('Comida creada e imagen subida con éxito');
+            
             closeModal();
             onRefresh();
         } catch (error) {
