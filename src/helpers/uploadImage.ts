@@ -25,7 +25,7 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
         }
 
         try {
-            const uploadResponse = await fetch(uploadUrl, {
+            await fetch(uploadUrl, {
                 method: 'PUT',
                 body: file,
                 headers: {
@@ -33,7 +33,7 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
                 },
             });
 
-        } catch (error: any) {
+        } catch (error) {
             console.log('ERRRORRR!:', error);
             throw error;
 

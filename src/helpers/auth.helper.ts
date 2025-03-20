@@ -19,9 +19,9 @@ export async function register(userData: IRegisterProps) {
             alert("The new user register have failed")
         }
 
-    } catch (error: any) {
+    } catch (error) {
         alert("The new user register have failed")
-        throw new Error(error)
+        throw error;
     }
 };
 
@@ -40,9 +40,9 @@ export async function validateGoogleToken(googleToken: string) {
         } else {
             throw new Error("Google authentication failed");
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error("Google registration error:", error);
-        throw new Error(error);
+        throw error;
     }
 }
 
@@ -82,8 +82,8 @@ export async function getSessionToken(userData: IloginProps) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Error de inicio de sesión");
         }
-    } catch (error: any) {
-        throw new Error(error.message || "Error inesperado");
+    } catch (error) {
+        throw error;
     }
 };
 
@@ -148,7 +148,7 @@ export async function handleSubscription(token: string) {
         });
         const data = await response.json();
         return data;
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error al crear la sesión de pago:', error);
         throw error;
     }
@@ -165,7 +165,7 @@ export async function handleCancelSubscription(token: string) {
         });
         const data = await response.json();
         return data;
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error al cancelar la suscripción:', error);
         throw error;
     }
@@ -182,7 +182,7 @@ export async function fetchUserPayments(token: string, page = 1, limit = 10) {
         });
         const data = await response.json();
         return data;
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error al obtener los pagos:', error);
         throw error;
     }

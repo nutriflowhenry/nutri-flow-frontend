@@ -1,6 +1,6 @@
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function createProfile(token: string, translatedValues: {}) {
+export async function createProfile(token: string, translatedValues: object) {
     try {
         const response = await fetch(`${APIURL}/user-profiles`, {
             method: 'POST',

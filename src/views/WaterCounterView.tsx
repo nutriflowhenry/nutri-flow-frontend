@@ -48,7 +48,7 @@ const WaterCounterView = () => {
         fetchWaterData();
     }, []);
 
-    const updateWaterIntake = async (newIntake, action) => {
+    const updateWaterIntake = async (newIntake: number, action: string) => {
         try {
             const token = Cookies.get('token');  
             console.log("Token en cookies para actualización:", token); 
