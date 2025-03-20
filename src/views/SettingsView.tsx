@@ -85,7 +85,7 @@ const SettingsView = () => {
     
         try {
             // Subir la imagen y obtener la URL
-            const imageUrl = await uploadImage(userData.user.id.toString(), file);
+            await uploadImage(userData.user.id.toString(), file);
     
             // Obtener los datos actualizados del usuario
             const user = await getCurrentUser(userData.token);
