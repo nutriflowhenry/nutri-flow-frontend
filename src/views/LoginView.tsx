@@ -50,8 +50,8 @@ const LoginView = () => {
               }
 
                 
-            } catch (error) {
-              await Swal.fire({
+            } catch {
+                await Swal.fire({
                 icon: "error",
                 title: "Error de inicio de sesión",
                 text: "Credenciales incorrectas o error en el servidor.",

@@ -39,6 +39,9 @@ export interface IUserProfile {
     height: number | string;
     activityLevel?: 'sedentary' | 'moderate' | 'active' | 'very active';
     weightGoal?: 'lose weight' | 'maintain' | 'gain muscle';
+    caloriesGoal?: number | string;
+    hydrationGoal?: number | string;
+
 }
 
 export enum Gender {
@@ -54,6 +57,7 @@ export interface AuthContextProps {
     setUserData: (userData: IUserSession | null) => void;
     loginWithGoogle: () => void;
     logout: () => void;
+    isLoading: boolean;
 }
 
 export interface IAlertState {
@@ -67,7 +71,6 @@ export interface IloginProps {
     password: string;
 }
 
-
 export interface IFoodTracker {
     id: string;
     name: string;
@@ -77,8 +80,6 @@ export interface IFoodTracker {
     isActive: boolean;
     image?: string; // Cambiar imageUrl a image
   }
-  
-
 export interface ICreateFoodTracker {
     name: string; 
     calories: number; 
@@ -89,4 +90,35 @@ export interface ICaloriesData {
     consumed: number;
     goal: number;
   }
-  
+export interface IUsers {
+    id: string,
+    name: string,
+    email: string,
+    role: string,
+    subscriptionType: string,
+    isActive: boolean
+}
+
+export interface IUsersStatistics {
+    usersNumber: number,
+    premiumUsers: number,
+    freeUsers:number
+}
+
+export interface IUsersPayments {
+    data:{
+        id:string,
+        status: string,
+        created_at:Date,
+        currentPeriodStart:string,
+        currentPeriodEnd:string,
+        canceled_at?: string;
+        user:{
+            id:string,
+            name:string,
+            subscriptionType:string,
+            isActive:boolean
+        }
+    }[];
+}
+

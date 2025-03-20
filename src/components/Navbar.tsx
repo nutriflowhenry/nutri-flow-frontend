@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  Bars3Icon,
-  LightBulbIcon,
   UserCircleIcon,
   UserIcon,
   UserPlusIcon,
@@ -13,9 +11,21 @@ import Wave from "@/assets/Wave";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
+
+const LoadingModal = () => {
+  return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
+          <div className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+              <p className="ml-4 text-gray-700">Cargando...</p>
+          </div>
+      </div>
+  );
+};
+
 const Navbar = () => {
   const router = useRouter();
-  const { userData, logout } = useAuth();
+  const { userData, logout, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleMenuOpen = () => {
@@ -28,6 +38,7 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full">
+      {isLoading && <LoadingModal />}
       <nav className="bg-[#F4EAE0] w-full h-[60px] flex items-center justify-between px-4 relative z-20">
         <div className="flex items-center space-x-3">
           {/* <button aria-label="Open menu">

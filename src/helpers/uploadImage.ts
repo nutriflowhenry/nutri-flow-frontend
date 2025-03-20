@@ -24,7 +24,7 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
         }
 
         try {
-            const uploadResponse = await fetch(uploadUrl, {
+            await fetch(uploadUrl, {
                 method: 'PUT',
                 body: file,
                 headers: {
@@ -32,11 +32,7 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
                 },
             });
 
-            if (!uploadResponse.ok) {
-                throw new Error('Error al subir la imagen a S3');
-            }
-
-        } catch (error: any) {
+        } catch (error) {
             console.log('ERRRORRR!:', error);
             throw error;
         }
