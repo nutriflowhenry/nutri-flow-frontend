@@ -7,7 +7,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#f4f1eb] flex flex-col items-center justify-center p-6 font-sora">
       <div className="max-w-md text-center">
-        <h1 className="text-4xl font-bold text-[#5a5f52] mb-6 drop-shadow-md">¡Bienvenido!</h1>
+        <h1 className="text-4xl font-bold text-[#5a5f52] mb-6 drop-shadow-md">¡Bienvenido hola!</h1>
         <p className="text-[#f4f1eb] bg-[#a7b8a8] p-5 rounded-2xl shadow-lg">
           Descubrí una forma simple y armoniosa de llevar el seguimiento de tu alimentación. Registra tus comidas, visualiza tu progreso y desarrolla hábitos saludables con una interfaz minimalista y relajante diseñada para tu bienestar.
         </p>
