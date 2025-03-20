@@ -20,7 +20,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   const [editedDescription, setEditedDescription] = useState('');
   const [editedCalories, setEditedCalories] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Elementos por página
+  const [itemsPerPage] = useState(5); // Elementos por página
 
   useEffect(() => {
     const fetchFoodEntries = async () => {

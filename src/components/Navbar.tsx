@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  Bars3Icon,
-  LightBulbIcon,
   UserCircleIcon,
   UserIcon,
   UserPlusIcon,

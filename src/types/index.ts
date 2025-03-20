@@ -1,5 +1,3 @@
-import { string } from "yup";
-
 export interface IRegisterProps {
     name: string;
     email: string;
