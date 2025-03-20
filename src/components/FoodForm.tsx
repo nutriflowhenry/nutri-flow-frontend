@@ -21,9 +21,8 @@ type FoodFormProps = {
             image?: string;
         }>
     >;
-    handleCreateFood: () => Promise<string | void>; // Cambiado para devolver el foodTrackerId
+    handleCreateFood: () => Promise<string | void>; // Devuelve el foodTrackerId
     closeModal: () => void;
-    onRefresh: () => void;
 };
 
 const FoodForm: React.FC<FoodFormProps> = ({
@@ -31,9 +30,8 @@ const FoodForm: React.FC<FoodFormProps> = ({
     setNewFood,
     handleCreateFood,
     closeModal,
-    onRefresh,
 }) => {
-    const { userData, logout } = useAuth();
+    const { userData } = useAuth();
     const [isUploading, setIsUploading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -54,12 +52,12 @@ const FoodForm: React.FC<FoodFormProps> = ({
 
     const handleSubmit = async () => {
         if (!imageFile) {
-            alert("Sube una imagen antes de crear la comida.");
+            console.error("Sube una imagen antes de crear la comida.");
             return;
         }
 
         if (!userData || !userData.token) {
-            alert("No tienes un token válido para subir la imagen. Inicia sesión nuevamente.");
+            console.error("No tienes un token válido para subir la imagen. Inicia sesión nuevamente.");
             return;
         }
 
@@ -81,12 +79,10 @@ const FoodForm: React.FC<FoodFormProps> = ({
                 image: imageUrl,
             }));
 
-            
+            // Cerrar el modal sin recargar toda la lista
             closeModal();
-            onRefresh();
         } catch (error) {
             console.error('Error al crear la comida o subir la imagen:', error);
-            alert('Error al crear la comida o subir la imagen');
         } finally {
             setIsUploading(false);
         }

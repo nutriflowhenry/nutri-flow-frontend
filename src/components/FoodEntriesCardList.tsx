@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { getDailyFoodTracker, updateFoodTracker } from '@/helpers/foodEntriesHelper';
 import Cookies from 'js-cookie';
@@ -22,6 +23,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
+  // Obtener las entradas de comida al cambiar la fecha o el refreshTrigger
   useEffect(() => {
     const fetchFoodEntries = async () => {
       const token = Cookies.get('token');
@@ -30,7 +32,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         try {
           const data = await getDailyFoodTracker(currentDate, token);
           console.log("Food Entries Data:", data);
-  
+
           if (data?.data?.results) {
             const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
             console.log('Registros activos:', activeFoodEntries);
@@ -43,11 +45,11 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         }
       }
     };
-  
+
     fetchFoodEntries();
   }, [refreshTrigger, currentDate]);
-  
 
+  // Paginación
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = foodEntries.slice(indexOfFirstItem, indexOfLastItem);
@@ -64,6 +66,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
     }
   };
 
+  // Guardar cambios en la comida seleccionada
   const handleSaveChanges = async () => {
     if (selectedFood) {
       const updatedData = {
@@ -81,8 +84,8 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
               entry.id === selectedFood.id ? { ...entry, ...updatedFood } : entry
             )
           );
-          setSelectedFood(null);
-          onRefresh();
+          setSelectedFood(null); // Cerrar el modal de edición
+          onRefresh(); // Actualizar la lista si es necesario
         } catch (error) {
           console.error('Error al actualizar el food tracker:', error);
         }
@@ -90,6 +93,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
     }
   };
 
+  // Desactivar (eliminar) una comida
   const handleDeactivate = async (id: string) => {
     if (confirm('¿Estás seguro de que quieres desactivar este registro?')) {
       const token = Cookies.get('token');
@@ -108,8 +112,8 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
             setFoodEntries((prevEntries) =>
               prevEntries.filter((entry) => entry.id !== id)
             );
-            setSelectedFood(null);
-            onRefresh();
+            setSelectedFood(null); // Cerrar el modal de edición si estaba abierto
+            onRefresh(); // Actualizar la lista si es necesario
           } catch (error) {
             console.error('Error al desactivar el food tracker:', error);
           }
@@ -120,18 +124,21 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
 
   return (
     <div className="flex flex-col items-center gap-6">
+      {/* Lista de tarjetas */}
       <div className="flex flex-wrap justify-center gap-6">
         {isLoading ? (
           <p className='text-gray-600'>Cargando...</p>
         ) : currentItems.length > 0 ? (
           currentItems.map((foodEntry) => (
             <div key={foodEntry.id}>
-              <button onClick={() => {
-                setSelectedFood(foodEntry);
-                setEditedName(foodEntry.name);
-                setEditedDescription(foodEntry.description || '');
-                setEditedCalories(foodEntry.calories.toString());
-              }}>
+              <button
+                onClick={() => {
+                  setSelectedFood(foodEntry);
+                  setEditedName(foodEntry.name);
+                  setEditedDescription(foodEntry.description || '');
+                  setEditedCalories(foodEntry.calories.toString());
+                }}
+              >
                 <FoodEntriesCard {...foodEntry} />
               </button>
             </div>
@@ -141,6 +148,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         )}
       </div>
 
+      {/* Paginación */}
       {foodEntries.length > itemsPerPage && (
         <div className="flex gap-4 mt-4">
           <button
@@ -163,6 +171,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
         </div>
       )}
 
+      {/* Modal de edición */}
       {selectedFood && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-8 pb-12 rounded-3xl shadow-xl max-w-md w-full">
@@ -191,7 +200,9 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
               className="w-full p-2 border rounded-full text-black"
             />
 
-            <p className="text-sm text-gray-500 mt-2">Creado: {new Date(selectedFood.createdAt).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Creado: {new Date(selectedFood.createdAt).toLocaleDateString('es-ES', { timeZone: 'UTC' })}
+            </p>
 
             <div className="flex justify-end gap-2 mt-4">
               <button
