@@ -12,21 +12,22 @@ const WaterCounterView = () => {
     const DECREMENT = 50;
     const MID_GOAL = DAILY_GOAL / 2;
     const [waterIntake, setWaterIntake] = useState(0);
+    const [hydrationGoal, setHydrationGoal] = useState(0); 
     const [showConfetti, setShowConfetti] = useState(false);
     const [animateAmount, setAnimateAmount] = useState(false); 
 
     useEffect(() => {
-        const fetchWaterData = async () => {
+        const fetchUserProfileData = async () => {
             try {
                 const token = Cookies.get('token');  
-                console.log("Token en cookies:", token); 
+                const userId = Cookies.get('userId'); 
 
-                if (!token) {
-                    console.error("No hay token en las cookies");
+                if (!token || !userId) {
+                    console.error("No hay token o userId en las cookies");
                     return;
                 }
 
-                const response = await fetch(`${APIURL}/water-tracker/daily`, {
+                const response = await fetch(`${APIURL}/user-profiles/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -34,27 +35,26 @@ const WaterCounterView = () => {
                     },
                 });
 
-                console.log(response);
-
-                if (!response.ok) throw new Error('Error al obtener los datos');
+                if (!response.ok) throw new Error('Error al obtener los datos del perfil del usuario');
 
                 const data = await response.json();
-                setWaterIntake(data.waterTracker?.amount || 0);
+                setWaterIntake(data.userProfile.waterIntake || 0); 
+                setHydrationGoal(data.userProfile.hydrationGoal || 0); 
             } catch (error) {
-                console.error('Error obteniendo el consumo de agua:', error);
+                console.error('Error obteniendo los datos del perfil de usuario:', error);
             }
         };
 
-        fetchWaterData();
+        fetchUserProfileData();
     }, []);
 
     const updateWaterIntake = async (newIntake: number, action: string) => {
         try {
             const token = Cookies.get('token');  
-            console.log("Token en cookies para actualización:", token); 
+            const userId = Cookies.get('userId'); 
 
-            if (!token) {
-                console.error("No hay token en las cookies para la actualización");
+            if (!token || !userId) {
+                console.error("No hay token o userId en las cookies para la actualización");
                 return;
             }
 
@@ -66,8 +66,6 @@ const WaterCounterView = () => {
                 },
                 body: JSON.stringify({ action }),
             });
-
-            console.log(response);
 
             if (!response.ok) throw new Error('Error al actualizar el agua en el backend');
 
@@ -110,6 +108,9 @@ const WaterCounterView = () => {
 
             <h2 className="text-xl font-bold">Contador de Agua</h2>
             <p className="text-sm text-gray-400">Meta diaria: 2L (2000ml)</p>
+
+            {/* Mostrar la meta calculada de hidratación */}
+            <p className="text-lg text-gray-300">Meta de hidratación: {hydrationGoal} ml</p>
 
             <div className="relative w-full bg-gray-700 h-6 rounded-full mt-4">
                 <div
