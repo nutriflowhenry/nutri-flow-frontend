@@ -4,14 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { handleSubscription, handleCancelSubscription, getCurrentUser } from '@/helpers/auth.helper';
 import {
-    faVenusMars,
-    faChildReaching,
-    faWeightScale,
-    faCakeCandles,
     faArrowRight,
+    faCalendarDays,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from "next/navigation";
-// import Cookies from 'js-cookie';
 import LoadingModal from '@/components/LoadingModal';
 
 const genderMap = {
@@ -20,9 +16,10 @@ const genderMap = {
     other: 'Otro',
 };
 
+const defaultProfilePicture = 'https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png';
+
 const DashboardView = () => {
     const { userData, setUserData } = useAuth();
-    // const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -35,7 +32,6 @@ const DashboardView = () => {
 
         try {
             const respuesta = await handleSubscription(userData.token);
-            console.log("Redireccion del pay: ", respuesta.url);
             if (respuesta.url) {
                 window.location.href = respuesta.url;
             } else {
@@ -43,7 +39,6 @@ const DashboardView = () => {
             }
         } catch (error) {
             console.error('Error en la suscripción:', error);
-            // setError('Error al procesar la suscripción. Inténtalo de nuevo.');
         } finally {
             setIsLoading(false); // Ocultar el modal de carga
         }
@@ -78,8 +73,7 @@ const DashboardView = () => {
             closeCancelModal();
         } catch (error) {
             console.error('Error al cancelar la suscripción:', error);
-            // setError('Error al cancelar la suscripción. Inténtalo de nuevo.');
-        }  finally {
+        } finally {
             setIsLoading(false); // Ocultar el modal de carga
         }
     };
@@ -97,7 +91,7 @@ const DashboardView = () => {
                         ...userData,
                         user: updatedUser,
                     });
-                    
+
                 } catch (error) {
                     console.error("Error al actualizar los datos del usuario después del pago:", error);
                 }
@@ -110,96 +104,140 @@ const DashboardView = () => {
 
 
     return (
-        <div className="p-6 bg-white shadow-md rounded-lg max-w-4xl mx-auto mt-8">
+        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
             {isLoading && <LoadingModal />}
-            <h1 className="text-2xl font-bold mb-6 text-black text-center">Mi Perfil</h1>
             {userData ? (
-                <div className="flex flex-col items-center space-y-6">
-                    <div className="flex items-center space-x-6 w-full max-w-md">
-                        <img
-                            src={userData.user.profilePicture}
-                            alt="Perfil"
-                            className="w-32 h-32 rounded-full border-4 border-gray-200"
-                        />
+                <>
+                    {/* Banner */}
+                    <div className="h-32  bg-cover bg-center relative" style={{ backgroundImage: `url(https://img.freepik.com/fotos-premium/hojas-vector-hojas-otono-imagenes-hojas-arte-stock-arte-fondo-pantalla-impresiones_726745-796.jpg)` }}>
 
-                        <div className="flex flex-col space-y-2">
-                            <p className="text-xl font-semibold text-gray-800">{userData.user.name}</p>
-                            <p className="text-gray-600">{userData.user.email}</p>
-                            <p className="text-gray-600">
-                                Miembro desde el {userData?.user?.createdAt?.split(",")[0]}
 
-                            </p>
-                            <p className="text-gray-600">
-                                Suscripción: {userData.user.subscriptionType}
-
-                            </p>
+                        {/* Nombre y Título sobre el Banner */}
+                        <div className="absolute bottom-4 text-white" style={{ left: '35%' }}>
+                            <p className="text-xl leading-tight font-bold">{userData.user.name}</p>
+                            <p className="text-sm leading-tight">Suscripción ({userData.user.subscriptionType})</p>
                         </div>
                     </div>
 
-                    {/* Detalles del perfil */}
-                    <div className="w-full max-w-md space-y-4 text-gray-700">
-                        <p>
-                            <FontAwesomeIcon icon={faCakeCandles} className="mr-2 text-gray-600" />
-                            <strong>Cumpleaños:</strong> {userData.user.userProfile?.birthdate
-                                ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                })
-                                : "--"}
-                        </p>
-                        <p>
-                            <FontAwesomeIcon icon={faVenusMars} className="mr-2 text-gray-600" />
-                            <strong>Género:</strong> {userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}
-                        </p>
-                        <p>
-                            <FontAwesomeIcon icon={faWeightScale} className="mr-2 text-gray-600" />
-                            <strong>Peso:</strong> {userData.user.userProfile?.weight || "--"} kg
-                        </p>
-                        <p>
-                            <FontAwesomeIcon icon={faChildReaching} className="mr-2 text-gray-600" />
-                            <strong>Altura:</strong> {userData.user.userProfile?.height || "--"} cm
-                        </p>
+                    {/* Contenedor Principal (Foto de Perfil y Datos) */}
+                    <div className="flex px-6 py-4">
+                        {/* Foto de Perfil y Estadísticas (Lado Izquierdo) */}
+                        <div className="w-1/3 pr-4 -mt-16 relative z-5 pb-4 ">
+                            <div className="flex justify-center">
+                                <img
+                                    className=" md:h-48 rounded-full  border-4 border-white object-cover "
+                                    src={userData.user.profilePicture || defaultProfilePicture}
+                                    alt="Profile"
+                                />
+
+                            </div>
+                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
+                                <div className="bg-blue-200 p-4 rounded-lg text-center">
+                                    <p className="text-gray-600 text-sm">Daily Water</p>
+                                    <p className="text-gray-900 font-bold ">{userData.user.userProfile?.hydrationGoal} ml</p>
+                                </div>
+                                <div className="bg-orange-200 p-4 rounded-lg text-center">
+                                    <p className="text-gray-600 text-sm">Daily Calories</p>
+                                    <p className="text-gray-900 font-bold ">{userData.user.userProfile?.caloriesGoal} kcal</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* Información del Usuario (Lado Derecho) */}
+                        <div>
+                            <div className=" grid grid-cols-1 sm:grid-cols-2 text-gray-900 sm:gap-4">
+
+                                <p className="font-bold mt-4 inline sm:hidden">
+                                    <span className="text-orange-600">Email Address: </span>
+                                </p>
+                                <p className="font-bold mb-4 inline sm:hidden">
+                                    <span className="text-black"> {userData.user.email}</span>
+                                </p>
+
+                                <p className="flex items-center">
+                                    <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
+                                    <strong>Cumpleaños {userData.user.userProfile?.birthdate
+                                        ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                        })
+                                        : "--"}
+                                    </strong>
+                                </p>
+                                <p className="flex items-center">
+                                    <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
+                                    <strong>Miembro desde {userData?.user?.createdAt?.split(",")[0]} </strong>
+                                </p>
+                            </div>
+                            <div className="mt-2">
+
+                                <p className="font-bold">
+                                    <span className="text-orange-600 hidden sm:inline">Email Address: </span>
+                                    <span className="text-black hidden sm:inline"> {userData.user.email}</span>
+                                </p>
+
+                                <p className="font-bold">
+                                    <span className="text-orange-600">Género: </span>
+                                    <span className="text-black">{userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}</span>
+                                </p>
+                                <p className="font-bold">
+                                    <span className="text-orange-600">Altura: </span>
+                                    <span className="text-gray-900">{userData.user.userProfile?.height || "--"} cm</span>
+                                </p>
+                                <p className="font-bold">
+                                    <span className="text-orange-600">Peso: </span>
+                                    <span className="text-gray-900">{userData.user.userProfile?.weight || "--"} kg</span>
+                                </p>
+
+                            </div>
+                        </div>
                     </div>
+
 
                     {userData.user.subscriptionType === "premium" ? (
 
                         // {/* Opciones de suscripción y pagos */}
-                        <div className="w-full max-w-md space-y-4">
-                            <div className="bg-white p-4 rounded-lg shadow-sm">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-800">Suscripciones y pagos</h2>
-                                <div className="space-y-4">
-                                    <div
-                                        onClick={() => router.push('/dashboard/payHistory')}
-                                        className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
-                                    >
-                                        <span className="text-gray-700">Ver historial de compras</span>
-                                        <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
-                                    </div>
-                                    <div
-                                        onClick={openCancelModal}
-                                        className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
-                                    >
-                                        <span className="text-gray-700">Cancelar Suscripción</span>
-                                        <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
+                        <div className="w-full flex justify-center">
+
+                            <div className="w-full max-w-md space-y-4">
+                                <div className="bg-white p-4 rounded-lg shadow-sm">
+                                    <h2 className="text-xl font-semibold mb-4 text-gray-800">Suscripciones y pagos</h2>
+                                    <div className="space-y-4">
+                                        <div
+                                            onClick={() => router.push('/dashboard/payHistory')}
+                                            className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                                        >
+                                            <span className="text-gray-700">Ver historial de compras</span>
+                                            <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
+                                        </div>
+                                        <div
+                                            onClick={openCancelModal}
+                                            className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                                        >
+                                            <span className="text-gray-700">Cancelar Suscripción</span>
+                                            <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ) : (
                         // {/* Tarjeta de versión premium */}
-
-                        <div className="w-full max-w-md bg-gray-100 p-6 rounded-lg shadow-sm mt-8 text-center">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-800">¡Mejora tu experiencia!</h2>
-                            <p className="text-gray-700 mb-4">
-                                Desbloquea todas las funciones premium y disfruta de una experiencia sin límites.
-                            </p>
-                            <button
-                                onClick={handleSubscribe}
-                                className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
-                            >
-                                Suscribirse a Premium
-                            </button>
+                        <div className="w-full flex justify-center">
+                            <div className="w-full max-w-md bg-gray-100 p-6 rounded-lg shadow-sm mt-3 mb-8 text-center">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-800">¡Mejora tu experiencia!</h2>
+                                <p className="text-gray-700 mb-4">
+                                    Desbloquea todas las funciones premium y disfruta de una experiencia sin límites.
+                                </p>
+                                <button
+                                    onClick={handleSubscribe}
+                                    className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                                >
+                                    Suscribirse a Premium
+                                </button>
+                            </div>
                         </div>
 
                     )}
@@ -231,7 +269,8 @@ const DashboardView = () => {
                             </div>
                         </div>
                     )}
-                </div>
+
+                </>
             ) : (
                 <div className="text-black text-center">
                     <p>No se encontraron datos del usuario.</p>
