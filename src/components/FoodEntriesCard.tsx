@@ -5,7 +5,6 @@ import { IFoodTracker } from '@/types';
 import { ClipLoader } from 'react-spinners';
 
 const FoodEntriesCard: React.FC<IFoodTracker> = ({
-    id,
     name,
     calories,
     description,

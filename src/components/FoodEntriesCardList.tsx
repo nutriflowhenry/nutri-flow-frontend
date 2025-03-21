@@ -21,7 +21,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   const [editedDescription, setEditedDescription] = useState('');
   const [editedCalories, setEditedCalories] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(5);
 
   // Obtener las entradas de comida al cambiar la fecha o el refreshTrigger
   useEffect(() => {
