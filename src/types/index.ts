@@ -72,13 +72,13 @@ export interface IloginProps {
 }
 
 export interface IFoodTracker {
-    id: string; 
-    name: string; 
-    calories: number; 
-    description: string; 
+    id: string;
+    name: string;
+    description?: string;
+    calories: number;
     createdAt: string;
-    userProfileId: string;
-    isActive : boolean
+    isActive: boolean;
+    image?: string; // Cambiar imageUrl a image
   }
 export interface ICreateFoodTracker {
     name: string; 
