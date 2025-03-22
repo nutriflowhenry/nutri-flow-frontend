@@ -1,9 +1,10 @@
+'use client'
 import { useAuth } from '@/context/AuthContext';
 import { getAllPayments} from '@/helpers/admin.helper';
 import { IUsersPayments } from '@/types';
 import React, { useEffect, useState } from 'react'
 
-const UsersPaymentsList = () => {
+const UsersPaymentsView = () => {
 
     const { userData } = useAuth();
     const [allPayments, setAllPayments] = useState<IUsersPayments>({ data: [] });
@@ -33,6 +34,14 @@ const UsersPaymentsList = () => {
     const filteredUsers = allPayments.data.filter((user) => {
         const matchesStatus = filterStatus === "" || user.status === filterStatus;
         return matchesStatus;
+    })
+    .sort((a, b) => {
+       
+        if (a.status !== b.status) {
+            return a.status ? 1 : -1;
+        }
+        
+        return a.user.name.localeCompare(b.user.name);
     });
 
     return (
@@ -82,8 +91,8 @@ const UsersPaymentsList = () => {
                                                     {payment.user.name}
                                                 </th>
                                                 <td className="px-6 py-2 text-center">{payment.status}</td>
-                                                <td className="px-6 py-2 text-center">{payment.currentPeriodStart}</td>
-                                                <td className="px-6 py-2 text-center">{payment.currentPeriodEnd}</td>
+                                                <td className="px-6 py-2 text-center">{payment.currentPeriodStart.split("T")[0]}</td>
+                                                <td className="px-6 py-2 text-center">{payment.currentPeriodEnd.split("T")[0]}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -101,4 +110,4 @@ const UsersPaymentsList = () => {
     )
 }
 
-export default UsersPaymentsList;
+export default UsersPaymentsView;

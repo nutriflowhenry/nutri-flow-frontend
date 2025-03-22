@@ -1,10 +1,11 @@
+'use client';
 import { useAuth } from '@/context/AuthContext';
 import { activateUser, banUser, getAllUsers } from '@/helpers/admin.helper';
 import { IUsers } from '@/types';
 import React, { useEffect, useState } from 'react'
 import Swal from 'sweetalert2';
 
-const UsersList = () => {
+const UsersListView = () => {
 
     const { userData } = useAuth();
     const [allUsers, setAllUsers] = useState<IUsers[]>([]);
@@ -62,8 +63,16 @@ const UsersList = () => {
         const matchesEmail = filterEmail === "" || user.email.toLowerCase().includes(filterEmail.toLowerCase());
     
         return matchesStatus && matchesSubscription && matchesEmail;
+    })
+    .sort((a, b) => {
+       
+        if (a.isActive !== b.isActive) {
+            return a.isActive ? -1 : 1;
+        }
+        
+        return a.name.localeCompare(b.name);
     });
-
+            
     return (
         <div>
             {loading ? (
@@ -163,4 +172,4 @@ const UsersList = () => {
     )
 }
 
-export default UsersList;
+export default UsersListView;
