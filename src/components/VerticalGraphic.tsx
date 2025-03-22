@@ -44,7 +44,7 @@ const VerticalGraphic = () => {
         const date = new Date(payment.currentPeriodStart);
         let dayIndex = date.getDay();
 
-        dayIndex = (dayIndex + 6) % 7; 
+        dayIndex = (dayIndex + 6) % 7;
 
         salesData[dayIndex] += 1;
       });
@@ -79,31 +79,31 @@ const VerticalGraphic = () => {
 
   return (
     <div className="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
-      {/* Header */}
-      <div className="flex justify-between pb-4 mb-4 border-b border-gray-200">
-        <div className="flex items-center">
-
-          <div className='flex flex-wrap gap-3 items-center'>
-            <div className="w-14 h-14 bg-[#1e2e2c] flex items-center justify-center rounded-full">
-            <FontAwesomeIcon icon={faMoneyBillTrendUp} className="text-3xl text-[#f7f8f8]"/>
-            </div>  
-              <div className='flex flex-col'>
-                <h5 className="text-3xl font-bold text-[#c19a4c]">
-                  {totalSales}
-                </h5>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Total Ventas por semana
-                </p>
+      {loading ? (
+        <p className="text-gray-500">Cargando datos...</p>
+      ) : (
+        <>
+          {/* Header */}
+          <div className="flex justify-between pb-4 mb-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <div className="flex flex-wrap gap-3 items-center">
+                <div className="w-14 h-14 bg-[#1e2e2c] flex items-center justify-center rounded-full">
+                  <FontAwesomeIcon icon={faMoneyBillTrendUp} className="text-3xl text-[#f7f8f8]" />
+                </div>
+                <div className="flex flex-col">
+                  <h5 className="text-3xl font-bold text-[#c19a4c]">{totalSales}</h5>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Total Ventas por semana</p>
+                </div>
               </div>
+            </div>
           </div>
-        </div>
-
-      </div>
-
-      {/* Chart */}
-      <ApexChart options={chartOptions} series={chartSeries} type="bar" height={250} />
+  
+          {/* Chart */}
+          <ApexChart options={chartOptions} series={chartSeries} type="bar" height={250} />
+        </>
+      )}
     </div>
   );
-};
+}  
 
 export default VerticalGraphic;

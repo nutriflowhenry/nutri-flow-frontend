@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from "react";
-import CardList from "@/components/FoodEntriesCardList";
-import FoodForm from "@/components/FoodForm";
-import { createFoodTracker } from "@/helpers/foodEntriesHelper";
-import Cookies from "js-cookie";
-import CaloriesCounter from "@/components/caloriesCounter";
-import AddFoodButton from "@/assets/AddFoodButton";
-import WaterCounterView from "@/views/WaterCounterView";
+import { useState } from 'react';
+import CardList from '@/components/FoodEntriesCardList';
+import FoodForm from '@/components/FoodForm';
+import { createFoodTracker } from '@/helpers/foodEntriesHelper';
+import Cookies from 'js-cookie';
+import CaloriesCounter from '@/components/caloriesCounter';
+import AddFoodButton from '@/assets/AddFoodButton';
+import WaterCounterView from '@/views/WaterCounterView';
 
 const Home = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -16,65 +16,79 @@ const Home = () => {
     name: string;
     description: string;
     calories: number;
-    createdAt: string; // Ahora es obligatorio
+    createdAt: string;
+    image?: string;
   }>({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     calories: 0,
-    createdAt: new Date().toISOString().split('T')[0], // Fecha actual por defecto
+    createdAt: new Date().toISOString().split('T')[0],
+    image: '',
   });
   const [currentDate, setCurrentDate] = useState<string>(() => {
-    const now = new Date(); // Fecha actual
-    const midnightUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())); // Medianoche en UTC
-    return midnightUTC.toISOString(); // Convertir a formato ISO
+    const now = new Date();
+    const midnightUTC = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    );
+    return midnightUTC.toISOString();
   });
 
-  const token = Cookies.get("token");
+  const token = Cookies.get('token');
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  // Función para refrescar la lista de comidas
+  const handleRefresh = () => {
+    setRefreshTrigger((prev) => prev + 1); // Incrementa el refreshTrigger para forzar la recarga
+  };
+
   const handleCreateFood = async () => {
     if (token) {
       try {
-        // Validar que la fecha no esté vacía
         if (!newFood.createdAt) {
-          alert("La fecha es obligatoria.");
+          console.error('La fecha es obligatoria.');
           return;
         }
 
-        // Validación de calorías (opcional, si aún la necesitas)
         if (newFood.calories <= 0) {
-          alert("Las calorías deben ser mayores que 0.");
+          console.error('Las calorías deben ser mayores que 0.');
           return;
         }
 
         const adjustedFood = {
           ...newFood,
-          createdAt: new Date(newFood.createdAt).toISOString(), // Convertir a formato ISO
+          createdAt: new Date(newFood.createdAt).toISOString(),
+          image: newFood.image || null,
         };
 
+        console.log('Enviando datos al backend para crear la comida:', adjustedFood);
         const response = await createFoodTracker(adjustedFood, token);
+        console.log('Respuesta del backend al crear la comida:', response);
+
         if (response) {
+          const { foodTracker } = response;
+          const foodTrackerId = foodTracker.id; // Obtener el ID generado por el backend
+          console.log('foodTrackerId obtenido:', foodTrackerId);
+
           setIsModalOpen(false);
           setNewFood({
-            name: "",
-            description: "",
+            name: '',
+            description: '',
             calories: 0,
-            createdAt: new Date().toISOString().split('T')[0], // Reiniciar con la fecha actual
+            createdAt: new Date().toISOString().split('T')[0],
+            image: '',
           });
-          setCurrentDate(adjustedFood.createdAt); // Actualizar la fecha mostrada
-          setRefreshTrigger((prev) => prev + 1);
+          setCurrentDate(adjustedFood.createdAt);
+
+          // Refrescar la lista de comidas
+          handleRefresh();
+
+          // Devolver el foodTrackerId para usarlo en la subida de la imagen
+          return foodTrackerId;
         }
       } catch (error) {
-        console.error("Error al crear la comida:", error);
-
-        // Mostrar el mensaje de error del backend
-        if (error instanceof Error) {
-          alert(error.message); // Asume que el backend devuelve el error en `error.message`
-        } else {
-          alert("Hubo un error al crear la comida. Por favor, inténtalo de nuevo.");
-        }
+        console.error('Error al crear la comida:', error);
       }
     }
   };
@@ -95,10 +109,11 @@ const Home = () => {
       )}
 
       <div className="w-full max-w-4xl mt-6">
+        {/* Pasa onRefresh al componente CardList */}
         <CardList
           refreshTrigger={refreshTrigger}
           currentDate={currentDate}
-          onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
+          onRefresh={handleRefresh} // Aquí pasas la función handleRefresh
         />
       </div>
 

@@ -1,10 +1,8 @@
 'use client'
-import React, { useState } from 'react'
 import { Formik, Field, Form} from 'formik';
 import { validateRegisterForm } from '@/helpers/validate';
 import { register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
-import { IAlertState } from '@/types';
 import Alert from '@/components/Alert';
 import { useAuth } from '@/context/AuthContext';
 import { FaGoogle } from 'react-icons/fa';
@@ -12,7 +10,6 @@ import Swal from "sweetalert2";
 
 const RegisterView = () => {
     const router = useRouter();
-    const [alert, setAlert] = useState<IAlertState | null>(null);
     const { loginWithGoogle } = useAuth();
     
     return (
@@ -31,7 +28,7 @@ const RegisterView = () => {
 
                     onSubmit={async (values) => {
                         try {
-                            const response = await register(values);
+                            await register(values);
                             await Swal.fire({
                                 icon: "success",
                                 title: "Registro exitoso",
@@ -41,7 +38,7 @@ const RegisterView = () => {
                                 router.push('/login');
                             }, 2000);
 
-                        } catch (error) {
+                        } catch {
                             await Swal.fire({
                             icon: "error",
                             title: "Error en el registro nuevo usuario",

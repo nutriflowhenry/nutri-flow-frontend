@@ -42,7 +42,7 @@ export async function getUserStatistics(token:string):Promise<IUsersStatistics> 
     
 export async function banUser(token: string, id:string) {
     try {
-        const response = await fetch(`${APIURL}/users/${id}/ban`, {
+        await fetch(`${APIURL}/users/${id}/ban`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -58,7 +58,7 @@ export async function banUser(token: string, id:string) {
 
 export async function activateUser(token: string, id:string) {
     try {
-        const response = await fetch(`${APIURL}/users/${id}/unban`, {
+        await fetch(`${APIURL}/users/${id}/unban`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,
