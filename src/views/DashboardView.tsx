@@ -6,6 +6,7 @@ import { handleSubscription, handleCancelSubscription, getCurrentUser } from '@/
 import {
     faArrowRight,
     faCalendarDays,
+    faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from "next/navigation";
 import LoadingModal from '@/components/LoadingModal';
@@ -109,23 +110,22 @@ const DashboardView = () => {
             {userData ? (
                 <>
                     {/* Banner */}
-                    <div className="h-32  bg-cover bg-center relative" style={{ backgroundImage: `url(https://img.freepik.com/fotos-premium/hojas-vector-hojas-otono-imagenes-hojas-arte-stock-arte-fondo-pantalla-impresiones_726745-796.jpg)` }}>
-
-
+                    <div className="h-48  bg-cover bg-center relative" style={{ backgroundImage: `url(https://img.freepik.com/fotos-premium/mancuernas-manzana-verde-cinta-metrica_771335-27924.jpg)` }}>
+                        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
                         {/* Nombre y Título sobre el Banner */}
-                        <div className="absolute bottom-4 text-white" style={{ left: '35%' }}>
-                            <p className="text-xl leading-tight font-bold">{userData.user.name}</p>
-                            <p className="text-sm leading-tight">Suscripción ({userData.user.subscriptionType})</p>
+                        <div className="absolute bottom-6 text-white md:left-80 left-6" >
+                            <p className="text-2xl  font-bold">{userData.user.name}</p>
+                            <p className="text-sm "><span className="hidden sm:inline">Suscripción</span> ({userData.user.subscriptionType})</p>
                         </div>
                     </div>
 
                     {/* Contenedor Principal (Foto de Perfil y Datos) */}
-                    <div className="flex px-6 py-4">
+                    <div className="flex flex-col md:flex-row px-6 py-6">
                         {/* Foto de Perfil y Estadísticas (Lado Izquierdo) */}
-                        <div className="w-1/3 pr-4 -mt-16 relative z-5 pb-4 ">
+                        <div className=" w-full md:w-1/3 pr-4 -mt-16 relative z-5 pb-4 ">
                             <div className="flex justify-center">
                                 <img
-                                    className=" md:h-48 rounded-full  border-4 border-white object-cover "
+                                    className=" md:h-48 w-48 rounded-full  border-4 border-white object-cover "
                                     src={userData.user.profilePicture || defaultProfilePicture}
                                     alt="Profile"
                                 />
@@ -148,16 +148,9 @@ const DashboardView = () => {
                         <div>
                             <div className=" grid grid-cols-1 sm:grid-cols-2 text-gray-900 sm:gap-4">
 
-                                <p className="font-bold mt-4 inline sm:hidden">
-                                    <span className="text-orange-600">Email Address: </span>
-                                </p>
-                                <p className="font-bold mb-4 inline sm:hidden">
-                                    <span className="text-black"> {userData.user.email}</span>
-                                </p>
-
                                 <p className="flex items-center">
                                     <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
-                                    <strong>Cumpleaños {userData.user.userProfile?.birthdate
+                                    <strong>Fecha de Nacimiento {userData.user.userProfile?.birthdate
                                         ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
                                             day: "2-digit",
                                             month: "2-digit",
@@ -168,19 +161,19 @@ const DashboardView = () => {
                                 </p>
                                 <p className="flex items-center">
                                     <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
-                                    <strong>Miembro desde {userData?.user?.createdAt?.split(",")[0]} </strong>
+                                    <strong>Miembro desde {userData?.user?.createdAt?.split(",")[0]}</strong>
                                 </p>
                             </div>
                             <div className="mt-2">
 
                                 <p className="font-bold">
-                                    <span className="text-orange-600 hidden sm:inline">Email Address: </span>
-                                    <span className="text-black hidden sm:inline"> {userData.user.email}</span>
+                                    <span className="text-orange-600 ">Email: </span>
+                                    <span className="text-gray-900 "> {userData.user.email}</span>
                                 </p>
 
                                 <p className="font-bold">
                                     <span className="text-orange-600">Género: </span>
-                                    <span className="text-black">{userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}</span>
+                                    <span className="text-gray-900">{userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}</span>
                                 </p>
                                 <p className="font-bold">
                                     <span className="text-orange-600">Altura: </span>
@@ -226,17 +219,36 @@ const DashboardView = () => {
                     ) : (
                         // {/* Tarjeta de versión premium */}
                         <div className="w-full flex justify-center">
-                            <div className="w-full max-w-md bg-gray-100 p-6 rounded-lg shadow-sm mt-3 mb-8 text-center">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-800">¡Mejora tu experiencia!</h2>
-                                <p className="text-gray-700 mb-4">
+                            <div className="w-full max-w-md bg-gradient-to-r from-orange-400 to-orange-600 p-6 rounded-lg shadow-lg mt-3 mb-8 text-center text-white">
+                                <h2 className="text-2xl font-semibold mb-4">¡Mejora tu experiencia con NutriFlow Premium!</h2>
+                                <p className="text-white mb-4">
                                     Desbloquea todas las funciones premium y disfruta de una experiencia sin límites.
                                 </p>
+                                <ul className="text-left inline-block mb-6">
+                                    <li className="flex items-center mb-2">
+                                        <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                        Chatbot en tiempo real
+                                    </li>
+                                    <li className="flex items-center mb-2">
+                                        <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                        BLog Social de la Comunidad
+                                    </li>
+                                    <li className="flex items-center mb-2">
+                                        <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                        Acceso a recetas exclusivas
+                                    </li>
+                                    <li className="flex items-center mb-2">
+                                        <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                        Monitoreo avanzado del progreso
+                                    </li>
+                                </ul>
                                 <button
                                     onClick={handleSubscribe}
-                                    className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+                                    className="bg-white text-orange-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
                                 >
-                                    Suscribirse a Premium
+                                    ¡Suscríbete ahora!
                                 </button>
+                                <p className="text-sm mt-4">Oferta especial: 20% de descuento en tu primer mes.</p>
                             </div>
                         </div>
 
@@ -255,7 +267,7 @@ const DashboardView = () => {
                                 <div className="flex justify-end space-x-4">
                                     <button
                                         onClick={confirmCancelSubscription}
-                                        className="bg-gray-300  text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                                        className="bg-red-500  text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
                                     >
                                         Confirmar Cancelación
                                     </button>
