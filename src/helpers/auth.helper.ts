@@ -172,7 +172,7 @@ export async function handleCancelSubscription(token: string) {
 };
 
 // Obtener pagos del usuario
-export async function fetchUserPayments(token: string, page = 1, limit = 10) {
+export async function fetchUserPayments(token: string,page: number = 1, limit: number = 10) {
     try {
         const response = await fetch(`${APIURL}/payments?page=${page}&limit=${limit}`, {
             method: 'GET',

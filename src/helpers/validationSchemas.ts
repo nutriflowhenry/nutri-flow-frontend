@@ -47,3 +47,14 @@ export const physicalFormValidationSchema = Yup.object().shape({
         .oneOf(['lose weight', 'maintain', 'gain muscle'], 'Objetivo de peso no válido')
         .required('El objetivo de peso es obligatorio'),
 });
+
+// Esquema de validación para el formulario de información del usuario
+export const userInfoValidationSchema = Yup.object().shape({
+    name: Yup.string()
+        .required('El nombre es obligatorio')
+        .min(2, 'El nombre debe tener al menos 2 caracteres')
+        .max(50, 'El nombre no puede tener más de 50 caracteres'),
+    email: Yup.string()
+        .required('El email es obligatorio')
+        .email('El email no es válido'),
+});
