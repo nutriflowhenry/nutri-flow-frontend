@@ -41,7 +41,10 @@ export interface IUserProfile {
     weightGoal?: 'lose weight' | 'maintain' | 'gain muscle';
     caloriesGoal?: number | string;
     hydrationGoal?: number | string;
-
+    country?: string;
+    city?: string;
+    phone?: string;
+    notifications?: boolean;
 }
 
 export enum Gender {
