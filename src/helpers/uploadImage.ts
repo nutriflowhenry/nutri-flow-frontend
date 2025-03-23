@@ -1,12 +1,13 @@
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
-export const uploadImage = async (userId: string, file: File): Promise<string> => {
+export const uploadImage = async (userId: string, file: File, token: string): Promise<string> => {
     try {
         // 1. Obtener la URL pre-firmada del backend
         const response = await fetch(`${APIURL}/upload/profile/upload-url/${userId}?type=${file.type.split('/')[1]}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
         });
 
@@ -40,7 +41,10 @@ export const uploadImage = async (userId: string, file: File): Promise<string> =
         // 3. Notificar al backend para actualizar la ruta de la imagen en la base de datos
         const updateResponse = await fetch(`${APIURL}/users/${userId}/profile-picture`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+             },
             body: JSON.stringify({ fileType: file.type.split('/')[1] }),
         });
 
