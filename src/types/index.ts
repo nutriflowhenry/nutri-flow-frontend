@@ -2,32 +2,37 @@ export interface IRegisterProps {
     name: string;
     email: string;
     password: string;
-    passwordConfirmation:string;
+    passwordConfirmation: string;
 }
 
 export interface IRegisterErrors {
     name?: string;
     email?: string;
     password?: string;
-    passwordConfirmation?:string;
+    passwordConfirmation?: string;
 }
 
 export interface IUserSession {
     token: string;
     user: {
         id: string;
-        email:string;
-        name:string;
-        profilePicture?:string;
+        email: string;
+        name: string;
+        profilePicture?: string;
         userProfile?: IUserProfile;
         auth0Id?: string;
         createdAt?: string;
         isActive?: boolean;
         provider?: string;
-        role?:string;
+        role?: string;
         stripeCustomerId?: string;
         subscriptionType?: string;
         updatedAt?: Date;
+
+        country?: string;
+        city?: string;
+        phone?: string;
+        notifications?: boolean;
     };
 }
 
@@ -41,7 +46,6 @@ export interface IUserProfile {
     weightGoal?: 'lose weight' | 'maintain' | 'gain muscle';
     caloriesGoal?: number | string;
     hydrationGoal?: number | string;
-
 }
 
 export enum Gender {
@@ -62,7 +66,7 @@ export interface AuthContextProps {
 
 export interface IAlertState {
     type: 'success' | 'error';
-    message: string; 
+    message: string;
 }
 
 
@@ -79,17 +83,17 @@ export interface IFoodTracker {
     createdAt: string;
     isActive: boolean;
     image?: string; // Cambiar imageUrl a image
-  }
+}
 export interface ICreateFoodTracker {
-    name: string; 
-    calories: number; 
+    name: string;
+    calories: number;
     description?: string;
 }
 
 export interface ICaloriesData {
     consumed: number;
     goal: number;
-  }
+}
 export interface IUsers {
     id: string,
     name: string,
@@ -102,22 +106,22 @@ export interface IUsers {
 export interface IUsersStatistics {
     usersNumber: number,
     premiumUsers: number,
-    freeUsers:number
+    freeUsers: number
 }
 
 export interface IUsersPayments {
-    data:{
-        id:string,
+    data: {
+        id: string,
         status: string,
-        created_at:Date,
-        currentPeriodStart:string,
-        currentPeriodEnd:string,
+        created_at: Date,
+        currentPeriodStart: string,
+        currentPeriodEnd: string,
         canceled_at?: string;
-        user:{
-            id:string,
-            name:string,
-            subscriptionType:string,
-            isActive:boolean
+        user: {
+            id: string,
+            name: string,
+            subscriptionType: string,
+            isActive: boolean
         }
     }[];
 }

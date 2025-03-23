@@ -20,6 +20,7 @@ import { uploadImage } from '@/helpers/uploadImage';
 import { getCurrentUser } from "@/helpers/auth.helper";
 import * as Yup from 'yup';
 import { userInfoValidationSchema, physicalFormValidationSchema } from '@/helpers/validationSchemas';
+import { useRouter } from "next/navigation";
 
 interface FormData {
   birthdate: Date | string;
@@ -54,6 +55,7 @@ const defaultProfilePicture = 'https://definicion.de/wp-content/uploads/2019/07/
 const SettingsView = () => {
   const { userData, setUserData, logout } = useAuth();
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingUserInfo, setIsEditingUserInfo] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
@@ -739,8 +741,15 @@ const SettingsView = () => {
             ) : (
               <>
                 <button
-                  onClick={() => setIsEditingPassword(true)}
+                  onClick={() => router.push("/notifications")}
                   className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+                >
+                  <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
+                  Notificaciones
+                </button>
+                <button
+                  onClick={() => setIsEditingPassword(true)}
+                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
                 >
                   <FontAwesomeIcon icon={faKey} className="mr-2" />
                   Cambiar Contraseña
