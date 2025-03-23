@@ -52,6 +52,7 @@ const SettingsView = () => {
   const [loading, setLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingUserInfo, setIsEditingUserInfo] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [profileFormData, setProfileFormData] = useState<FormData>({
     birthdate: '',
     gender: '',
@@ -64,8 +65,87 @@ const SettingsView = () => {
     name: userData?.user.name || '',
     email: userData?.user.email || ''
   });
+  const [passwordFormData, setPasswordFormData] = useState({
+    newPassword: '',
+    confirmNewPassword: '',
+  });
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
   const [userInfoValidationErrors, setUserInfoValidationErrors] = useState<{ [key: string]: string }>({})
+  const [passwordValidationErrors, setPasswordValidationErrors] = useState<{ [key: string]: string }>({});
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordFormData({
+      ...passwordFormData,
+      [name]: value,
+    });
+    // Limpiar errores de validación
+    if (passwordValidationErrors[name]) {
+      setPasswordValidationErrors({
+        ...passwordValidationErrors,
+        [name]: '',
+      });
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Validar los campos
+    if (passwordFormData.newPassword !== passwordFormData.confirmNewPassword) {
+      setPasswordValidationErrors({
+        confirmNewPassword: 'Las contraseñas no coinciden',
+      });
+      return;
+    }
+
+    try {
+      if (!userData || !userData.token) {
+        console.error("userData o token es null");
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${userData.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: passwordFormData.newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Contraseña actualizada con éxito',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        });
+        setIsEditingPassword(false);
+        setPasswordFormData({
+          newPassword: '',
+          confirmNewPassword: '',
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al actualizar la contraseña');
+      }
+    } catch (error: unknown) {
+      console.error('Error:', error);
+      let errorMessage = 'Error al actualizar la contraseña';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
+    }
+  };
 
   useEffect(() => {
     if (userData) {
@@ -255,7 +335,8 @@ const SettingsView = () => {
       });
 
       if (response.ok) {
-        const updatedUser = await response.json();
+        const updatedUser = await getCurrentUser(userData.token);
+        console.log("del response ", updatedUser);
         setUserData({
           ...userData,
           user: {
@@ -311,9 +392,9 @@ const SettingsView = () => {
     <div className="p-8 bg-white shadow-lg rounded-xl max-w-4xl mx-auto mt-10">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 text-center">Ajustes de Usuario</h1>
       {userData ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-col space-y-8"> {/* Cambia a flex-col y añade espacio vertical */}
           {/* FORMULARIO de Información del Usuario */}
-          <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
+          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Detalles de la Cuenta</h2>
             {isEditingUserInfo ? (
               <form onSubmit={handleUserInfoSubmit} className="space-y-6">
@@ -337,10 +418,9 @@ const SettingsView = () => {
                     name="email"
                     value={userInfoFormData.email}
                     onChange={handleUserInfoChange}
-                    disabled={userData?.user?.provider === "auth0"} 
-                    className={`mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white ${
-                      userData?.user?.provider === "auth0" ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                    disabled={userData?.user?.provider === "auth0"}
+                    className={`mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white ${userData?.user?.provider === "auth0" ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                   />
                   {userInfoValidationErrors.email && (
                     <p className="text-red-500 text-sm mt-1">{userInfoValidationErrors.email}</p>
@@ -364,6 +444,10 @@ const SettingsView = () => {
               </form>
             ) : (
               <div className="space-y-6 text-gray-700">
+                {(() => {
+                  console.log("Info:", userData.user.profilePicture);
+                  return null; // Retorna null para no renderizar nada adicional
+                })()}
                 <img
                   src={userData.user.profilePicture}
                   alt="Perfil"
@@ -395,7 +479,7 @@ const SettingsView = () => {
           </div>
 
           {/* FORMULARIO de Detalles del Perfil */}
-          <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
+          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
             <h2 className="text-2xl font-semibold mb-6 text-gray-800">Detalles del Perfil</h2>
             {isEditingProfile ? (
               <form onSubmit={handleProfileSubmit} className="space-y-6">
@@ -544,6 +628,63 @@ const SettingsView = () => {
                   Editar Perfil
                 </button>
               </div>
+            )}
+          </div>
+
+          {/* Ajustes Avanzados */}
+          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Ajustes Avanzados</h2>
+            {isEditingPassword ? (
+              <form onSubmit={handlePasswordSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña</label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordFormData.newPassword}
+                    onChange={handlePasswordChange}
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
+                  />
+                  {passwordValidationErrors.newPassword && (
+                    <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.newPassword}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Nueva Contraseña</label>
+                  <input
+                    type="password"
+                    name="confirmNewPassword"
+                    value={passwordFormData.confirmNewPassword}
+                    onChange={handlePasswordChange}
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
+                  />
+                  {passwordValidationErrors.confirmNewPassword && (
+                    <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.confirmNewPassword}</p>
+                  )}
+                </div>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingPassword(false)}
+                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                  >
+                    Guardar
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <button
+                onClick={() => setIsEditingPassword(true)}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+              >
+                Cambiar Contraseña
+              </button>
             )}
           </div>
         </div>
