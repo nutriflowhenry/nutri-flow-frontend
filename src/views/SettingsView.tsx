@@ -11,7 +11,9 @@ import {
   faSpellCheck,
   faEdit,
   faBullseye,
-  faRunning
+  faRunning,
+  faKey,
+  faUserSlash
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { uploadImage } from '@/helpers/uploadImage';
@@ -47,8 +49,10 @@ const weightGoalMap = {
   'gain muscle': 'Ganar Músculo',
 };
 
+const defaultProfilePicture = 'https://definicion.de/wp-content/uploads/2019/07/perfil-de-usuario.png';
+
 const SettingsView = () => {
-  const { userData, setUserData } = useAuth();
+  const { userData, setUserData, logout } = useAuth();
   const [loading, setLoading] = useState(true);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingUserInfo, setIsEditingUserInfo] = useState(false);
@@ -72,6 +76,60 @@ const SettingsView = () => {
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
   const [userInfoValidationErrors, setUserInfoValidationErrors] = useState<{ [key: string]: string }>({})
   const [passwordValidationErrors, setPasswordValidationErrors] = useState<{ [key: string]: string }>({});
+
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡Esta acción no se puede deshacer! Tu cuenta será desactivada y no podrás volver a acceder.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar cuenta',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        if (!userData || !userData.token) {
+          console.error("userData o token es null");
+          return;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${userData.token}`,
+          },
+        });
+
+        if (response.ok) {
+          Swal.fire({
+            title: 'Cuenta Eliminada',
+            text: 'Tu cuenta ha sido eliminada exitosamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+          }).then(() => {
+            // Redirigir al usuario a la página de inicio o de inicio de sesión
+            logout();
+            window.location.href = '/';
+          });
+        } else {
+          throw new Error('Error al eliminar la cuenta');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Hubo un error al intentar eliminar la cuenta.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        });
+      }
+    }
+  };
+
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -203,7 +261,7 @@ const SettingsView = () => {
     if (!file || !userData) return;
 
     try {
-      await uploadImage(userData.user.id.toString(), file);
+      await uploadImage(userData.user.id.toString(), file, userData.token);
       const user = await getCurrentUser(userData.token);
       setUserData({
         token: userData.token,
@@ -449,9 +507,9 @@ const SettingsView = () => {
                   return null; // Retorna null para no renderizar nada adicional
                 })()}
                 <img
-                  src={userData.user.profilePicture}
+                  src={userData.user.profilePicture || defaultProfilePicture}
                   alt="Perfil"
-                  className="w-32 h-32 rounded-full mb-6 mx-auto"
+                  className="w-32 h-32 rounded-full mb-6 mx-auto  object-cover"
                 />
                 <input
                   type="file"
@@ -679,12 +737,23 @@ const SettingsView = () => {
                 </div>
               </form>
             ) : (
-              <button
-                onClick={() => setIsEditingPassword(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
-              >
-                Cambiar Contraseña
-              </button>
+              <>
+                <button
+                  onClick={() => setIsEditingPassword(true)}
+                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+                >
+                  <FontAwesomeIcon icon={faKey} className="mr-2" />
+                  Cambiar Contraseña
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
+                >
+                  <FontAwesomeIcon icon={faUserSlash} className="mr-2" />
+                  Eliminar Cuenta
+                </button>
+              </>
+
             )}
           </div>
         </div>
