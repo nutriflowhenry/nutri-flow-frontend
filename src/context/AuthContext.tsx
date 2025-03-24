@@ -1,4 +1,5 @@
 'use client'
+import Swal from "sweetalert2";
 import { validateGoogleToken, getCurrentUser } from "@/helpers/auth.helper";
 import { AuthContextProps, IUserSession } from "@/types";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -52,7 +53,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                                 }
 
                             })
+                            .catch((error) => {
+                                if (error instanceof Error) {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: error.message || "No se pudo obtener la información del usuario.",
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error",
+                                        text: "Ocurrió un error desconocido al obtener la información del usuario.",
+                                    });
+                                }
+                            })
                             .finally(() => setIsLoading(false)); // Desactivar el estado de 
+                    })
+                    .catch(async (error) => {
+                        if (error instanceof Error) {
+                            if (error.message === "inactive_account") {
+                                await Swal.fire({
+                                    icon: "error",
+                                    title: "Cuenta inactiva",
+                                    text: "Tu cuenta está inactiva. Por favor, contacta al soporte.",
+                                });
+                                await signOut(); // Forzar el cierre de sesión después de mostrar la alerta
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error de autenticación",
+                                    text: error.message || "Error al validar el token de Google.",
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error de autenticación",
+                                text: "Ocurrió un error desconocido al validar el token de Google.",
+                            });
+                        }
+                        setIsLoading(false); // Desactivar el estado de carga en caso de error
                     });
             }
         } else {
@@ -100,7 +141,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         Cookies.remove("token");
         Cookies.remove("nutriflowUser");
         setUserData(null);
-        // setUserProfile(null);
         signOut();
         router.push("/");
     };
@@ -109,12 +149,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const result = await signIn("google");
             if (result?.error) {
-                console.error("Error durante el login con Google:", result.error);
-                return;
+                
+                throw new Error(result.error); // Lanzar el error para que sea manejado en el bloque catch
             }
 
         } catch (error) {
-            console.error("Error en loginWithGoogle:", error);
+            if (error instanceof Error) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Error de autenticación",
+                    text: error.message || "Ocurrió un error durante la autenticación con Google.",
+                });
+                
+            } else {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Error de autenticación",
+                    text: "Ocurrió un error desconocido durante la autenticación con Google.",
+                });
+                
+            }
         }
     };
 
