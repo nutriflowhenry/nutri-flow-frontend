@@ -472,7 +472,9 @@ const SettingsView = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email
+                  {userData?.user?.provider === "auth0" && (<strong> (Sesión de Google) </strong>)}
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -747,6 +749,7 @@ const SettingsView = () => {
                   <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
                   Notificaciones
                 </button>
+                {userData?.user?.provider !== "auth0" && (
                 <button
                   onClick={() => setIsEditingPassword(true)}
                   className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
@@ -754,6 +757,7 @@ const SettingsView = () => {
                   <FontAwesomeIcon icon={faKey} className="mr-2" />
                   Cambiar Contraseña
                 </button>
+                )}
                 <button
                   onClick={handleDeleteAccount}
                   className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
