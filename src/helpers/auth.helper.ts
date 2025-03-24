@@ -1,4 +1,4 @@
-import { IRegisterProps, IUserSession, IloginProps } from "@/types"
+import { IRegisterProps, IUserSession, IloginProps } from "@/types";
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -38,11 +38,19 @@ export async function validateGoogleToken(googleToken: string) {
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error("Google authentication failed");
+            const errorData = await response.json();
+            if (response.status === 401 && errorData.message === "User account is inactive!") {
+                throw new Error("inactive_account");
+            } else {
+                throw new Error(errorData.message || "Error de autenticación con Google.");
+            }
         }
     } catch (error) {
-        console.error("Google registration error:", error);
-        throw error;
+        if (error instanceof Error) {
+            throw error; // Lanza el error para que sea manejado en el componente
+        } else {
+            throw new Error("Ocurrió un error desconocido durante la autenticación con Google.");
+        }
     }
 }
 
@@ -61,8 +69,15 @@ export async function login(userData: IloginProps): Promise<IUserSession> {
         return { token, user };
 
     } catch (error) {
-        console.error("Error en login con email:", error);
-        throw error;
+        if (error instanceof Error) {
+            if (error.message === "User account is inactive!") {
+                throw new Error("Tu cuenta está inactiva. Por favor, contacta al soporte.");
+            } else {
+                throw new Error("Credenciales incorrectas o error en el servidor.");
+            }
+        } else {
+            throw new Error("Ocurrió un error desconocido.");
+        }
     }
 };
 
@@ -172,7 +187,7 @@ export async function handleCancelSubscription(token: string) {
 };
 
 // Obtener pagos del usuario
-export async function fetchUserPayments(token: string, page = 1, limit = 10) {
+export async function fetchUserPayments(token: string,page: number = 1, limit: number = 10) {
     try {
         const response = await fetch(`${APIURL}/payments?page=${page}&limit=${limit}`, {
             method: 'GET',
