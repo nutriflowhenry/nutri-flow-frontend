@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { FaGoogle } from 'react-icons/fa';
 
 const LoginView = () => {
-  const {setUserData, loginWithGoogle} = useAuth();
+  const { setUserData, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   // Esquema validación con Yup
@@ -49,13 +49,29 @@ const LoginView = () => {
                 return router.push("/home");
               }
 
-                
-            } catch {
+
+            } catch (error) {
+              if (error instanceof Error) {
+                if (error.message === "Tu cuenta está inactiva. Por favor, contacta al soporte.") {
+                  await Swal.fire({
+                    icon: "error",
+                    title: "Cuenta inactiva",
+                    text: error.message,
+                  });
+                } else {
+                  await Swal.fire({
+                    icon: "error",
+                    title: "Error de inicio de sesión",
+                    text: error.message,
+                  });
+                }
+              } else {
                 await Swal.fire({
-                icon: "error",
-                title: "Error de inicio de sesión",
-                text: "Credenciales incorrectas o error en el servidor.",
-              });
+                  icon: "error",
+                  title: "Error de inicio de sesión",
+                  text: "Ocurrió un error desconocido.",
+                });
+              }
             }
           }}
         >
@@ -94,17 +110,17 @@ const LoginView = () => {
           )}
         </Formik>
 
-          <div className="w-full h-px bg-gray-400 my-4" >
-            <div className="flex justify-center space-x-6">
-              <button
-                className="flex items-center justify-center w-full bg-white text-gray-700 border border-gray-300 shadow-md hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105"
-                onClick={loginWithGoogle}
-              >
-                <FaGoogle className="text-red-500 text-xl mr-2" />
-                <span className="font-medium">Ingresar con Google</span>
-              </button>
-            </div>
+        <div className="w-full h-px bg-gray-400 my-4" >
+          <div className="flex justify-center space-x-6">
+            <button
+              className="flex items-center justify-center w-full bg-white text-gray-700 border border-gray-300 shadow-md hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105"
+              onClick={loginWithGoogle}
+            >
+              <FaGoogle className="text-red-500 text-xl mr-2" />
+              <span className="font-medium">Ingresar con Google</span>
+            </button>
           </div>
+        </div>
       </div>
     </div>
   );
