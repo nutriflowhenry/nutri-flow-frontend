@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';  
 import Confetti from 'react-confetti'; 
 
+
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 const WaterCounterView = () => {
@@ -20,14 +21,9 @@ const WaterCounterView = () => {
         const fetchUserProfileData = async () => {
             try {
                 const token = Cookies.get('token');  
-                const userId = Cookies.get('userId'); 
+             
 
-                if (!token || !userId) {
-                    console.error("No hay token o userId en las cookies");
-                    return;
-                }
-
-                const response = await fetch(`${APIURL}/user-profiles/${userId}`, {
+                const response = await fetch(`${APIURL}/user-profiles`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -51,13 +47,6 @@ const WaterCounterView = () => {
     const updateWaterIntake = async (newIntake: number, action: string) => {
         try {
             const token = Cookies.get('token');  
-            const userId = Cookies.get('userId'); 
-
-            if (!token || !userId) {
-                console.error("No hay token o userId en las cookies para la actualización");
-                return;
-            }
-
             const response = await fetch(`${APIURL}/water-tracker/update`, {
                 method: 'POST',
                 headers: {
