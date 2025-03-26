@@ -44,7 +44,7 @@ const handleMessage = async () => {
 };
 
 return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white p-6">
+    <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-r  to-gray-900 text-white p-6">
     {!token ? (
         <div className="text-red-500 text-center text-lg font-semibold">Error: No token found.</div>
     ) : (
