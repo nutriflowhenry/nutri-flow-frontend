@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBlog, faHouse, faMoneyCheckDollar, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,10 +23,10 @@ const Sidebar = () => {
         } transition-transform duration-300`}
       >
         <ul className="pt-28 space-y-4">
-          <li><a href="/dashboard/admin" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded">Inicio</a></li>
-          <li><a href="/dashboard/admin/users" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded">Usuarios</a></li>
-          <li><a href="/dashboard/admin/payments" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded">Transacciones</a></li>
-          <li><a href="#" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded">Publicaciones</a></li>
+          <li><a href="/dashboard/admin" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded"><FontAwesomeIcon icon={faHouse} className="text-1xl text-[#faf9f8dc] mr-2"/>Inicio</a></li>
+          <li><a href="/dashboard/admin/users" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded"><FontAwesomeIcon icon={faUser} className="text-1xl text-[#faf9f8dc] mr-2" />Usuarios</a></li>
+          <li><a href="/dashboard/admin/payments" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded"><FontAwesomeIcon icon={faMoneyCheckDollar} className="text-1xl text-[#faf9f8dc] mr-2" />Transacciones</a></li>
+          <li><a href="/dashboard/admin/post" className="block p-2 pl-4 hover:bg-[#e1cc96eb] rounded"><FontAwesomeIcon icon={faBlog} className="text-1xl text-[#faf9f8dc] mr-2" />Publicaciones</a></li>
         </ul>
       </div>
     </>

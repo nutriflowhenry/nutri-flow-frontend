@@ -2,60 +2,90 @@
 import { useAuth } from '@/context/AuthContext';
 import { getAllPayments} from '@/helpers/admin.helper';
 import { IUsersPayments } from '@/types';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
+
 
 const UsersPaymentsView = () => {
 
     const { userData } = useAuth();
-    const [allPayments, setAllPayments] = useState<IUsersPayments>({ data: [] });
+    const [allPayments, setAllPayments] = useState<IUsersPayments>({ 
+        data: [],
+        pagination: {
+            page: 1,
+            limit: 10,
+            totalpayments: 0,
+            totalPages: 1
+        }
+    });
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            if (!userData?.token) {
-                setLoading(false);
-                return;
-            }
+            if (!userData?.token) return;
             try {
                 setLoading(true);
-                const paymentsData = await getAllPayments(userData?.token)
-                setAllPayments(paymentsData);
+                
+                const firstPage = await getAllPayments(userData.token, 1);
+                const totalPages = firstPage.pagination.totalPages;
+    
+                const requests = [];
+                for (let i = 2; i <= totalPages; i++) {
+                    requests.push(getAllPayments(userData.token, i));
+                }
+    
+                const responses = await Promise.all(requests);
+                
+                const allData = [firstPage, ...responses].flatMap(res => res.data);
+    
+                setAllPayments({
+                    data: allData,
+                    pagination: firstPage.pagination
+                });
+    
+                setTotalPages(totalPages);
             } catch (error) {
-                console.error("Error al obtener pagos de los usuarios:", error);
+                console.error("Error obteniendo pagos:", error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchUsers();
     }, [userData?.token]);
 
-    const filteredUsers = allPayments.data.filter((user) => {
-        const matchesStatus = filterStatus === "" || user.status === filterStatus;
-        return matchesStatus;
-    })
-    .sort((a, b) => {
-       
-        if (a.status !== b.status) {
-            return a.status ? 1 : -1;
-        }
-        
-        return a.user.name.localeCompare(b.user.name);
-    });
+    const processedUsers = allPayments.data
+        .sort((a, b) => {
+            
+            if (a.status !== b.status) return a.status === "active" ? -1 : 1;
+            
+            return a.user.name.localeCompare(b.user.name);
+        })
+        .filter((user) => {
+            return filterStatus === "" || user.status === filterStatus;
+        })
+        .slice((currentPage - 1) * 10, currentPage * 10);
 
     return (
         <div>
             {loading ? (
-                <p>Cargando usuarios...</p>
-            ) : allPayments?.data.length  >= 0? (
+                <p>Cargando transacciones...</p>
+            ) : processedUsers?.length  > 0? (
                 <div>
-                    <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
-
+                    <div className="bg-gray-100 p-6 m-6 rounded-lg shadow-sm">
+                    <h1 className="text-2xl font-bold mb-4 text-center">Transacciones</h1>
+                        
                         <div className="flex gap-2 mb-4 justify-center">
                                 <select 
                                     value={filterStatus} 
-                                    onChange={(e) => setFilterStatus(e.target.value)}
+                                    onChange={(e) => {
+                                        setFilterStatus(e.target.value);
+                                        setCurrentPage(1);
+                                    }} 
                                     className="border px-3 py-1 rounded-lg">
                                     <option value="">Todos</option>
                                     <option value="active">Activo</option>
@@ -64,7 +94,7 @@ const UsersPaymentsView = () => {
                         </div>        
 
                         {/* tabla usuarios */}
-                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <div className="relative overflow-x-auto shadow-md rounded-lg sm:rounded-lg">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                                     <thead className="text-xs text-gray-700 uppercase bg-[#b9c4a4]">
@@ -85,7 +115,7 @@ const UsersPaymentsView = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {filteredUsers?.map((payment) => (
+                                        {processedUsers.map((payment) =>  (
                                             <tr key={payment.id} className="bg-white border-b border-gray-200 hover:bg-[#eeedeb73]">
                                                 <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                                                     {payment.user.name}
@@ -98,6 +128,26 @@ const UsersPaymentsView = () => {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                         {/* Controles de paginación */}
+                         <div className="flex justify-center mt-4 gap-2">
+                         <button 
+                            disabled={currentPage === 1} 
+                            onClick={() => setCurrentPage((prev) => prev - 1)}
+                            className={`px-4 py-2 mx-1 rounded flex items-center gap-2 
+                                ${currentPage === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#eecb78] text-white hover:bg-[#cf9d52]'}`}>
+                            <FontAwesomeIcon icon={faArrowLeft} className="text-lg" />
+                        </button>
+
+                        <span className="px-4 py-2 bg-gray-200 rounded">{currentPage} de {totalPages}</span>
+
+                        <button 
+                            disabled={currentPage === totalPages} 
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                            className={`px-4 py-2 mx-1 rounded flex items-center gap-2 
+                                ${currentPage === totalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#eecb78] text-white hover:bg-[#cf9d52]'}`}>
+                            <FontAwesomeIcon icon={faArrowRight} className="text-lg" />
+                        </button>
                         </div>
                     </div>
                 </div>
