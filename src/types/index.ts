@@ -126,3 +126,71 @@ export interface IUsersPayments {
     }[];
 }
 
+export enum PostTag {
+  VEGETARIAN = 'Vegetarian',
+  VEGAN = 'Vegan',
+  GLUTEN_FREE = 'GlutenFree',
+  LOW_FAT = 'LowFat',
+  QUICK = 'Quick',
+  DESSERT = 'Dessert',
+  BREAKFAST = 'Breakfast',
+  HIGH_PROTEIN = 'HighInProtein',
+  DAIRY_FREE = 'DairyFree',
+  SUGAR_FREE = 'SugarFree',
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  tags?: PostTag[];
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+  status: 'pending' | 'approved' | 'rejected' | 'inactive';
+  user: IUserSession['user'];
+}
+
+export interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  user: IUserSession['user'];
+  postId: string;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface PostErrors {
+  title?: string;
+  content?: string;
+  tags?: string;
+}
+
+export interface CommentErrors {
+  content?: string;
+}
+
+// En tu archivo de tipos (types.ts)
+export interface ApiPost {
+  id: string;
+  title: string;
+  content: string;
+  tags?: PostTag[];
+  status: 'pending' | 'approved' | 'rejected' | 'inactive';
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    name: string;
+    profilePicture?: string;
+  };
+}
