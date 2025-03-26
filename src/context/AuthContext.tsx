@@ -133,6 +133,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             } else {
                 console.log("No se encontró usuario o token.");
+                setIsLoading(false);
             }
         }
     }, [status]);

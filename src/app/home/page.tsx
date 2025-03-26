@@ -8,8 +8,10 @@ import Cookies from 'js-cookie';
 import CaloriesCounter from '@/components/caloriesCounter';
 import AddFoodButton from '@/assets/AddFoodButton';
 import WaterCounterView from '@/views/WaterCounterView';
+import { useAuth } from '@/context/AuthContext';
 
 const Home = () => {
+  const {isLoading } = useAuth();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newFood, setNewFood] = useState<{
@@ -117,9 +119,15 @@ const Home = () => {
         />
       </div>
 
+
+{!isLoading && (
+            <>
       <div className="w-full max-w-4xl mt-6">
         <WaterCounterView />
       </div>
+            
+            </>)}
+
 
       {/* Modal */}
       {isModalOpen && (
