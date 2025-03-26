@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { getDailyFoodTracker } from '@/helpers/foodEntriesHelper';
 import { ICaloriesData, IFoodTracker } from '@/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@/context/AuthContext';
 
 interface CaloriesCounterProps {
   token: string;
   currentDate: string; // Fecha en formato ISO (UTC)
   setCurrentDate: (date: string) => void;
   refreshTrigger: number;
+  
 }
 
 const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
@@ -17,7 +19,11 @@ const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
   setCurrentDate,
   refreshTrigger,
 }) => {
-  const [calories, setCalories] = useState<ICaloriesData>({ consumed: 0, goal: 1500 });
+  const { userData } = useAuth();
+  const initialCaloriesGoal = userData?.user?.userProfile?.caloriesGoal 
+    ? Number(userData.user.userProfile.caloriesGoal) 
+    : 0;
+  const [calories, setCalories] = useState<ICaloriesData>({ consumed: 0, goal: initialCaloriesGoal});
 
   useEffect(() => {
     const fetchCalories = async () => {
@@ -33,7 +39,7 @@ const CaloriesCounter: React.FC<CaloriesCounterProps> = ({
             0
           );
 
-          setCalories({ consumed: consumedCalories, goal: 1500 });
+          setCalories({ consumed: consumedCalories, goal: initialCaloriesGoal });
         }
       } catch (error) {
         console.error('Failed to fetch calories data:', error);
