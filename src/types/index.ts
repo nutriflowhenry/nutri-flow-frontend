@@ -146,7 +146,7 @@ export interface IPostList {
         author:{
             id:string,
             name:string,
-            profilePicture:string,
+            profilePicture?:string,
         }
     }[];
     pagination:{
@@ -155,4 +155,20 @@ export interface IPostList {
         totalpayments:number,
         totalPages:number
     } 
+}
+
+export interface IPost {
+    id: string,
+    title: string,
+    content:string,
+    status:string,
+    createdAt: string,
+    image?:string,
+    reactions:[],
+    author:{
+        id:string,
+        name:string,
+        profilePicture?:string,
+        
+    }
 }

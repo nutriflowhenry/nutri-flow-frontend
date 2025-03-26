@@ -4,40 +4,50 @@ import { useEffect, useState } from "react";
 const getInitials = (name: string) => {
     return name
         .split(" ")
-        .map((word) => word[0].toUpperCase())
+        .map((word) => word[0]?.toUpperCase())
         .join("")
         .slice(0, 2);
 };
 
-const colors = ["bg-[#d0dfbd]", "bg-[#e3d6b8]", "bg-[#9ead89]"];
+const colors = ["bg-[#d0dfbd]", "bg-[#e3d6b8]", "bg-[#9ead89]", "bg-[#b8d6e3]", "bg-[#e3b8c2]"];
 
-interface AvatarProps {
-    name: string;
-    profilePicture?: string;
-}
-
-const Avatar: React.FC<AvatarProps> = ({ name, profilePicture }) => {
-    const [imageError, setImageError] = useState(false);
+const Avatar: React.FC<{ name: string }> = ({ name }) => {
+    const [bgColor, setBgColor] = useState("");
 
     useEffect(() => {
-        setImageError(false);
-    }, [profilePicture]);
-
-    const colorClass = colors[name.charCodeAt(0) % colors.length];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        setBgColor(randomColor);
+    }, [name]);
 
     return (
-        <>
-            {profilePicture && !imageError ? (
-                <img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src={profilePicture} alt="avatar" onError={() => setImageError(true)}/>
-            ) : (
-                <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${colorClass} mr-4 shadow`}
-                >
-                    {getInitials(name)}
-                </div>
-            )}
-        </>
+        <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${bgColor} mr-4 shadow`}
+        >
+            {getInitials(name)}
+        </div>
     );
 };
 
-export default Avatar;
+const ProfilePicture: React.FC<{ post: any }> = ({ post }) => {
+    if (!post || !post.author) return null;
+    const [imageError, setImageError] = useState(false);
+
+    const { name, profilePicture } = post.author;
+    
+    return (
+        <div className="flex justify-center items-center">
+            {profilePicture  && !imageError ?(
+                <img
+                    className="w-15 h-15 mr-2 rounded-full border-4 border-white object-cover"
+                    src={profilePicture}
+                    alt="Profile"
+                    onError={() => setImageError(true)}
+                />
+            ) : (
+                <Avatar name={name} />
+            )}
+        </div>
+    );
+};
+
+export default ProfilePicture;

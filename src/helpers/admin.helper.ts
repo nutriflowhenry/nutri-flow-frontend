@@ -130,9 +130,9 @@ export async function banPost(token: string, id:string) {
     }
 }
 
-export async function approvePost(token: string, id:string) {
+export async function activatePost(token: string, id:string) {
     try {
-        await fetch(`${APIURL}/post/approve/${id}`, {
+        await fetch(`${APIURL}/post/activate/${id}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,
