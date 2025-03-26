@@ -14,12 +14,12 @@ import { useAuth } from "@/context/AuthContext";
 
 const LoadingModal = () => {
   return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
-          <div className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-              <p className="ml-4 text-gray-700">Cargando...</p>
-          </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
+      <div className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        <p className="ml-4 text-gray-700">Cargando...</p>
       </div>
+    </div>
   );
 };
 
@@ -63,11 +63,27 @@ const Navbar = () => {
               >
                 Home
               </button>
+              <button
+                onClick={() => router.push("/blog")}
+                className="hidden md:inline-block text-gray-700 hover:text-gray-900 transition-colors"
+                disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+              >
+                Blog
+              </button>
+              {userData?.user?.subscriptionType === "free" && (
+                <button
+                  onClick={() => router.push("/chatbot")}
+                  className="hidden md:inline-block text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  Chatbot
+                </button>
+              )}
               <div
                 className="relative"
                 onMouseEnter={handleMenuOpen}
                 onMouseLeave={handleMenuClose}
               >
+
                 <button
                   aria-label="User profile"
                   className="px-4 py-2"
@@ -91,6 +107,22 @@ const Navbar = () => {
                     >
                       Mi Perfil
                     </button>
+                    <button
+                      onClick={() => router.push("/blog")}
+                      className="md:hidden block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                      disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                    >
+                      Blog
+                    </button>
+                    {userData?.user?.subscriptionType === "free" && (
+                      <button
+                        onClick={() => router.push("/chatbot")}
+                        className="md:hidden block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                        disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                      >
+                        ChatBot
+                      </button>
+                    )}
                     <button
                       onClick={() => router.push("/dashboard/userSetting")}
                       className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
