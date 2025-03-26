@@ -27,8 +27,8 @@ const DashboardView = () => {
     const router = useRouter();
 
 
-     // Función para redirigir a la página de notificaciones
-     const redirectToNotifications = () => {
+    // Función para redirigir a la página de notificaciones
+    const redirectToNotifications = () => {
         setIsNotificationModalOpen(false);
         router.push('/notifications');
     };
@@ -149,11 +149,11 @@ const DashboardView = () => {
 
                             </div>
                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-                                <div className="bg-blue-200 p-4 rounded-lg text-center">
+                                <div className="bg-green-200 p-4 rounded-[25px] text-center">
                                     <p className="text-gray-600 text-sm">Daily Water</p>
                                     <p className="text-gray-900 font-bold ">{userData.user.userProfile?.hydrationGoal} ml</p>
                                 </div>
-                                <div className="bg-orange-200 p-4 rounded-lg text-center">
+                                <div className="bg-orange-200 p-4 rounded-[25px] text-center">
                                     <p className="text-gray-600 text-sm">Daily Calories</p>
                                     <p className="text-gray-900 font-bold ">{userData.user.userProfile?.caloriesGoal} kcal</p>
                                 </div>
@@ -236,7 +236,7 @@ const DashboardView = () => {
                     ) : (
                         // {/* Tarjeta de versión premium */}
                         <div className="w-full flex justify-center">
-                            <div className="w-full max-w-md bg-gradient-to-r from-orange-400 to-orange-600 p-6 rounded-lg shadow-lg mt-3 mb-8 text-center text-white">
+                            <div className="w-full max-w-md bg-gradient-to-r from-orange-400 to-orange-600 p-6 rounded-[25px] shadow-lg mt-3 mb-14 text-center text-white">
                                 <h2 className="text-2xl font-semibold mb-4">¡Mejora tu experiencia con NutriFlow Premium!</h2>
                                 <p className="text-white mb-4">
                                     Desbloquea todas las funciones premium y disfruta de una experiencia sin límites.
@@ -248,7 +248,7 @@ const DashboardView = () => {
                                     </li>
                                     <li className="flex items-center mb-2">
                                         <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-                                        BLog Social de la Comunidad
+                                        Blog Social de la Comunidad
                                     </li>
                                     <li className="flex items-center mb-2">
                                         <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
@@ -259,6 +259,10 @@ const DashboardView = () => {
                                         Monitoreo avanzado del progreso
                                     </li>
                                 </ul>
+                                <div className="mb-4">
+                                    <span className="text-3xl font-bold">$2.00</span>
+                                    <span className="text-lg">/mes</span>
+                                </div>
                                 <button
                                     onClick={handleSubscribe}
                                     className="bg-white text-orange-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
@@ -273,7 +277,7 @@ const DashboardView = () => {
 
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                            <div className="bg-white p-6 rounded-[25px] shadow-lg max-w-md w-full">
                                 <h2 className="text-xl text-center font-semibold mb-4 text-gray-800">Solicitud de Cancelación</h2>
                                 <p className="text-gray-700 mb-6">
                                     Estás a punto de cancelar tu suscripción a NutriFlow. Esta acción es irreversible y perderás acceso a todas las funcionalidades premium.
@@ -298,7 +302,7 @@ const DashboardView = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     {isNotificationModalOpen && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">

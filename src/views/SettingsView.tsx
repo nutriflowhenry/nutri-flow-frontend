@@ -527,11 +527,11 @@ const SettingsView = () => {
                 </p>
                 <p className="flex items-center">
                   <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-orange-600" />
-                  <strong>Email:</strong> <span className="ml-2">{userData.user.email}</span>
+                  <strong>Email:</strong> <span className="ml-2 truncate max-w-[180px] md:max-w-none">{userData.user.email}</span>
                 </p>
                 <button
                   onClick={() => setIsEditingUserInfo(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
                 >
                   <FontAwesomeIcon icon={faEdit} className="mr-2" />
                   Editar Información
@@ -684,7 +684,7 @@ const SettingsView = () => {
                 </p>
                 <button
                   onClick={() => setIsEditingProfile(true)}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
                 >
                   <FontAwesomeIcon icon={faEdit} className="mr-2" />
                   Editar Perfil
@@ -744,7 +744,7 @@ const SettingsView = () => {
               <>
                 <button
                   onClick={() => router.push("/notifications")}
-                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full"
+                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
                   Notificaciones
@@ -752,7 +752,7 @@ const SettingsView = () => {
                 {userData?.user?.provider !== "auth0" && (
                 <button
                   onClick={() => setIsEditingPassword(true)}
-                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
+                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
                 >
                   <FontAwesomeIcon icon={faKey} className="mr-2" />
                   Cambiar Contraseña
@@ -760,7 +760,7 @@ const SettingsView = () => {
                 )}
                 <button
                   onClick={handleDeleteAccount}
-                  className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 w-full mt-5"
+                  className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
                 >
                   <FontAwesomeIcon icon={faUserSlash} className="mr-2" />
                   Eliminar Cuenta
