@@ -72,7 +72,7 @@ const Navbar = () => {
                   >
                     Blog
                   </button>
-                  {userData?.user?.subscriptionType === "free" && (
+                  {userData?.user?.subscriptionType === "premium" && (
                     <button
                       onClick={() => router.push("/chatbot")}
                       className="hidden md:inline-block text-gray-700 hover:text-gray-900 transition-colors"
@@ -116,7 +116,7 @@ const Navbar = () => {
                         >
                           Blog
                         </button>
-                        {userData?.user?.subscriptionType === "free" && (
+                        {userData?.user?.subscriptionType === "premium" && (
                           <button
                             onClick={() => router.push("/chatbot")}
                             className="md:hidden block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
