@@ -1,6 +1,6 @@
 import { faBan, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProfilePicture from "@/components/Avatar";
+import {ProfilePicture} from "@/components/Avatar";
 import { IPost } from "@/types";
 
 interface PostCardProps {
