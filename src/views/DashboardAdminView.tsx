@@ -28,7 +28,7 @@ const DashboardAdminView = () => {
                 console.error("Error al obtener usuarios:", error);
             } finally {
                 setIsLoading(false);
-            }    
+            }
         };
         fetchUserStatistics();
     }, [userData]);
@@ -37,10 +37,10 @@ const DashboardAdminView = () => {
         const fetchLatestPosts = async () => {
             if (!userData?.token) return;
             setIsLoading(true);
-            
+
             try {
                 const response: IPostList = await getAllPost(userData.token);
-                const activePosts = response.posts.filter(post=>post.status === "approved");
+                const activePosts = response.posts.filter(post => post.status === "approved");
                 const sortedPosts = activePosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setLatestPost(sortedPosts.slice(0, 3));
             } catch (error) {
@@ -49,7 +49,7 @@ const DashboardAdminView = () => {
                 setIsLoading(false);
             }
         };
-    
+
         fetchLatestPosts();
     }, [userData?.token]);
 
@@ -60,18 +60,18 @@ const DashboardAdminView = () => {
         <div>
             {isLoading}
             <div className="relative mx-auto bg-white shadow-md rounded-lg mt-8 max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-col justify-end">
-            <div className="flex justify-center w-full">
-            
-            {userData?.user.profilePicture ? (
-                <img
-                    src={userData?.user.profilePicture} 
-                    alt="foto Perfil"
-                    className="w-24 h-24 rounded-full border-4 border-gray-200"
-                />
-            ) : (
-                <FontAwesomeIcon icon={faCircleUser} className="w-24 h-24 text-gray-400 rounded-full" />
-            )}
-            </div>
+                <div className="flex justify-center w-full">
+
+                    {userData?.user.profilePicture ? (
+                        <img
+                            src={userData?.user.profilePicture}
+                            alt="foto Perfil"
+                            className="w-24 h-24 rounded-full border-4 border-gray-200"
+                        />
+                    ) : (
+                        <FontAwesomeIcon icon={faCircleUser} className="w-24 h-24 text-gray-400 rounded-full" />
+                    )}
+                </div>
                 <h1 className="text-2xl mb-24 md:mb-28 font-bold text-black text-center">¡Bienvenido {userData?.user.name}!</h1>
 
                 <div className="absolute left-1/2 -translate-x-1/2 mb-4 translate-y-2/3 flex justify-center gap-2 md:gap-8 lg:gap-12">
@@ -98,35 +98,36 @@ const DashboardAdminView = () => {
                     </div>
                 </div>
             </div>
-            
+
             <div className="mx-auto mt-32 md:mt-32 lg:mt-36 xl:mt-40 mb-8 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-wrap md:flex-nowrap items-center justify-between overflow-hidden">
-                    <div className="w-full md:w-1/2 flex justify-center md:justify-start ml-0 md:ml-6">
+                <div className="w-full md:w-1/2 flex justify-center md:justify-start ml-0 md:ml-6">
                     <VerticalGraphic />
+                </div>
+                <div className="w-full md:w-1/2 mr-6 pt-6 md:mt-0 md:mx-6 md:mb-6 sm:mx-6 sm:mb-6">
+                    <div className="flex items-center justify-center">
+                        <FontAwesomeIcon icon={faList} className="text-2xl text-[#394e3ff4] mr-2" />
+                        <h3 className="text-xl font-bold text-black text-center">Últimas Publicaciones</h3>
                     </div>
-                    <div className="w-full md:w-1/2 mr-6 pt-6 md:mt-0 md:mx-6 md:mb-6 sm:mx-6 sm:mb-6">
-                            <div className="flex items-center justify-center">
-                                <FontAwesomeIcon icon={faList} className="text-2xl text-[#394e3ff4] mr-2" />
-                                <h3 className="text-xl font-bold text-black text-center">Últimas Publicaciones</h3>
+                    {latestPosts.map((post, index) => (
+                        <div key={post.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
+
+                            <div className="w-1/3 h-full">
+                                <img src={post.image} className="w-full h-full min-h-[80px] object-cover" />
                             </div>
-                        {latestPosts.map((post,index)=>(
-                            <div key={post.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
-                                
-                                        <div className="w-1/3 h-full">
-                                        <img src={post.image} className="w-full h-full min-h-[80px] object-cover"/>
-                                        </div>
-                                        <div className="w-2/3 p-3 flex flex-col">
-                                        <h3 className="font-bold text-lg">{post.author.name}</h3>
-                                        <p className="text-sm line-clamp-2">{post.title}</p>
-                                        </div>
-                                    <div className={`absolute top-0 right-0 h-full w-2 ${bgColors[index % bgColors.length]}`}></div>
-                                
+                            <div className="w-2/3 p-3 flex flex-col">
+                                <h3 className="font-bold text-lg">{post.author.name}</h3>
+                                <p className="text-sm line-clamp-2">{post.title}</p>
                             </div>
-                        ))}
-                    </div>
+
+                            <div className={`absolute top-0 right-0 h-full w-2 ${bgColors[index % bgColors.length]}`}></div>
+
+                        </div>
+                    ))}
+                </div>
             </div>
 
         </div>
-        
+
     );
 };
 
