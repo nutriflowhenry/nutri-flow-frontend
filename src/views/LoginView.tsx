@@ -24,7 +24,7 @@ const LoginView = () => {
   return (
     <div className="flex justify-center items-center mt-6 mb-5">
       <div className="w-full max-w-md bg-[#c4c1a4] p-8 rounded-2xl shadow-lg relative flex flex-col items-center pb-11" style={{ boxShadow: '8px 8px 16px #a29f8e, -8px -8px 16px #e6e3d2' }}>
-        <h2 className="text-xl font-bold text-gray-700 mb-6">Login</h2>
+        <h2 className="text-xl font-bold text-gray-700 mb-6">Iniciar Sesión</h2>
 
         <Formik
           initialValues={{ email: "", password: "" }}
@@ -89,7 +89,7 @@ const LoginView = () => {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Password:</label>
+                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Contraseña:</label>
                 <Field
                   type="password"
                   name="password"
@@ -111,9 +111,10 @@ const LoginView = () => {
         </Formik>
 
         <div className="w-full h-px bg-gray-400 my-4" >
+          
           <div className="flex justify-center space-x-6">
             <button
-              className="flex items-center justify-center w-full bg-white text-gray-700 border border-gray-300 shadow-md hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105"
+              className="flex items-center justify-center w-full bg-white text-gray-700 hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105"
               onClick={loginWithGoogle}
             >
               <FaGoogle className="text-red-500 text-xl mr-2" />
