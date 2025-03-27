@@ -7,8 +7,6 @@ import { getAllPost, getUserStatistics } from '@/helpers/admin.helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import VerticalGraphic from '@/components/VerticalGraphic';
-import LoadingModal from '@/components/LoadingModal';
-import CardPostAdmin from '@/components/CardPostAdmin';
 
 const DashboardAdminView = () => {
     const { userData } = useAuth();

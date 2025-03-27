@@ -47,11 +47,10 @@ const PostsAdminView = () => {
 
     return (
         <div>
-            {loading ? (
-                <p>Cargando...</p>
-            ) : allPost ? (
+            {loading}
+            {allPost ? (
                 <div>
-                    <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Posts Blog</h1>
+                    <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Publicaciones Blog</h1>
                     <div>
                         {allPost.posts.map((post) => (
                             <CardPostAdmin key={post.id} post={post} handlePostStatus={handlePostStatus} />
@@ -60,7 +59,7 @@ const PostsAdminView = () => {
                     <p>Página: {allPost.pagination.page} / {allPost.pagination.totalPages}</p>
                 </div>
             ) : (
-                "No hay datos disponibles"
+                <p></p>
             )}
         </div>
     );
