@@ -1,4 +1,5 @@
 "use client";
+import { IPost } from "@/types";
 import { useEffect, useState } from "react";
 
 const getInitials = (name: string) => {
@@ -28,9 +29,9 @@ const Avatar: React.FC<{ name: string }> = ({ name }) => {
     );
 };
 
-const ProfilePicture: React.FC<{ post: any }> = ({ post }) => {
-    if (!post || !post.author) return null;
+const ProfilePicture: React.FC<{ post: IPost }> = ({ post }) => {
     const [imageError, setImageError] = useState(false);
+    if (!post || !post.author) return null;
 
     const { name, profilePicture } = post.author;
     

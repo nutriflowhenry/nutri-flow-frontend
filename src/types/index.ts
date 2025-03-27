@@ -1,5 +1,3 @@
-import { Url } from "url";
-
 export interface IRegisterProps {
     name: string;
     email: string;
