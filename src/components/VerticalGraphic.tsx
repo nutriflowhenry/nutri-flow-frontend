@@ -11,7 +11,9 @@ const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const VerticalGraphic = () => {
   const { userData } = useAuth();
-  const [allPayments, setAllPayments] = useState<IUsersPayments>({ data: [] });
+  const [allPayments, setAllPayments] = useState<IUsersPayments>({  data: [],
+    pagination: { page: 1, limit: 10, totalpayments: 0, totalPages: 1 }
+});
   const [loading, setLoading] = useState(true);
   const [salesByDay, setSalesByDay] = useState<number[]>(Array(7).fill(0));
 
@@ -80,7 +82,7 @@ const VerticalGraphic = () => {
   return (
     <div className="max-w-sm w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
       {loading ? (
-        <p className="text-gray-500">Cargando datos...</p>
+        <p className="text-gray-500"></p>
       ) : (
         <>
           {/* Header */}

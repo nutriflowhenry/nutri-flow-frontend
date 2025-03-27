@@ -124,6 +124,50 @@ export interface IUsersPayments {
             isActive: boolean
         }
     }[];
+    pagination:{
+        page: number,
+        limit:number,
+        totalpayments:number,
+        totalPages:number
+    } 
+}
+
+export interface IPostList {
+    posts:{
+        id: string,
+        title: string,
+        content:string,
+        status:string,
+        createdAt: string,
+        image?:string,
+        reactions:[],
+        author:{
+            id:string,
+            name:string,
+            profilePicture?:string,
+        }
+    }[];
+    pagination:{
+        page: 1,
+        limit: 10,
+        totalpayments:number,
+        totalPages:number
+    } 
+}
+export interface IPost {
+    id: string,
+    title: string,
+    content:string,
+    status:string,
+    createdAt: string,
+    image?:string,
+    reactions:[],
+    author:{
+        id:string,
+        name:string,
+        profilePicture?:string,
+        
+    }
 }
 
 export enum PostTag {

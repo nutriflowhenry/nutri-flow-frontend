@@ -8,8 +8,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Logo from "@/assets/Logo";
 import Wave from "@/assets/Wave";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import SideBar from "./SideBar";
 
 
 const LoadingModal = () => {
@@ -27,6 +28,9 @@ const Navbar = () => {
   const router = useRouter();
   const { userData, logout, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isAdminDashboard = userData?.user?.role === "admin" && pathname.startsWith("/dashboard/admin");
 
   const handleMenuOpen = () => {
     setIsMenuOpen(true);
@@ -39,6 +43,9 @@ const Navbar = () => {
   return (
     <div className="relative w-full">
       {isLoading && <LoadingModal />}
+
+      {isAdminDashboard && <SideBar />}
+
       <nav className="bg-[#F4EAE0] w-full h-[60px] flex items-center justify-between px-4 relative z-20">
         <div className="flex items-center space-x-3">
           {/* <button aria-label="Open menu">
@@ -59,11 +66,14 @@ const Navbar = () => {
               {userData ? (
                 <>
                   <button
-                    onClick={() => router.push("/home")}
+                    onClick={() => {
+                      const redirectTo = isAdminDashboard ? "/dashboard/admin" : "/home";
+                      router.push(redirectTo);
+                    }}
                     className="text-gray-700 hover:text-gray-900 transition-colors"
                     disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                   >
-                    Home
+                    Mi Bienestar
                   </button>
                   <button
                     onClick={() => router.push("/blog")}
@@ -88,7 +98,7 @@ const Navbar = () => {
 
                     <button
                       aria-label="User profile"
-                      className="px-4 py-2"
+                      className="md:px-4 py-2"
                       onClick={() => router.push('/dashboard')}
                       disabled={userData.user.userProfile === null}
                     >
