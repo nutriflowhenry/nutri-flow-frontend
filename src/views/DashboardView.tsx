@@ -150,11 +150,11 @@ const DashboardView = () => {
                             </div>
                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
                                 <div className="bg-green-200 p-4 rounded-[25px] text-center">
-                                    <p className="text-gray-600 text-sm">Daily Water</p>
+                                    <p className="text-gray-600 text-sm">Requerimiento de Agua</p>
                                     <p className="text-gray-900 font-bold ">{userData.user.userProfile?.hydrationGoal} ml</p>
                                 </div>
                                 <div className="bg-orange-200 p-4 rounded-[25px] text-center">
-                                    <p className="text-gray-600 text-sm">Daily Calories</p>
+                                    <p className="text-gray-600 text-sm">Límite de Calorías</p>
                                     <p className="text-gray-900 font-bold ">{userData.user.userProfile?.caloriesGoal} kcal</p>
                                 </div>
 
