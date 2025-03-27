@@ -39,7 +39,7 @@ const ProfilePicture: React.FC<{ post: IPost }> = ({ post }) => {
         <div className="flex justify-center items-center">
             {profilePicture  && !imageError ?(
                 <img
-                    className="w-15 h-15 mr-2 rounded-full border-4 border-white object-cover"
+                    className="w-15 h-15 rounded-full border-4 border-white object-cover"
                     src={profilePicture}
                     alt="Profile"
                     onError={() => setImageError(true)}

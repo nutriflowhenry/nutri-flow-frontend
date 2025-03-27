@@ -155,7 +155,7 @@ const UsersPaymentsView = () => {
                 </div>
             ) : (!isLoading && (
                 <div className="text-black text-center">
-                    <p></p>
+                    <p>No se encontro historial de transacciones disponible</p>
                 </div>
             )
             )}

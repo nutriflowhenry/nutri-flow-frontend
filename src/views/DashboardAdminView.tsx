@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { IPost, IPostList, IUsersStatistics } from '@/types';
 import { getAllPost, getUserStatistics } from '@/helpers/admin.helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser, faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser, faList, faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import VerticalGraphic from '@/components/VerticalGraphic';
 
 const DashboardAdminView = () => {
@@ -40,7 +40,8 @@ const DashboardAdminView = () => {
             
             try {
                 const response: IPostList = await getAllPost(userData.token);
-                const sortedPosts = response.posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                const activePosts = response.posts.filter(post=>post.status === "approved");
+                const sortedPosts = activePosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setLatestPost(sortedPosts.slice(0, 3));
             } catch (error) {
                 console.error("Error al obtener las últimas publicaciones:", error);
@@ -102,13 +103,16 @@ const DashboardAdminView = () => {
                     <div className="w-full md:w-1/2 flex justify-center md:justify-start ml-0 md:ml-6">
                     <VerticalGraphic />
                     </div>
-                    <div className="w-full md:w-1/2 mr-6 pt-6 md:mt-0 md:mx-6 md-mb-6 sm:mx-6 sm:mb-6">
-                        <h3 className="text-xl font-bold text-black text-center">Últimas Publicaciones</h3>
+                    <div className="w-full md:w-1/2 mr-6 pt-6 md:mt-0 md:mx-6 md:mb-6 sm:mx-6 sm:mb-6">
+                            <div className="flex items-center justify-center">
+                                <FontAwesomeIcon icon={faList} className="text-2xl text-[#394e3ff4] mr-2" />
+                                <h3 className="text-xl font-bold text-black text-center">Últimas Publicaciones</h3>
+                            </div>
                         {latestPosts.map((post,index)=>(
                             <div key={post.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
                                 
                                         <div className="w-1/3 h-full">
-                                        <img src={post.image} className="w-full h-full object-cover"/>
+                                        <img src={post.image} className="w-full h-full min-h-[80px] object-cover"/>
                                         </div>
                                         <div className="w-2/3 p-3 flex flex-col">
                                         <h3 className="font-bold text-lg">{post.author.name}</h3>

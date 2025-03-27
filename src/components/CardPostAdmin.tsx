@@ -16,18 +16,18 @@ const CardPostAdmin: React.FC<PostCardProps> = ({ post, handlePostStatus }) => {
             <ProfilePicture post={post} />
         </div>
 
-        <div className="flex-1 px-4 py-6 pt-3 flex flex-col justify-between">
+        <div className="flex-1 px-6 py-6 pt-3 flex flex-col justify-between">
             <div>
                 <h2 className="text-lg font-semibold text-gray-900">{post.author.name}</h2>
                 <h3 className="text-lg font-semibold text-gray-900">{post.title}</h3>
 
                 {post.image && (
                     <div className="w-full mt-2 md:hidden">
-                        <img src={post.image} alt="Post Image" className="w-full h-40 object-cover rounded-md" />
+                        <img src={post.image} alt="Post Image" className="w-2/3 h-auto p-2 rounded-xl mx-auto" />
                     </div>
                 )}
 
-                <p className="mt-3 text-gray-700 text-sm">{post.content}</p>
+                <p className="mt-3 mr-0 text-gray-700 text-sm w-full text-justify">{post.content}</p>
             </div>
 
             {/* Reacciones y Botón */}
@@ -47,7 +47,7 @@ const CardPostAdmin: React.FC<PostCardProps> = ({ post, handlePostStatus }) => {
 
         {/* Imagen del Post (Derecha en pantallas grandes) */}
         {post.image && (
-            <div className="hidden md:flex w-1/3 justify-end px-4 pb-4 md:pb-0">
+            <div className="hidden md:flex w-1/3 justify-end px-7 m-auto mt-19 py-2 md:pb-0">
                 <img src={post.image} alt="Post Image" className="w-auto h-40 object-cover rounded-md" />
             </div>
         )}

@@ -66,7 +66,10 @@ const Navbar = () => {
               {userData ? (
                 <>
                   <button
-                    onClick={() => router.push("/home")}
+                    onClick={() => {
+                      const redirectTo = isAdminDashboard ? "/dashboard/admin" : "/home";
+                      router.push(redirectTo);
+                    }}
                     className="text-gray-700 hover:text-gray-900 transition-colors"
                     disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                   >

@@ -5,7 +5,7 @@ import { activatePost, banPost, getAllPost } from "@/helpers/admin.helper";
 import { IPostList } from "@/types";
 import React, { useEffect, useState } from "react";
 
-const PostsAdminView = () => {
+const ReviewsAdminView = () => {
     const { userData } = useAuth();
     const [allPost, setAllPost] = useState<IPostList | null>(null);
     const [loading, setLoading] = useState(true);
@@ -84,11 +84,11 @@ const PostsAdminView = () => {
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Cargando posts...</p>
+            <p className="mt-4 text-gray-600">Cargando reseñas...</p>
           </div>
         ) : allPost && allPost.posts.length > 0 ? (
           <div>
-            <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Publicaciones Blog</h1>
+            <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Reseñas Nutriflow</h1>
             <div>
               {allPost.posts.map((post) => (
                 <CardPostAdmin key={post.id} post={post} handlePostStatus={handlePostStatus} />
@@ -119,4 +119,4 @@ const PostsAdminView = () => {
     );
 };
 
-export default PostsAdminView;
+export default ReviewsAdminView;
