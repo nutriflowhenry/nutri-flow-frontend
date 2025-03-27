@@ -63,7 +63,7 @@ const Navbar = () => {
                     className="text-gray-700 hover:text-gray-900 transition-colors"
                     disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                   >
-                    Home
+                    Mi Bienestar
                   </button>
                   <button
                     onClick={() => router.push("/blog")}
@@ -88,7 +88,7 @@ const Navbar = () => {
 
                     <button
                       aria-label="User profile"
-                      className="px-4 py-2"
+                      className="md:px-4 py-2"
                       onClick={() => router.push('/dashboard')}
                       disabled={userData.user.userProfile === null}
                     >
