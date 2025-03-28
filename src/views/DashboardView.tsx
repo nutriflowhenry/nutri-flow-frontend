@@ -299,7 +299,7 @@ const DashboardView = () => {
                                 >
                                     ¡Suscríbete ahora!
                                 </button>
-                            
+
                             </div>
                         </div>
 
@@ -341,6 +341,12 @@ const DashboardView = () => {
                                     Por favor, completa tus datos de notificaciones para continuar.
                                 </p>
                                 <div className="flex justify-end space-x-4">
+                                    <button
+                                        onClick={() => setIsNotificationModalOpen(false)}
+                                        className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors"
+                                    >
+                                        Ahora no
+                                    </button>
                                     <button
                                         onClick={redirectToNotifications}
                                         className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"

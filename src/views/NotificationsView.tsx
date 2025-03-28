@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAuth } from '@/context/AuthContext'; // Same context as SettingsView
+import { useAuth } from '@/context/AuthContext';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 
@@ -42,6 +42,20 @@ const NotificationsView = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
         const checked = (e.target as HTMLInputElement).checked;
+        
+        // Validación en tiempo real para el campo de teléfono
+        if (name === 'phone') {
+            // Solo permite números y el signo + al inicio
+            const cleanedValue = value.replace(/[^0-9+]/g, '');
+            // Asegura que solo haya un + al inicio
+            const finalValue = cleanedValue.startsWith('+') ? 
+                '+' + cleanedValue.slice(1).replace(/[^0-9]/g, '') : 
+                cleanedValue.replace(/[^0-9]/g, '');
+            
+            setFormData({ ...formData, [name]: finalValue });
+            return;
+        }
+        
         setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
     };
 
@@ -51,9 +65,14 @@ const NotificationsView = () => {
         try {
             await Yup.object().shape({
                 remindersEnabled: Yup.boolean().required(),
-                country: Yup.string().required('Country is required'),
-                city: Yup.string().required('City is required'),
-                phone: Yup.string().required('Phone number is required'),
+                country: Yup.string().required('País es requerido'),
+                city: Yup.string()
+                    .required('Ciudad es requerida')
+                    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/, 'La ciudad solo debe contener letras'),
+                phone: Yup.string()
+                    .required('Número telefónico es requerido')
+                    .matches(/^\+[0-9]+$/, 'El número debe comenzar con + y solo contener números')
+                    .min(8, 'El número telefónico debe tener al menos 8 dígitos'),
             }).validate(formData, { abortEarly: false });
 
             if (!userData) {
@@ -103,7 +122,7 @@ const NotificationsView = () => {
                 setValidationErrors(errors);
             } else {
                 console.error(error);
-                Swal.fire('Error', 'Failed to update preferences', 'error');
+                Swal.fire('Error', 'Error al actualizar preferencias', 'error');
             }
         }
     };
@@ -117,13 +136,15 @@ const NotificationsView = () => {
                 <h2 className="text-2xl font-semibold mb-6 text-gray-800">Preferencias de Notificación</h2>
                 {isEditing ? (
                     <form onSubmit={handleFormSubmit}>
-                        <label>
-                            Country:
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-2">
+                                País:
+                            </label>
                             <select
                                 name="country"
                                 value={formData.country}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 p-2"
                                 required
                             >
                                 <option value="">Selecciona tu país</option>
@@ -135,51 +156,62 @@ const NotificationsView = () => {
                                 <option value="PY">Paraguay</option>
                                 <option value="EC">Ecuador</option>
                             </select>
-                        </label>
-                        {validationErrors.country && (
-                            <p className="text-red-500 text-sm">{validationErrors.country}</p>
-                        )}
-                        <label>
-                            Ciudad:
+                            {validationErrors.country && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.country}</p>
+                            )}
+                        </div>
+                        
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-2">
+                                Ciudad:
+                            </label>
                             <input
                                 type="text"
                                 name="city"
                                 value={formData.city}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 p-2"
                                 required
                             />
-                        </label>
-                        {validationErrors.city && (
-                            <p className="text-red-500 text-sm">{validationErrors.city}</p>
-                        )}
-                        <label>
-                            Numero Telefónico:
+                            {validationErrors.city && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.city}</p>
+                            )}
+                        </div>
+                        
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-2">
+                                Número Telefónico:
+                            </label>
                             <input
                                 type="text"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 p-2"
                                 required
+                                placeholder="+541112345678"
                             />
-                        </label>
-                        {validationErrors.phone && (
-                            <p className="text-red-500 text-sm">{validationErrors.phone}</p>
-                        )}
-                        <label className="flex items-center space-x-3">
-                            <input
-                                type="checkbox"
-                                name="remindersEnabled"
-                                checked={formData.remindersEnabled}
-                                onChange={handleInputChange}
-                                className="h-5 w-5 text-green-500 border-gray-300 rounded focus:ring-green-500"
-                            />
-                            <span>¿Deseas recibir recordatorios regulares?</span>
-                        </label>
-                        {validationErrors.remindersEnabled && (
-                            <p className="text-red-500 text-sm">{validationErrors.remindersEnabled}</p>
-                        )}
+                            {validationErrors.phone && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.phone}</p>
+                            )}
+                        </div>
+                        
+                        <div className="mb-6">
+                            <label className="flex items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    name="remindersEnabled"
+                                    checked={formData.remindersEnabled}
+                                    onChange={handleInputChange}
+                                    className="h-5 w-5 text-green-500 border-gray-300 rounded focus:ring-green-500"
+                                />
+                                <span>¿Deseas recibir recordatorios regulares?</span>
+                            </label>
+                            {validationErrors.remindersEnabled && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.remindersEnabled}</p>
+                            )}
+                        </div>
+                        
                         <div className="flex justify-end space-x-4 mt-6">
                             <button
                                 type="button"
