@@ -3,27 +3,22 @@ import { IRegisterProps, IUserSession, IloginProps } from "@/types";
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function register(userData: IRegisterProps) {
-    try {
-        const response = await fetch(`${APIURL}/auth/signup`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify(userData)
-        })
+    const response = await fetch(`${APIURL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+            "Content-type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(userData)
+    });
 
-        if (response.ok) {
-            return response.json()
-        } else {
-            alert("The new user register have failed")
-        }
-
-    } catch (error) {
-        alert("The new user register have failed")
-        throw error;
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "The new user register have failed");
     }
-};
+
+    return response.json();
+}
 
 export async function validateGoogleToken(googleToken: string) {
     try {
