@@ -4,27 +4,29 @@ export function validateRegisterForm(values: IRegisterProps){
     const errors: IRegisterErrors = {};
 
     if (!values.name){
-        errors.name = "The username field is required";
+        errors.name = "El nombre de usuario es obligatorio";
     } else if (!/^[a-zA-Z\s]+$/.test(values.name)) {
-        errors.name = 'Name must only contain letters and spaces';
+        errors.name = 'El nombre solo debe contener letras y espacios.';
     }
     
     if (!values.email) {
-        errors.email = "The email field is required";
+        errors.email = "El email es obligatorio.";
     } else if(values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-        errors.email = "Invalid email"
+        errors.email = "Email inválido"
     }
 
     if (!values.password) {
-        errors.password = "The Password field is required";
+        errors.password = "La contraseña es obligatoria";
     } else if (values.password.length < 8) {
-        errors.password = "Password must be at least 8 characters long";
+        errors.password = "La contraseña debe tener al menos 8 caracteres.";
+    } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/.test(values.password)) {
+        errors.password = "La contraseña debe contener al menos una mayúscula, un número y un carácter especial.";
     }
 
     if (!values.passwordConfirmation) {
-        errors.passwordConfirmation = "The passwordConfirmation field is required";
+        errors.passwordConfirmation = "Confirmar la contraseña es obligatorio";
     } else if (values.passwordConfirmation != values.password) {
-        errors.passwordConfirmation = 'The passwords dont match';
+        errors.passwordConfirmation = 'Las contraseñas no coinciden';
     }    
     
     return errors;
