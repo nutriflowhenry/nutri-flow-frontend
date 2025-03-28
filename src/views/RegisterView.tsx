@@ -1,17 +1,20 @@
 'use client'
-import { Formik, Field, Form} from 'formik';
+import { Formik, Field, Form } from 'formik';
 import { validateRegisterForm } from '@/helpers/validate';
 import { register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
 import Alert from '@/components/Alert';
 import { useAuth } from '@/context/AuthContext';
-import { FaGoogle } from 'react-icons/fa';
+import { FaGoogle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Swal from "sweetalert2";
+import { useState } from 'react';
 
 const RegisterView = () => {
     const router = useRouter();
     const { loginWithGoogle } = useAuth();
-    
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     return (
 
         <div className="flex justify-center items-center mb-12 mt-12">
@@ -33,18 +36,18 @@ const RegisterView = () => {
                                 icon: "success",
                                 title: "Registro exitoso",
                                 text: "Ahora puedes iniciar sesion",
-                                });
+                            });
                             setTimeout(() => {
                                 router.push('/login');
                             }, 2000);
 
                         } catch {
                             await Swal.fire({
-                            icon: "error",
-                            title: "Error en el registro nuevo usuario",
-                            text: "Credenciales incorrectas o error en el servidor.",
+                                icon: "error",
+                                title: "Error en el registro nuevo usuario",
+                                text: "Credenciales incorrectas o error en el servidor.",
                             });
-                        }   
+                        }
                     }}
 
                     validate={validateRegisterForm}
@@ -54,7 +57,7 @@ const RegisterView = () => {
                         <Form className="space-y-4 md:space-y-6">
 
                             <div className="flex flex-col">
-                                <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
+                                <label htmlFor="name" className="block text-lg font-medium text-gray-700">Nombre</label>
                                 <Field type="text" name="name" id="name" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="Jhon" required="" />
                                 {errors.name && touched.name && (
                                     <Alert type="error" message={errors.name} />
@@ -69,17 +72,49 @@ const RegisterView = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Password</label>
-                                <Field type="password" name="password" id="password" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="********" required="" />
+                            <div className="relative">
+                                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Contraseña</label>
+                                <div className="relative">
+                                    <Field
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        id="password"
+                                        className="p-2 text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none pr-10"
+                                        placeholder="********"
+                                        required=""
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
                                 {errors.password && touched.password && (
                                     <Alert type="error" message={errors.password} />
                                 )}
                             </div>
 
-                            <div>
-                                <label htmlFor="passwordConfirmation" className="block text-lg font-medium text-gray-700">Confirm Password</label>
-                                <Field type="password" name="passwordConfirmation" id="passwordConfirmation" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="********" required="" />
+                            <div className="relative">
+                                <label htmlFor="passwordConfirmation" className="block text-lg font-medium text-gray-700">Confirmar Contraseña</label>
+                                <div className="relative">
+                                    <Field
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        name="passwordConfirmation"
+                                        id="passwordConfirmation"
+                                        className="p-2 text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none pr-10"
+                                        placeholder="********"
+                                        required=""
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
                                 {errors.passwordConfirmation && touched.passwordConfirmation && (
                                     <Alert type="error" message={errors.passwordConfirmation} />
                                 )}

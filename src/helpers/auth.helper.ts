@@ -202,3 +202,38 @@ export async function fetchUserPayments(token: string,page: number = 1, limit: n
         throw error;
     }
 };
+
+
+//********** Reseñas *********
+export async function submitUserReview(token: string, content: string): Promise<{ success: boolean; message: string }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/review`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            // No lanzamos error, lo manejamos como flujo normal
+            return {
+                success: false,
+                message: errorData.message || "No puedes enviar más de una reseña"
+            };
+        }
+
+        return { 
+            success: true,
+            message: '¡Reseña enviada con éxito!' 
+        };
+    } catch (error) {
+        console.error("Error en submitUserReview:", error);
+        return {
+            success: false,
+            message: "Error de conexión. Intenta nuevamente."
+        };
+    }
+}
