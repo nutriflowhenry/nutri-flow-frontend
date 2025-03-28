@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { activatePost, banPost, getAllPost } from "@/helpers/admin.helper";
 import { IPostList } from "@/types";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const PostsAdminView = () => {
     const { userData } = useAuth();
@@ -20,7 +21,7 @@ const PostsAdminView = () => {
             }
             try {
                 setLoading(true);
-                const response = await getAllPost(userData?.token,page);
+                const response = await getAllPost(userData?.token, page, 5);;
                 setAllPost(response);
             } catch (error) {
                 console.error("Error al obtener Post:", error);
@@ -30,7 +31,7 @@ const PostsAdminView = () => {
         };
 
         fetchPost(currentPage);
-    }, [userData?.token]);
+    }, [userData?.token ?? "",currentPage]);
 
     useEffect(() => {
         if (!loading && (!allPost || allPost.posts.length === 0)) {
@@ -54,6 +55,13 @@ const PostsAdminView = () => {
             }
             const response = await getAllPost(userData?.token);
             setAllPost(response);
+
+            Swal.fire({
+                title: '¡Éxito!',
+                text: status === "approved" ? `El post ha sido bloqueado` : 'El post ha sido activado',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
         } catch (error) {
             console.error("Error al cambiar el estado del post:", error);
         }
@@ -74,7 +82,7 @@ const PostsAdminView = () => {
     if (loading) {
         return (
           <div className="fixed inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-green-500"></div>
           </div>
         );
       }

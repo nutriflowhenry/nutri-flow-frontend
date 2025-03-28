@@ -55,23 +55,23 @@ const Navbar = () => {
             <LightBulbIcon className="w-6 h-6 text-gray-700" />
           </button> */}
         </div>
-
+            
         <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-[40px] z-30" style={{ width: '76px', height: '63px' }}>
           <Logo />
         </div>
-
+          
         <div className="flex items-center space-x-4">
-          {!isLoading && (
+          {!isLoading && !isAdminDashboard && (
             <>
               {userData ? (
                 <>
                   <button
                     onClick={() => {
-                      const redirectTo = isAdminDashboard ? "/dashboard/admin" : "/home";
+                      const redirectTo = "/home";
                       router.push(redirectTo);
                     }}
                     className="text-gray-700 hover:text-gray-900 transition-colors"
-                    disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                    disabled={userData.user.userProfile === null && userData.user.role == "admin"}
                   >
                     Mi Bienestar
                   </button>

@@ -30,7 +30,7 @@ const ReviewsAdminView = () => {
         };
 
         fetchReviews(currentPage);
-    }, [userData?.token]);
+    }, [userData?.token ?? "",currentPage]);
 
     useEffect(() => {
         if (!loading && (!allReviews || allReviews.data.results.length === 0)) {
@@ -74,14 +74,14 @@ const ReviewsAdminView = () => {
             ) : allReviews && allReviews.data.results.length > 0 ? (
                 <div>
                     <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Reseñas Nutriflow</h1>
-                    <div>
+                    <div className="max-w-lg mx-auto my-2">
                         {allReviews.data.results.map((review) => (
-                            <div key={review.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[120px] my-2 max-w-lg mx-auto p-6">
+                            <div key={review.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[120px] my-2 ">
 
-                                <div className="w-1/3 h-full">
+                                <div className="pl-4">
                                     <Avatar name={review.user.name} />
                                 </div>
-                                <div className="p-3 flex flex-col">
+                                <div className="flex flex-col boder-4">
                                     <h3 className="font-bold text-lg">{review.user.name}</h3>
                                     <p className="text-justify">{review.content}</p>
                                 </div>
