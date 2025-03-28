@@ -13,11 +13,10 @@ const CommentCard: React.FC<CommentCardProps> = ({
   onDelete,
   canDelete 
 }) => {
-  // Verificación de seguridad
   if (!comment || !comment.user) {
     return null;
   }
-  console.log("Datos del comentario en CommentCard:", comment);
+
   const formattedDate = comment.createdAt 
     ? new Date(comment.createdAt).toLocaleDateString('es-ES', {
         day: 'numeric',
@@ -27,19 +26,18 @@ const CommentCard: React.FC<CommentCardProps> = ({
     : 'Fecha desconocida';
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg relative">
+    <div className="bg-[#f8f8f8] p-4 rounded-xl relative">
       {canDelete && onDelete && (
         <button
           onClick={onDelete}
-          className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+          className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition-colors"
           aria-label="Eliminar comentario"
-          data-testid="delete-comment-button"
         >
           <TrashIcon className="h-4 w-4" />
         </button>
       )}
-      <p className="text-gray-800">{comment.content || 'Contenido no disponible'}</p>
-      <div className="mt-2 text-xs text-gray-500">
+      <p className="text-[#424242] font-sora text-sm">{comment.content || 'Contenido no disponible'}</p>
+      <div className="mt-2 text-xs text-[#a2a2a2] font-sora">
         <span>Por: {comment.user.name || 'Anónimo'} • </span>
         <span>{formattedDate}</span>
       </div>
