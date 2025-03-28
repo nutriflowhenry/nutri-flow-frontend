@@ -60,15 +60,20 @@ const UsersPaymentsView = () => {
 
     const processedUsers = allPayments.data
         .sort((a, b) => {
-
-            if (a.status !== b.status) return a.status === "active" ? -1 : 1;
-
+            if (a.status !== b.status) return a.status === 'active' ? -1 : 1;
             return a.user.name.localeCompare(b.user.name);
         })
         .filter((user) => {
-            return filterStatus === "" || user.status === filterStatus;
-        })
-        .slice((currentPage - 1) * 10, currentPage * 10);
+            return filterStatus === '' || user.status === filterStatus;
+        });
+
+    useEffect(() => {
+        const filteredDataLength = processedUsers.length;
+        const pages = Math.ceil(filteredDataLength / 10);
+        setTotalPages(pages);
+    }, [processedUsers]);
+
+    const paginatedData = processedUsers.slice((currentPage - 1) * 10, currentPage * 10);    
 
     return (
         <div>
@@ -101,6 +106,9 @@ const UsersPaymentsView = () => {
                                                 Nombre
                                             </th>
                                             <th scope="col" className="px-6 py-3 text-center">
+                                                Valor Suscripcion
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-center">
                                                 Estado suscripcion
                                             </th>
                                             <th scope="col" className="px-6 py-3 text-center">
@@ -113,10 +121,13 @@ const UsersPaymentsView = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {processedUsers.map((payment) => (
+                                        {paginatedData.map((payment) => (
                                             <tr key={payment.id} className="bg-white border-b border-gray-200 hover:bg-[#eeedeb73]">
                                                 <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                                                     {payment.user.name}
+                                                </th>
+                                                <th scope="row" className="px-20 py-2 font-medium text-gray-900 whitespace-nowrap">
+                                                    $2
                                                 </th>
                                                 <td className="px-6 py-2 flex items-center justify-center gap-2">
                                                     <span

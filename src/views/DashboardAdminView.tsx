@@ -7,6 +7,7 @@ import { getAllPost, getUserStatistics } from '@/helpers/admin.helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faList, faUser, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import VerticalGraphic from '@/components/VerticalGraphic';
+import { Avatar } from '@/components/Avatar';
 
 const DashboardAdminView = () => {
     const { userData } = useAuth();
@@ -99,30 +100,30 @@ const DashboardAdminView = () => {
                 </div>
             </div>
 
-            <div className="mx-auto mt-32 md:mt-32 lg:mt-36 xl:mt-40 mb-8 bg-white shadow-md rounded-lg max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-wrap md:flex-nowrap items-center justify-between overflow-hidden">
-                <div className="w-full md:w-1/2 flex justify-center md:justify-start ml-0 md:ml-6">
+            <div className="mx-auto mt-32 md:mt-32 lg:mt-36 xl:mt-40 mb-8 max-w-[90%] sm:max-w-[80%] md:max-w-4xl min-h-[250px] flex flex-wrap md:flex-nowrap items-center justify-between overflow-hidden">
+                <div className="w-full mr-2 md:w-1/2 flex justify-center md:justify-start sm:mb-6 bg-white rounded-xl shadow-md">
                     <VerticalGraphic />
                 </div>
-                <div className="w-full md:w-1/2 mr-6 pt-6 md:mt-0 md:mx-6 md:mb-6 sm:mx-6 sm:mb-6">
+                <div className="w-full md:w-1/2 pt-6 px-3 md:mt-0 ml-2 md:mb-6 sm:mr-0 flex flex-col justify-start min-h-[400px] bg-white rounded-xl shadow-md">
                     <div className="flex items-center justify-center">
-                        <FontAwesomeIcon icon={faList} className="text-2xl text-[#394e3ff4] mr-2" />
-                        <h3 className="text-xl font-bold text-black text-center">Últimas Publicaciones</h3>
+                        <FontAwesomeIcon icon={faList} className="text-2xl text-[#f2c776f4] mr-2" />
+                        <h3 className="text-xl font-bold text-black text-center">Lo mas reciente Blog</h3>
                     </div>
                     {latestPosts.map((post, index) => (
-                        <div key={post.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
+                    <div key={post.id} className="relative flex bg-[#fbfbf7] shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
 
-                            <div className="w-1/3 h-full">
-                                <img src={post.image} className="w-full h-full min-h-[80px] object-cover" />
-                            </div>
-                            <div className="w-2/3 p-3 flex flex-col">
-                                <h3 className="font-bold text-lg">{post.author.name}</h3>
-                                <p className="text-sm line-clamp-2">{post.title}</p>
-                            </div>
-
-                            <div className={`absolute top-0 right-0 h-full w-2 ${bgColors[index % bgColors.length]}`}></div>
-
+                        <div className="h-full flex items-center p-4 pr-0">
+                            <Avatar name={post.author.name} />
                         </div>
-                    ))}
+                        <div className="flex flex-col justify-center items-start text-left">
+                            <h3 className="font-bold text-lg">{post.author.name}</h3>
+                            <p className="text-sm line-clamp-2">{post.title}</p>
+                        </div>
+
+                        <div className={`absolute top-0 right-0 h-full w-2 ${bgColors[index % bgColors.length]}`}></div>
+
+                    </div>
+                ))}
                 </div>
             </div>
 
