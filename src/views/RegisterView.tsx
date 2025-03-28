@@ -29,24 +29,34 @@ const RegisterView = () => {
                         passwordConfirmation: '',
                     }}
 
-                    onSubmit={async (values) => {
+                    onSubmit={async (values, { setSubmitting}) => {
                         try {
                             await register(values);
                             await Swal.fire({
                                 icon: "success",
                                 title: "Registro exitoso",
-                                text: "Ahora puedes iniciar sesion",
+                                text: "Ahora puedes iniciar sesión",
                             });
-                            setTimeout(() => {
-                                router.push('/login');
-                            }, 2000);
-
-                        } catch {
+                            router.push('/login');
+                        } catch (error) {
+                            let errorMessage = "Credenciales incorrectas o error en el servidor.";
+                            
+                            // Verificar si es un Error estándar
+                            if (error instanceof Error) {
+                                errorMessage = error.message;
+                            }
+                            // Verificar si es una respuesta de error de la API
+                            else if (typeof error === 'object' && error !== null && 'message' in error) {
+                                errorMessage = (error as { message: string }).message;
+                            }
+                    
                             await Swal.fire({
                                 icon: "error",
-                                title: "Error en el registro nuevo usuario",
-                                text: "Credenciales incorrectas o error en el servidor.",
+                                title: "Error en el registro",
+                                text: errorMessage,
                             });
+                        } finally {
+                            setSubmitting(false);
                         }
                     }}
 
