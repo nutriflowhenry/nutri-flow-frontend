@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, } from 'react';
 import { Post, PostErrors, PostTag } from '@/types';
 import TagSelector from './TagSelector';
 
