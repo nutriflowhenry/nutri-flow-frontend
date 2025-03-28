@@ -54,7 +54,7 @@ const RegisterView = () => {
                         <Form className="space-y-4 md:space-y-6">
 
                             <div className="flex flex-col">
-                                <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
+                                <label htmlFor="name" className="block text-lg font-medium text-gray-700">Nombre</label>
                                 <Field type="text" name="name" id="name" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="Jhon" required="" />
                                 {errors.name && touched.name && (
                                     <Alert type="error" message={errors.name} />
@@ -70,7 +70,7 @@ const RegisterView = () => {
                             </div>
 
                             <div>
-                                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Password</label>
+                                <label htmlFor="password" className="block text-lg font-medium text-gray-700">Contraseña</label>
                                 <Field type="password" name="password" id="password" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="********" required="" />
                                 {errors.password && touched.password && (
                                     <Alert type="error" message={errors.password} />
@@ -78,7 +78,7 @@ const RegisterView = () => {
                             </div>
 
                             <div>
-                                <label htmlFor="passwordConfirmation" className="block text-lg font-medium text-gray-700">Confirm Password</label>
+                                <label htmlFor="passwordConfirmation" className="block text-lg font-medium text-gray-700">Confirmar Contraseña</label>
                                 <Field type="password" name="passwordConfirmation" id="passwordConfirmation" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="********" required="" />
                                 {errors.passwordConfirmation && touched.passwordConfirmation && (
                                     <Alert type="error" message={errors.passwordConfirmation} />

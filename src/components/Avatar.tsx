@@ -12,7 +12,7 @@ const getInitials = (name: string) => {
 
 const colors = ["bg-[#d0dfbd]", "bg-[#e3d6b8]", "bg-[#9ead89]", "bg-[#b8d6e3]", "bg-[#e3b8c2]"];
 
-const Avatar: React.FC<{ name: string }> = ({ name }) => {
+export const Avatar: React.FC<{ name: string }> = ({ name }) => {
     const [bgColor, setBgColor] = useState("");
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const Avatar: React.FC<{ name: string }> = ({ name }) => {
     );
 };
 
-const ProfilePicture: React.FC<{ post: IPost }> = ({ post }) => {
+export const ProfilePicture: React.FC<{ post: IPost }> = ({ post }) => {
     const [imageError, setImageError] = useState(false);
     if (!post || !post.author) return null;
 
@@ -50,5 +50,3 @@ const ProfilePicture: React.FC<{ post: IPost }> = ({ post }) => {
         </div>
     );
 };
-
-export default ProfilePicture;

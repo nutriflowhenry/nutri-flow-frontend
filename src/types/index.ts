@@ -238,3 +238,22 @@ export interface ApiPost {
     profilePicture?: string;
   };
 }
+
+export interface IReviewsList{
+    data:{
+        results:{
+            id: string,
+            content: string,
+            createdAt: string,
+            user:{
+                id:string,
+                name:string,
+                isActive:boolean,
+            }
+        }[];
+        total: 1,
+        page: 1,
+        limit:number,
+        totalPages:number
+    }    
+}

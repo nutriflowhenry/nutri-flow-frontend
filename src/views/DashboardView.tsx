@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { handleSubscription, handleCancelSubscription, getCurrentUser } from '@/helpers/auth.helper';
+import { handleSubscription, handleCancelSubscription, getCurrentUser, submitUserReview } from '@/helpers/auth.helper';
 import {
-    faArrowRight,
-    faCalendarDays,
-    faCheckCircle,
+    faArrowRight, faCalendarDays, faCheckCircle,
+    faComment, faTimes, faPaperPlane
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from "next/navigation";
 import LoadingModal from '@/components/LoadingModal';
@@ -24,7 +23,38 @@ const DashboardView = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [reviewContent, setReviewContent] = useState('');
+    const [reviewMessage, setReviewMessage] = useState('');
     const router = useRouter();
+
+    const handleReviewSubmit = async () => {
+        if (!reviewContent.trim()) {
+            setReviewMessage('La reseña no puede estar vacía');
+            return;
+        }
+
+        if (!userData?.token) {
+            setReviewMessage('Debes iniciar sesión');
+            return;
+        }
+        setReviewMessage('Enviando...');
+
+        const { success, message } = await submitUserReview(
+            userData.token,
+            reviewContent
+        );
+
+        setReviewMessage(message);
+
+        if (success) {
+            setTimeout(() => {
+                setIsReviewModalOpen(false);
+                setReviewContent('');
+                setReviewMessage('');
+            }, 1500);
+        }
+    };
 
 
     // Función para redirigir a la página de notificaciones
@@ -317,6 +347,101 @@ const DashboardView = () => {
                                     >
                                         Ir a Notificaciones
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Sección de Reseñas */}
+                    <div className="w-full px-6 py-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl shadow-sm">
+  <div className="text-center max-w-2xl mx-auto">
+    <div className="inline-block bg-orange-100 rounded-full p-3 mb-4">
+      <FontAwesomeIcon 
+        icon={faComment} 
+        className="text-orange-500 text-2xl" 
+      />
+    </div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+      ¡Tu opinión construye NutriFlow!
+    </h2>
+    <p className="text-gray-600 mb-6">
+      Comparte tu experiencia y ayuda a otros en su viaje saludable. 
+      <br />
+      ¿Qué te ha parecido usar nuestra plataforma?
+    </p>
+    <button
+      onClick={() => setIsReviewModalOpen(true)}
+      className="bg-gradient-to-r from-orange-400 to-amber-500 hover:from-orange-500 hover:to-amber-600 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-orange-200 flex items-center gap-2 mx-auto"
+    >
+      <FontAwesomeIcon icon={faComment} />
+      Comparte tu experiencia
+    </button>
+    <p className="text-xs text-gray-400 mt-4">
+      Solo toma 1 minuto • Reseñas verificadas
+    </p>
+  </div>
+</div>
+
+                    {/* Modal de Reseña */}
+                    {isReviewModalOpen && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 text-black">
+                            <div className="bg-white rounded-lg shadow-xl w-full max-w-md animate-fade-in">
+                                {/* Header */}
+                                <div className="flex justify-between items-center border-b p-4">
+                                    <h3 className="text-lg font-semibold">Escribe tu reseña</h3>
+                                    <button
+                                        onClick={() => {
+                                            setIsReviewModalOpen(false);
+                                            setReviewMessage('');
+                                        }}
+                                        className="text-gray-500 hover:text-gray-700"
+                                    >
+                                        <FontAwesomeIcon icon={faTimes} />
+                                    </button>
+                                </div>
+
+                                {/* Body */}
+                                <div className="p-4">
+                                    <textarea
+                                        value={reviewContent}
+                                        onChange={(e) => {
+                                            setReviewContent(e.target.value);
+                                            setReviewMessage('');
+                                        }}
+                                        placeholder="Comparte tu experiencia con NutriFlow..."
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        rows={5}
+                                        maxLength={200}
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">{reviewContent.length}/200 caracteres</p>
+                                </div>
+
+                                {/* Footer */}
+                                <div className="border-t p-4">
+                                    {reviewMessage && (
+                                        <p className={`mb-3 text-sm ${reviewMessage.includes('éxito')
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                            }`}>
+                                            {reviewMessage}
+                                        </p>
+                                    )}
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            onClick={() => setIsReviewModalOpen(false)}
+                                            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            onClick={handleReviewSubmit}
+                                            disabled={!reviewContent.trim()}
+                                            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-colors flex items-center gap-2"
+                                        >
+                                            <FontAwesomeIcon icon={faPaperPlane} />
+                                            Enviar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
