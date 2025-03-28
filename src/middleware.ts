@@ -44,7 +44,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Si el usuario no está autenticado y trata de acceder a una ruta protegida, redirigir al login
-    const protectedPaths = ['/dashboard', '/dashboard/admin','/home', '/water-counter','/physical-form'];
+    const protectedPaths = ['/dashboard', '/dashboard/admin','/home', '/water-counter','/physical-form','/notifications','/blog','/chatbot','/dashboard/userSetting'];
     if (!userSession && protectedPaths.includes(path)) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -63,5 +63,9 @@ export const config = {
        '/loggin',
        '/water-counter',
        '/physical-form',
+       '/notifications',
+       '/blog',
+       '/chatbot',
+       '/dashboard/userSetting',
     ],
 };
