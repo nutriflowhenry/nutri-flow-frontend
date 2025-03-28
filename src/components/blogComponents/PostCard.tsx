@@ -70,6 +70,15 @@ const PostCard: React.FC<PostCardProps> = ({
     }
   };
 
+  const formatContentWithLineBreaks = (text: string) => {
+    return text.split('\n').map((paragraph, index) => (
+      <React.Fragment key={index}>
+        {paragraph}
+        <br />
+      </React.Fragment>
+    ));
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 w-full flex flex-col">
       {post.image && !imageError && (
@@ -130,9 +139,9 @@ const PostCard: React.FC<PostCardProps> = ({
           </div>
         </div>
 
-        <p className="text-sm font-sora text-[#a2a2a2] mb-4 break-words">
-          {post.content}
-        </p>
+        <p className="text-sm font-sora text-[#a2a2a2] mb-4 break-words whitespace-pre-line">
+        {formatContentWithLineBreaks(post.content)}
+      </p>
 
         {(post.tags?.length ?? 0) > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
