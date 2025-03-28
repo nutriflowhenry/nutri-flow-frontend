@@ -261,12 +261,12 @@ export interface FavoriteHookParams {
 }
 
 
-interface PaginatedFavorites {
-  posts: Post[];
-  total: number;
-  page: number;
-  limit: number;
-}
+// interface PaginatedFavorites {
+//   posts: Post[];
+//   total: number;
+//   page: number;
+//   limit: number;
+// }
 
 export interface FavoritePost {
   post?: Post; 

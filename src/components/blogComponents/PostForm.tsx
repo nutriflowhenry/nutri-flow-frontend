@@ -14,8 +14,8 @@ const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, onCancel, er
   const [title, setTitle] = useState(initialData?.title || '');
   const [content, setContent] = useState(initialData?.content || '');
   const [tags, setTags] = useState<PostTag[]>(initialData?.tags || []);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage,] = useState<File | null>(null);
+  
 
   // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const file = e.target.files?.[0];

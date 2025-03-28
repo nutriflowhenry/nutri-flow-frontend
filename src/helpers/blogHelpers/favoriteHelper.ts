@@ -1,4 +1,4 @@
-import { FavoriteActionResponse, PaginatedResponse, Post, ApiError } from '@/types';
+import { PaginatedResponse, Post, ApiError } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
