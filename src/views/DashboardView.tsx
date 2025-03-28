@@ -147,7 +147,7 @@ const DashboardView = () => {
         };
 
         updateUserDataAfterPayment();
-    }, [userData, userData?.token]); // Solo ejecuta el efecto cuando el token cambie
+    }, []); // Solo ejecuta el efecto cuando el token cambie
 
 
 
