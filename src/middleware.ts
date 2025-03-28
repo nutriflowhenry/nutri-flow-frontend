@@ -62,13 +62,14 @@ export const config = {
         '/dashboard',
         '/dashboard/admin',
         '/home',
-        '/loggin',
+        '/login',
         '/water-counter',
         '/physical-form',
         '/notifications',
         '/blog',
         '/chatbot',
         '/dashboard/userSetting',
-        '/payment-success'
+        '/payment-success',
+        '/register'
     ],
 };
