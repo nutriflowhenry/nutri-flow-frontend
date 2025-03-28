@@ -118,11 +118,90 @@ export const uploadMealImage = async (
             const errorData = await updateResponse.json();
             throw new Error(`Error al actualizar la ruta de la imagen en el backend: ${errorData.message || updateResponse.statusText}`);
         }
-
+        console.log(uploadUrl.split('?')[0])
         // Retorna la URL de la imagen subida
         return uploadUrl.split('?')[0]; // Elimina los parámetros de la URL
+        
     } catch (error) {
         console.error('Error al subir la imagen:', error);
         throw error;
     }
 };
+
+
+
+export const uploadPostImage = async (
+    postId: string,
+    file: File,
+    token: string,
+): Promise<string> => {
+    try {
+        // 1. Obtener la URL pre-firmada del backend
+        const response = await fetch(
+            `${APIURL}/upload/post/upload-url/${postId}?type=${file.type.split('/')[1]}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Error al obtener la URL pre-firmada: ${errorData.message || response.statusText}`);
+        }
+        console.log('[DEBUG] URL generada para imagen:', response)
+
+        // Extrae la URL pre-firmada
+        const { uploadUrl } = await response.json();
+        console.log('Uploadurl', uploadUrl)
+
+        // 2. Subir la imagen directamente a S3
+        if (!uploadUrl) {
+            throw new Error('No se pudo obtener la URL pre-firmada del backend');
+        }
+
+        const uploadResponse = await fetch(uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': file.type,
+            },
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Error al subir la imagen a S3');
+        }
+
+        console.log('Uploadresponde', uploadUrl)
+
+        // 3. Notificar al backend para actualizar la ruta de la imagen en la base de datos
+        const updateResponse = await fetch(`${APIURL}/post/${postId}/image`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ fileType: file.type.split('/')[1] }),
+        });
+
+        if (!updateResponse.ok) {
+            const errorData = await updateResponse.json();
+            throw new Error(`Error al actualizar la ruta de la imagen en el backend: ${errorData.message || updateResponse.statusText}`);
+        }
+
+        
+        console.log('updateResponse', updateResponse)
+        // Retorna la URL de la imagen subida
+        console.log('uploadurl', uploadUrl)
+        return uploadUrl.split('?')[0];
+       
+    } catch (error) {
+        console.error('Error al subir la imagen:', error);
+        throw error;
+    }
+};
+
+
