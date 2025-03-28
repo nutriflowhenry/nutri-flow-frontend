@@ -147,7 +147,7 @@ const DashboardView = () => {
         };
 
         updateUserDataAfterPayment();
-    }, [userData, userData?.token]); // Solo ejecuta el efecto cuando el token cambie
+    }, []); // Solo ejecuta el efecto cuando el token cambie
 
 
 
@@ -299,7 +299,7 @@ const DashboardView = () => {
                                 >
                                     ¡Suscríbete ahora!
                                 </button>
-                                <p className="text-sm mt-4">Oferta especial: 20% de descuento en tu primer mes.</p>
+                            
                             </div>
                         </div>
 
@@ -354,33 +354,33 @@ const DashboardView = () => {
 
                     {/* Sección de Reseñas */}
                     <div className="w-full px-6 py-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl shadow-sm">
-  <div className="text-center max-w-2xl mx-auto">
-    <div className="inline-block bg-orange-100 rounded-full p-3 mb-4">
-      <FontAwesomeIcon 
-        icon={faComment} 
-        className="text-orange-500 text-2xl" 
-      />
-    </div>
-    <h2 className="text-2xl font-bold text-gray-800 mb-2">
-      ¡Tu opinión construye NutriFlow!
-    </h2>
-    <p className="text-gray-600 mb-6">
-      Comparte tu experiencia y ayuda a otros en su viaje saludable. 
-      <br />
-      ¿Qué te ha parecido usar nuestra plataforma?
-    </p>
-    <button
-      onClick={() => setIsReviewModalOpen(true)}
-      className="bg-gradient-to-r from-orange-400 to-amber-500 hover:from-orange-500 hover:to-amber-600 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-orange-200 flex items-center gap-2 mx-auto"
-    >
-      <FontAwesomeIcon icon={faComment} />
-      Comparte tu experiencia
-    </button>
-    <p className="text-xs text-gray-400 mt-4">
-      Solo toma 1 minuto • Reseñas verificadas
-    </p>
-  </div>
-</div>
+                        <div className="text-center max-w-2xl mx-auto">
+                            <div className="inline-block bg-orange-100 rounded-full p-3 mb-4">
+                                <FontAwesomeIcon
+                                    icon={faComment}
+                                    className="text-orange-500 text-2xl"
+                                />
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                ¡Tu opinión construye NutriFlow!
+                            </h2>
+                            <p className="text-gray-600 mb-6">
+                                Comparte tu experiencia y ayuda a otros en su viaje saludable.
+                                <br />
+                                ¿Qué te ha parecido usar nuestra plataforma?
+                            </p>
+                            <button
+                                onClick={() => setIsReviewModalOpen(true)}
+                                className="bg-gradient-to-r from-orange-400 to-amber-500 hover:from-orange-500 hover:to-amber-600 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-orange-200 flex items-center gap-2 mx-auto"
+                            >
+                                <FontAwesomeIcon icon={faComment} />
+                                Comparte tu experiencia
+                            </button>
+                            <p className="text-xs text-gray-400 mt-4">
+                                Solo toma 1 minuto • Reseñas verificadas
+                            </p>
+                        </div>
+                    </div>
 
                     {/* Modal de Reseña */}
                     {isReviewModalOpen && (
