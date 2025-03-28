@@ -183,16 +183,18 @@ export enum PostTag {
   SUGAR_FREE = 'SugarFree',
 }
 
+
 export interface Post {
   id: string;
   title: string;
   content: string;
   tags?: PostTag[];
-  image?: string;
+  image?: string; 
   createdAt: string;
   updatedAt: string;
   status: 'pending' | 'approved' | 'rejected' | 'inactive';
   user: IUserSession['user'];
+  favoritesCount?: number;
 }
 
 export interface Comment {
@@ -239,6 +241,38 @@ export interface ApiPost {
   };
 }
 
+
+export interface FavoriteActionResponse {
+  postId: string;
+  isFavorite: boolean;
+  favoritesCount: number;
+  favoriteId?: string; // Añade esta línea
+}
+
+export interface ApiError {
+  message: string;
+  statusCode: number;
+}
+
+export interface FavoriteHookParams {
+  postId: string;
+  isFavorite: boolean;
+  token: string;
+}
+
+
+// interface PaginatedFavorites {
+//   posts: Post[];
+//   total: number;
+//   page: number;
+//   limit: number;
+// }
+
+export interface FavoritePost {
+  post?: Post; 
+  favoriteId: string;
+  postMessage?: string; 
+}
 export interface IReviewsList{
     data:{
         results:{
@@ -256,4 +290,5 @@ export interface IReviewsList{
         limit:number,
         totalPages:number
     }    
+
 }

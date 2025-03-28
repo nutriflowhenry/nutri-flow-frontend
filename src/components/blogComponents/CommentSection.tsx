@@ -28,7 +28,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, currentUserId }
         userData.token
       );
       
-      // Asegura que cada comentario tenga la estructura correcta
+      
       const formattedComments = response.items.map(comment => ({
         ...comment,
         postId: postId,
@@ -65,7 +65,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, currentUserId }
          userData.token
        );
 
-      // Recarga los comentarios para asegurar consistencia
+      
       await loadComments();
       console.log(newComment)
       toast.success('Comentario agregado!');
@@ -87,7 +87,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, currentUserId }
         userData.token
       );
       
-      // Filtra el comentario eliminado localmente
+      
       setComments(prev => prev.filter(c => c.id !== commentId));
       
       toast.success('Comentario eliminado');
@@ -106,11 +106,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, currentUserId }
 
       {isLoading ? (
         <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Cargando comentarios...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#9DC08B] mx-auto"></div>
+          <p className="mt-2 text-[#424242] font-sora">Cargando comentarios...</p>
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-4 text-gray-500">
+        <div className="text-center py-4 text-[#a2a2a2] font-sora">
           Aún no hay comentarios. ¡Sé el primero en comentar!
         </div>
       ) : (

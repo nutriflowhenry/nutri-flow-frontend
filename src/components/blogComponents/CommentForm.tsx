@@ -16,7 +16,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   const [content, setContent] = useState('');
   const [localErrors, setLocalErrors] = useState<CommentErrors>({});
 
-  // Sincronizar errores externos
+  
   useEffect(() => {
     if (errors.content) {
       setLocalErrors(errors);
@@ -26,14 +26,14 @@ const CommentForm: React.FC<CommentFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validación local
+    
     const validationErrors = validateCommentForm({ content });
     if (Object.keys(validationErrors).length > 0) {
       setLocalErrors(validationErrors);
       return;
     }
 
-    // Limpiar errores y enviar
+    
     setLocalErrors({});
     onSubmit({ content });
     setContent('');
@@ -41,9 +41,9 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
   return (
     <div className="mb-6">
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="comment" className="block text-sm font-sora font-semibold text-[#424242] mb-2">
             Añadir comentario
           </label>
           <textarea
@@ -51,24 +51,25 @@ const CommentForm: React.FC<CommentFormProps> = ({
             value={content}
             onChange={(e) => {
               setContent(e.target.value);
-              // Limpiar error al escribir
               if (localErrors.content) setLocalErrors({});
             }}
-            className={`mt-1 block w-full border ${
-              localErrors.content ? 'border-red-500' : 'border-gray-300'
-            } rounded-md p-2 shadow-sm focus:ring-green-500 focus:border-green-500`}
+            className={`w-full p-3 border font-sora text-[#424242] ${
+              localErrors.content 
+                ? 'border-red-500 focus:border-red-500' 
+                : 'border-[#e0e0e0] focus:border-[#9DC08B]'
+            } rounded-xl shadow-sm focus:ring-1 focus:ring-[#9DC08B]`}
             rows={3}
             placeholder="Escribe tu comentario..."
             disabled={isSubmitting}
           />
           {localErrors.content && (
-            <p className="mt-1 text-sm text-red-500">{localErrors.content}</p>
+            <p className="mt-1 text-sm text-red-500 font-sora">{localErrors.content}</p>
           )}
         </div>
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 ${
+          className={`px-6 py-2 bg-[#9DC08B] drop-shadow-lg text-white rounded-full font-sora transition-all duration-100 hover:shadow-inner hover:bg-[#8BA978] ${
             isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
