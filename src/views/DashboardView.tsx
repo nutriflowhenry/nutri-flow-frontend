@@ -21,7 +21,6 @@ const defaultProfilePicture = 'https://definicion.de/wp-content/uploads/2019/07/
 const DashboardView = () => {
     const { userData, setUserData } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [reviewContent, setReviewContent] = useState('');
@@ -56,12 +55,6 @@ const DashboardView = () => {
         }
     };
 
-
-    // Función para redirigir a la página de notificaciones
-    const redirectToNotifications = () => {
-        setIsNotificationModalOpen(false);
-        router.push('/notifications');
-    };
 
 
     // Función para crear una sesión de pago
@@ -120,13 +113,7 @@ const DashboardView = () => {
 
 
 
-
     useEffect(() => {
-
-        // Verificar si el campo country es null
-        if (userData?.user?.country === null) {
-            setIsNotificationModalOpen(true);
-        }
 
         const updateUserDataAfterPayment = async () => {
             if (userData?.token) {
@@ -333,30 +320,7 @@ const DashboardView = () => {
                         </div>
                     )}
 
-                    {isNotificationModalOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                                <h2 className="text-xl text-center font-semibold mb-4 text-gray-800">Actualización de Datos</h2>
-                                <p className="text-gray-700 mb-6">
-                                    Por favor, completa tus datos de notificaciones para continuar.
-                                </p>
-                                <div className="flex justify-end space-x-4">
-                                    <button
-                                        onClick={() => setIsNotificationModalOpen(false)}
-                                        className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors"
-                                    >
-                                        Ahora no
-                                    </button>
-                                    <button
-                                        onClick={redirectToNotifications}
-                                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                                    >
-                                        Ir a Notificaciones
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    
 
                     {/* Sección de Reseñas */}
                     <div className="w-full px-6 py-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl shadow-sm">
