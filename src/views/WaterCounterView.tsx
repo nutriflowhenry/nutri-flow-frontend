@@ -1,32 +1,37 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';  
-import Confetti from 'react-confetti'; 
-
+import Cookies from 'js-cookie';
+import Confetti from 'react-confetti';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDroplet } from '@fortawesome/free-solid-svg-icons';
+import dynamic from 'next/dynamic';
 
 const APIURL = process.env.NEXT_PUBLIC_API_URL;
+
+// Import dinámico para ApexCharts
+const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const WaterCounterView = () => {
     const INCREMENT = 50;
     const DECREMENT = 50;
     const [waterIntake, setWaterIntake] = useState(0);
-    const [hydrationGoal, setHydrationGoal] = useState(2000); 
+    const [hydrationGoal, setHydrationGoal] = useState(2000);
     const [showConfetti, setShowConfetti] = useState(false);
-    const [animateAmount, setAnimateAmount] = useState(false); 
+    const [animateAmount, setAnimateAmount] = useState(false);
 
     useEffect(() => {
         const fetchUserProfileData = async () => {
-            try { 
+            try {
                 const userCookie = Cookies.get('nutriflowUser');
                 if (!userCookie) throw new Error('User cookie not found');
-                
-                const user = JSON.parse(userCookie); // Obtener datos de usuario desde la cookie
-                const userId = user?.userProfile?.id;  // Obtener el userId desde userProfile
+
+                const user = JSON.parse(userCookie);
+                const userId = user?.userProfile?.id;
                 if (!userId) throw new Error('User ID no encontrado');
-                  // Recuperar el consumo de agua desde localStorage usando el ID de usuario
+
                 const savedWaterIntake = localStorage.getItem(`waterIntake_${userId}`);
-                setWaterIntake(savedWaterIntake ? parseInt(savedWaterIntake) : 0); 
-                setHydrationGoal(user?.userProfile?.hydrationGoal || 2000); 
+                setWaterIntake(savedWaterIntake ? parseInt(savedWaterIntake) : 0);
+                setHydrationGoal(user?.userProfile?.hydrationGoal || 2000);
             } catch (error) {
                 console.error('Error obteniendo los datos del perfil de usuario:', error);
             }
@@ -34,13 +39,13 @@ const WaterCounterView = () => {
         fetchUserProfileData();
     }, []);
 
-    const updateWaterIntake = async (newIntake: number, action: 'increment' | 'decrement' ) => {
+    const updateWaterIntake = async (newIntake: number, action: 'increment' | 'decrement') => {
         try {
             const token = Cookies.get('token');
             const userCookie = Cookies.get('nutriflowUser');
-            if (!userCookie) throw new Error('User cookie not found');  
-            const user = JSON.parse(userCookie); 
-            const userId = user?.userProfile?.id; 
+            if (!userCookie) throw new Error('User cookie not found');
+            const user = JSON.parse(userCookie);
+            const userId = user?.userProfile?.id;
             if (!userId) throw new Error('User ID no encontrado');
 
             const response = await fetch(`${APIURL}/water-tracker/update`, {
@@ -56,61 +61,140 @@ const WaterCounterView = () => {
             localStorage.setItem(`waterIntake_${userId}`, newIntake.toString());
             if (newIntake >= hydrationGoal) {
                 alert(`🎉 ¡Felicidades! Has alcanzado tu meta diaria de ${hydrationGoal} ml de agua 💧`);
-                setShowConfetti(true); 
+                setShowConfetti(true);
             }
         } catch (error) {
             console.error('Error actualizando el consumo de agua:', error);
         }
     };
+
     const addWater = () => {
+        if (waterIntake >= hydrationGoal) return;
+
         setAnimateAmount(true);
-        setTimeout(() => setAnimateAmount(false), 500); 
+        setTimeout(() => setAnimateAmount(false), 500);
         updateWaterIntake(waterIntake + INCREMENT, 'increment');
     };
+
     const subtractWater = () => {
         updateWaterIntake(Math.max(waterIntake - DECREMENT, 0), 'decrement');
     };
 
-    const getProgressBarColor = () => {
-        const percentage = (waterIntake / hydrationGoal) * 100;
-        if (percentage <= 30) return 'bg-red-500'; 
-        if (percentage <= 70) return 'bg-yellow-500'; 
-        return 'bg-green-500'; 
+    // Configuración del gráfico radial
+    const chartOptions: ApexCharts.ApexOptions = {
+        chart: {
+            type: 'radialBar',
+        },
+        plotOptions: {
+            radialBar: {
+                startAngle: -135,
+                endAngle: 135,
+                hollow: {
+                    margin: 0,
+                    size: '70%',
+                },
+                dataLabels: {
+                    name: {
+                        offsetY: -10,
+                        color: '#333',
+                        fontSize: '13px'
+                    },
+                    value: {
+                        color: '#333',
+                        fontSize: '30px',
+                        show: true,
+                        formatter: function (val) {
+                            return val + '%';
+                        }
+                    }
+                },
+                track: {
+                    background: '#e0e0e0',
+                    strokeWidth: '97%',
+                    margin: 5,
+                }
+            }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'dark',
+                shadeIntensity: 0.15,
+                inverseColors: false,
+                opacityFrom: 1,
+                opacityTo: 1,
+                stops: [0, 50, 65, 91]
+            },
+            colors: ['#3b82f6'] // Azul para el agua
+        },
+        stroke: {
+            dashArray: 4
+        },
+        labels: ['Hidratación'],
     };
 
+    const chartSeries = [Math.round((waterIntake / hydrationGoal) * 100)];
+
     return (
-        <div className="max-w-md mx-auto p-6 bg-[#c4c1a4] text-white rounded-xl shadow-lg text-center">
-             {showConfetti && <Confetti recycle={false} />}
+        <div className="bg-gradient-to-br from-[#fefff5] to-[#d3f6f8] p-6 rounded-[25px] shadow-[-20px_-20px_60px_#FFFFFF,10px_10px_30px_#778474] max-w-md mx-auto md:max-w-[500px]">
+            {showConfetti && <Confetti recycle={false} />}
 
-<h2 className="text-xl font-bold">Contador de Agua</h2>
-<p className="text-sm text-gray-400">Meta diaria: {hydrationGoal} ml</p>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-blue-800 flex items-center">
+                    <FontAwesomeIcon icon={faDroplet} className="mr-2 text-blue-500" />
+                    Progreso de Hidratación
+                </h2>
+                <span className="text-blue-600 font-bold">
+                    {waterIntake} / {hydrationGoal} ml
+                </span>
+            </div>
 
-            <div className="relative w-full bg-gray-700 h-6 rounded-full mt-4">
+            {/* Gráfico radial */}
+            <ApexChart
+                options={chartOptions}
+                series={chartSeries}
+                type="radialBar"
+                height={250}
+            />
+
+            {/* Barra de progreso adicional */}
+            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
                 <div
-                    className={`${getProgressBarColor()} h-6 rounded-full transition-all`}
-                    style={{ width: `${(waterIntake / hydrationGoal) * 100}%` }}
+                    className="h-2.5 rounded-full transition-all duration-300"
+                    style={{
+                        width: `${(waterIntake / hydrationGoal) * 100}%`,
+                        backgroundColor: waterIntake >= hydrationGoal ? '#10B981' : '#3B82F6'
+                    }}
                 ></div>
             </div>
 
-            <p 
-                className={`mt-2 text-lg ${animateAmount ? 'text-blue-500 text-3xl' : ''}`}
-                style={{ transition: 'transform 0.2s ease-in-out' }}
-            >
-                {waterIntake} ml
-            </p>
-            <div className="flex gap-4 justify-center mt-4">
+            {/* Botones */}
+            <div className="flex justify-center mt-6 space-x-4">
                 <button
                     onClick={subtractWater}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition"
+                    className="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors font-medium"
                 >
-                    Restar 50ml
+                    - 50ml
                 </button>
                 <button
                     onClick={addWater}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
+                    disabled={waterIntake >= hydrationGoal}
+                    className={`px-4 py-2 rounded-lg transition-colors font-medium ${waterIntake >= hydrationGoal
+                            ? 'bg-blue-100 text-blue-600 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}
                 >
-                    Agregar 50ml
+                    + 50ml
                 </button>
+            </div>
+
+            {/* Mensaje de animación */}
+            <div className="h-8 mt-2 text-center">
+                {animateAmount && (
+                    <div className="text-blue-500 animate-pulse">
+                        ¡Bien hecho! +50ml
+                    </div>
+                )}
             </div>
         </div>
     );

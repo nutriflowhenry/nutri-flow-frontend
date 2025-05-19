@@ -17,10 +17,9 @@ const RegisterView = () => {
 
     return (
 
-        <div className="flex justify-center items-center mb-12 mt-12">
-            <div className="w-full max-w-md bg-[#c4c1a4] p-8 rounded-2xl shadow-lg relative flex flex-col items-center" style={{ boxShadow: '8px 8px 16px #a29f8e, -8px -8px 16px #e6e3d2' }}>
-                <h2 className="text-xl font-bold text-gray-700 mb-6">Registro</h2>
-
+        <div className="flex justify-center items-center mb-12 mt-8">
+            <div className="w-full md:max-w-md max-w-[350px] bg-gradient-to-br from-[#D3D4C4] to-[#B3B19C] p-6 rounded-[25px] shadow-[-20px_-20px_60px_#FFFFFF,10px_10px_30px_#778474] relative flex flex-col items-center">
+                <h2 className="text-[24px] font-semibold text-center text-[#444B3B] tracking-[0.005em]">Registro</h2>
                 <Formik
                     initialValues={{
                         name: '',
@@ -29,7 +28,7 @@ const RegisterView = () => {
                         passwordConfirmation: '',
                     }}
 
-                    onSubmit={async (values, { setSubmitting}) => {
+                    onSubmit={async (values, { setSubmitting }) => {
                         try {
                             await register(values);
                             await Swal.fire({
@@ -40,7 +39,7 @@ const RegisterView = () => {
                             router.push('/login');
                         } catch (error) {
                             let errorMessage = "Credenciales incorrectas o error en el servidor.";
-                            
+
                             // Verificar si es un Error estándar
                             if (error instanceof Error) {
                                 errorMessage = error.message;
@@ -49,7 +48,7 @@ const RegisterView = () => {
                             else if (typeof error === 'object' && error !== null && 'message' in error) {
                                 errorMessage = (error as { message: string }).message;
                             }
-                    
+
                             await Swal.fire({
                                 icon: "error",
                                 title: "Error en el registro",
@@ -64,11 +63,11 @@ const RegisterView = () => {
                 >
                     {({ errors, touched, isValid }) => (
 
-                        <Form className="space-y-4 md:space-y-6">
+                        <Form className="w-full md:max-w-[350px] space-y-4 md:space-y-3">
 
                             <div className="flex flex-col">
                                 <label htmlFor="name" className="block text-lg font-medium text-gray-700">Nombre</label>
-                                <Field type="text" name="name" id="name" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="Jhon" required="" />
+                                <Field type="text" name="name" id="name" className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none" placeholder="Jhon" required="" />
                                 {errors.name && touched.name && (
                                     <Alert type="error" message={errors.name} />
                                 )}
@@ -76,7 +75,7 @@ const RegisterView = () => {
 
                             <div>
                                 <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
-                                <Field type="email" name="email" id="email" className="p-2  text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none" placeholder="Jhon@gmail.com" required="" />
+                                <Field type="email" name="email" id="email" className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none" placeholder="Jhon@gmail.com" required="" />
                                 {errors.email && touched.email && (
                                     <Alert type="error" message={errors.email} />
                                 )}
@@ -89,7 +88,7 @@ const RegisterView = () => {
                                         type={showPassword ? "text" : "password"}
                                         name="password"
                                         id="password"
-                                        className="p-2 text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none pr-10"
+                                        className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
                                         placeholder="********"
                                         required=""
                                     />
@@ -113,7 +112,7 @@ const RegisterView = () => {
                                         type={showConfirmPassword ? "text" : "password"}
                                         name="passwordConfirmation"
                                         id="passwordConfirmation"
-                                        className="p-2 text-gray-700 rounded-xl border-none w-full shadow-inner bg-[#e6e3d2] focus:outline-none pr-10"
+                                        className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
                                         placeholder="********"
                                         required=""
                                     />
@@ -130,17 +129,26 @@ const RegisterView = () => {
                                 )}
                             </div>
 
-                            <button disabled={!isValid} type="submit" className="w-full bg-gray-700 hover:bg-gray-800 text-white py-2 px-4 rounded-xl disabled:opacity-50">Registrarse</button>
-                            <div className="flex justify-center">or</div>
-                            <div className="w-full h-px my-4" >
-                                <div className="flex justify-center space-x-6">
-                                    <button type="button" className="flex items-center justify-center w-full bg-white text-gray-700 border border-gray-300 shadow-md hover:shadow-lg py-2 px-4 rounded-xl transition-transform transform hover:scale-105" onClick={loginWithGoogle}>
-                                        <FaGoogle className="text-red-500 text-xl mr-2" />
-                                        Registrarse con Google
-                                    </button>
-                                </div>
+                            <div className="flex items-center justify-center my-2">
+                                <div className="flex-grow border-t-2 border-gray-500"></div>
                             </div>
-                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">Already have an account? <a href="/login" className="font-medium text-amring-amber-700 hover:underline">Login here</a>
+
+                            <div className='flex ml-5 mt-5'>
+
+                                <div className="relative flex justify-center items-center">
+                                    <button disabled={!isValid} type="submit" className="w-[144px] left-[116px] bg-[#f78707] text-white py-2 px-4 rounded-xl disabled:opacity-50 transition-transform transform hover:scale-110">Registrarme</button>
+                                </div>
+                                <button type="button" className="flex items-center justify-center w-full h-[42px] transition-transform transform hover:scale-125 " onClick={loginWithGoogle}>
+                                    <FaGoogle className="text-white-500 md:text-[44px] " /> oogle
+                                </button>
+
+                            </div>
+
+                            <p className="text-xs text-center text-gray-500">
+                                ¿Ya tienes una cuenta?{' '}
+                                <a href="/login" className="font-medium text-[#eaefe4] hover:underline">
+                                    Inicia sesión aquí
+                                </a>
                             </p>
 
                         </Form>

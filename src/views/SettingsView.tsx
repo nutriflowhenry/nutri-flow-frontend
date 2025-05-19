@@ -473,7 +473,7 @@ const SettingsView = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email
-                  {userData?.user?.provider === "auth0" && (<strong> (Sesión de Google) </strong>)}
+                    {userData?.user?.provider === "auth0" && (<strong> (Sesión de Google) </strong>)}
                   </label>
                   <input
                     type="email"
@@ -510,17 +510,27 @@ const SettingsView = () => {
                   console.log("Info:", userData.user.profilePicture);
                   return null; // Retorna null para no renderizar nada adicional
                 })()}
+                
                 <img
                   src={userData.user.profilePicture || defaultProfilePicture}
                   alt="Perfil"
                   className="w-32 h-32 rounded-full mb-6 mx-auto  object-cover"
                 />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e.target.files?.[0])}
-                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                />
+                <div className="flex relative justify-center items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e.target.files?.[0])}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    id="profile-picture-upload"
+                  />
+                  <label
+                    htmlFor="profile-picture-upload"
+                    className="block w-50 bg-gray-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-[25px] text-center cursor-pointer transition duration-300"
+                  >
+                    Cambiar Foto de Perfil
+                  </label>
+                </div>
                 <p className="flex items-center">
                   <FontAwesomeIcon icon={faSpellCheck} className="mr-3 text-orange-600" />
                   <strong>Nombre:</strong> <span className="ml-2">{userData.user.name}</span>
@@ -750,13 +760,13 @@ const SettingsView = () => {
                   Notificaciones
                 </button>
                 {userData?.user?.provider !== "auth0" && (
-                <button
-                  onClick={() => setIsEditingPassword(true)}
-                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
-                >
-                  <FontAwesomeIcon icon={faKey} className="mr-2" />
-                  Cambiar Contraseña
-                </button>
+                  <button
+                    onClick={() => setIsEditingPassword(true)}
+                    className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
+                  >
+                    <FontAwesomeIcon icon={faKey} className="mr-2" />
+                    Cambiar Contraseña
+                  </button>
                 )}
                 <button
                   onClick={handleDeleteAccount}
