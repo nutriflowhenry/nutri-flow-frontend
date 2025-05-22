@@ -7,7 +7,6 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import Logo from "@/assets/Logo";
-import Wave from "@/assets/Wave";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SideBar from "./SideBar";
@@ -42,6 +41,20 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full">
+      {/* Definición del SVG de la wave al inicio */}
+      <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
+        <defs>
+          <clipPath id="wave-path" clipPathUnits="objectBoundingBox">
+            <path
+              d="M0 0H1V0.5C1 0.5 0.845 0 0.747 0.1C0.647 0.2 0.6 0.5 0.5 0.5C0.397 0.5 0.35 0.2 0.247 0.1C0.15 0 0 0.5 0 0.5V0Z"
+              style={{
+                filter: "drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.25))",
+              }}
+            />
+          </clipPath>
+        </defs>
+      </svg>
+
       {isLoading && <LoadingModal />}
 
       {isAdminDashboard && <SideBar />}
@@ -187,8 +200,6 @@ const Navbar = () => {
         }
       `}</style>
       <div className="navbar-wave"></div>
-
-      <Wave />
     </div>
   );
 };

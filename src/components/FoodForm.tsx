@@ -23,6 +23,7 @@ type FoodFormProps = {
     >;
     handleCreateFood: () => Promise<string | void>; // Devuelve el foodTrackerId
     closeModal: () => void;
+    onImageUploaded?: (url: string) => void;
 };
 
 const FoodForm: React.FC<FoodFormProps> = ({
@@ -30,6 +31,7 @@ const FoodForm: React.FC<FoodFormProps> = ({
     setNewFood,
     handleCreateFood,
     closeModal,
+    onImageUploaded,
 }) => {
     const { userData } = useAuth();
     const [isUploading, setIsUploading] = useState(false);
@@ -78,6 +80,11 @@ const FoodForm: React.FC<FoodFormProps> = ({
                 ...prev,
                 image: imageUrl,
             }));
+
+            // 4. Notificar al padre para actualización optimista
+            if (typeof onImageUploaded === 'function') {
+                onImageUploaded(imageUrl);
+            }
 
             // Cerrar el modal sin recargar toda la lista
             closeModal();
@@ -145,17 +152,6 @@ const FoodForm: React.FC<FoodFormProps> = ({
                 onChange={handleImageChange}
                 className="w-full p-2 border rounded-full text-gray-800"
             />
-
-            {/* Mostrar la imagen subida (opcional) */}
-            {newFood.image && (
-                <div className="mt-4">
-                    <img
-                        src={newFood.image}
-                        alt="Preview"
-                        className="w-24 h-24 object-cover rounded-lg"
-                    />
-                </div>
-            )}
 
             <div className="flex justify-end gap-2 mt-4">
                 <button

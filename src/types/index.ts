@@ -83,6 +83,7 @@ export interface IFoodTracker {
     createdAt: string;
     isActive: boolean;
     image?: string; // Cambiar imageUrl a image
+    isImageLoading?: boolean;
 }
 export interface ICreateFoodTracker {
     name: string;
