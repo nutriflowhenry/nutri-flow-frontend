@@ -1,6 +1,6 @@
 const AddFoodButton = () => {
     return (
-        <div className="w-[91px] h-[95px] flex items-center justify-center z-50 p-0 overflow-visible">
+        <div className="w-[111px] h-[115px] flex items-center justify-center z-50 p-0 overflow-visible">
             <svg
                 width="91"
                 height="92"

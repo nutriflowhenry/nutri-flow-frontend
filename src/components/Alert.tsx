@@ -6,11 +6,11 @@ interface AlertProps {
 }
 
 const Alert: React.FC<AlertProps> = ({ type, message }) => {
-  const baseClasses = 'flex items-center p-4 mb-4 text-sm rounded-lg';
+  const baseClasses = 'flex items-center p-2 mt-2 text-sm rounded-xl';
 
   const typeClasses = {
     success: 'bg-green-100 text-green-800',
-    error: 'bg-red-50 text-red-800',
+    error: 'bg-orange-50 text-red-800',
  };
 
   const alertClass = `${baseClasses} ${typeClasses[type]}`;

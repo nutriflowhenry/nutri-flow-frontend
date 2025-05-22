@@ -16,6 +16,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "apexcharts": "^4.5.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.12.1",
     "js-cookie": "^3.0.5",
     "next": "15.1.7",
     "next-auth": "^4.24.11",

@@ -21,7 +21,6 @@ const defaultProfilePicture = 'https://definicion.de/wp-content/uploads/2019/07/
 const DashboardView = () => {
     const { userData, setUserData } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [reviewContent, setReviewContent] = useState('');
@@ -56,12 +55,6 @@ const DashboardView = () => {
         }
     };
 
-
-    // Función para redirigir a la página de notificaciones
-    const redirectToNotifications = () => {
-        setIsNotificationModalOpen(false);
-        router.push('/notifications');
-    };
 
 
     // Función para crear una sesión de pago
@@ -120,13 +113,7 @@ const DashboardView = () => {
 
 
 
-
     useEffect(() => {
-
-        // Verificar si el campo country es null
-        if (userData?.user?.country === null) {
-            setIsNotificationModalOpen(true);
-        }
 
         const updateUserDataAfterPayment = async () => {
             if (userData?.token) {
@@ -152,89 +139,78 @@ const DashboardView = () => {
 
 
     return (
-        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="max-w-4xl mx-auto bg-[#F4EAE0] shadow-lg rounded-lg overflow-hidden">
             {isLoading && <LoadingModal />}
             {userData ? (
                 <>
                     {/* Banner */}
-                    <div className="h-48  bg-cover bg-center relative" style={{ backgroundImage: `url(https://img.freepik.com/fotos-premium/mancuernas-manzana-verde-cinta-metrica_771335-27924.jpg)` }}>
-                        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                    <div className="h-48 bg-gradient-to-r from-[#9BA783] to-[#CEB58D] bg-cover bg-center relative">
+                        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
                         {/* Nombre y Título sobre el Banner */}
                         <div className="absolute bottom-6 text-white md:left-80 left-6" >
-                            <p className="text-2xl  font-bold">{userData.user.name}</p>
+                            <p className="text-2xl font-bold drop-shadow">{userData.user.name}</p>
                             <p className="text-sm "><span className="hidden sm:inline">Suscripción</span> ({userData.user.subscriptionType})</p>
                         </div>
                     </div>
 
                     {/* Contenedor Principal (Foto de Perfil y Datos) */}
-                    <div className="flex flex-col md:flex-row px-6 py-6">
+                    <div className="flex flex-col md:flex-row w-full p-6 gap-6 bg-[#FFF6EA]">
                         {/* Foto de Perfil y Estadísticas (Lado Izquierdo) */}
-                        <div className=" w-full md:w-1/3 pr-4 -mt-16 relative z-5 pb-4 ">
+                        <div className="w-full md:w-1/3 pr-4 -mt-16 relative z-5 pb-4">
                             <div className="flex justify-center">
                                 <img
-                                    className=" md:h-48 w-48 rounded-full  border-4 border-white object-cover "
+                                    className="md:h-48 w-48 rounded-full border-4 border-[#CEB58D] object-cover shadow-lg"
                                     src={userData.user.profilePicture || defaultProfilePicture}
                                     alt="Profile"
                                 />
-
                             </div>
                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
-                                <div className="bg-green-200 p-4 rounded-[25px] text-center">
-                                    <p className="text-gray-600 text-sm">Requerimiento de Agua</p>
-                                    <p className="text-gray-900 font-bold ">{userData.user.userProfile?.hydrationGoal} ml</p>
+                                <div className="bg-[#E6F0D9] p-4 rounded-[25px] text-center">
+                                    <p className="text-[#7A8B5C] text-sm">Requerimiento de Agua</p>
+                                    <p className="text-[#242424] font-bold ">{userData.user.userProfile?.hydrationGoal} ml</p>
                                 </div>
-                                <div className="bg-orange-200 p-4 rounded-[25px] text-center">
-                                    <p className="text-gray-600 text-sm">Límite de Calorías</p>
-                                    <p className="text-gray-900 font-bold ">{userData.user.userProfile?.caloriesGoal} kcal</p>
+                                <div className="bg-[#F4EAE0] p-4 rounded-[25px] text-center">
+                                    <p className="text-[#B3A488] text-sm">Límite de Calorías</p>
+                                    <p className="text-[#242424] font-bold ">{userData.user.userProfile?.caloriesGoal} kcal</p>
                                 </div>
-
                             </div>
                         </div>
 
                         {/* Información del Usuario (Lado Derecho) */}
-                        <div>
-                            <div className=" grid grid-cols-1 sm:grid-cols-2 text-gray-900 sm:gap-4">
-
-                                <p className="flex items-center">
-                                    <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
-                                    <strong>Fecha de Nacimiento {userData.user.userProfile?.birthdate
-                                        ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
-                                            day: "2-digit",
-                                            month: "2-digit",
-                                            year: "numeric",
-                                        })
-                                        : "--"}
-                                    </strong>
-                                </p>
-                                <p className="flex items-center">
-                                    <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-orange-600" style={{ width: '20px', height: '18px' }} />
-                                    <strong>Miembro desde {userData?.user?.createdAt?.split(",")[0]}</strong>
-                                </p>
-                            </div>
-                            <div className="mt-2">
-
-                                <p className="font-bold">
-                                    <span className="text-orange-600 ">Email: </span>
-                                    <span className="text-gray-900 "> {userData.user.email}</span>
-                                </p>
-
-                                <p className="font-bold">
-                                    <span className="text-orange-600">Género: </span>
-                                    <span className="text-gray-900">{userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}</span>
-                                </p>
-                                <p className="font-bold">
-                                    <span className="text-orange-600">Altura: </span>
-                                    <span className="text-gray-900">{userData.user.userProfile?.height || "--"} cm</span>
-                                </p>
-                                <p className="font-bold">
-                                    <span className="text-orange-600">Peso: </span>
-                                    <span className="text-gray-900">{userData.user.userProfile?.weight || "--"} kg</span>
-                                </p>
-
-                            </div>
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 text-[#242424] sm:gap-4 bg-[#FFF6EA] rounded-xl p-4">
+                            <p className="flex items-center">
+                                <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-[#CEB58D]" style={{ width: '20px', height: '18px' }} />
+                                <strong>Fecha de Nacimiento {userData.user.userProfile?.birthdate
+                                    ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    })
+                                    : "--"}
+                                </strong>
+                            </p>
+                            <p className="flex items-center">
+                                <FontAwesomeIcon icon={faCalendarDays} className="mr-2 text-[#CEB58D]" style={{ width: '20px', height: '18px' }} />
+                                <strong>Miembro desde {userData?.user?.createdAt?.split(",")[0]}</strong>
+                            </p>
+                            <p className="font-bold">
+                                <span className="text-[#9BA783] ">Email: </span>
+                                <span className="text-[#242424] "> {userData.user.email}</span>
+                            </p>
+                            <p className="font-bold">
+                                <span className="text-[#9BA783]">Género: </span>
+                                <span className="text-[#242424]">{userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}</span>
+                            </p>
+                            <p className="font-bold">
+                                <span className="text-[#9BA783]">Altura: </span>
+                                <span className="text-[#242424]">{userData.user.userProfile?.height || "--"} cm</span>
+                            </p>
+                            <p className="font-bold">
+                                <span className="text-[#9BA783]">Peso: </span>
+                                <span className="text-[#242424]">{userData.user.userProfile?.weight || "--"} kg</span>
+                            </p>
                         </div>
                     </div>
-
 
                     {userData.user.subscriptionType === "premium" ? (
 
@@ -242,22 +218,22 @@ const DashboardView = () => {
                         <div className="w-full flex justify-center">
 
                             <div className="w-full max-w-md space-y-4">
-                                <div className="bg-white p-4 rounded-lg shadow-sm">
-                                    <h2 className="text-xl font-semibold mb-4 text-gray-800">Suscripciones y pagos</h2>
+                                <div className="bg-[#E6F0D9] p-4 rounded-lg shadow-sm">
+                                    <h2 className="text-xl font-semibold mb-4 text-[#7A8B5C]">Suscripciones y pagos</h2>
                                     <div className="space-y-4">
                                         <div
                                             onClick={() => router.push('/dashboard/payHistory')}
-                                            className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                                            className="flex justify-between items-center p-4 border-b border-[#CEB58D] cursor-pointer hover:bg-[#F4EAE0] transition-colors"
                                         >
-                                            <span className="text-gray-700">Ver historial de compras</span>
-                                            <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
+                                            <span className="text-[#242424]">Ver historial de compras</span>
+                                            <FontAwesomeIcon icon={faArrowRight} className="text-[#CEB58D]" />
                                         </div>
                                         <div
                                             onClick={openCancelModal}
-                                            className="flex justify-between items-center p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                                            className="flex justify-between items-center p-4 border-b border-[#CEB58D] cursor-pointer hover:bg-[#F4EAE0] transition-colors"
                                         >
-                                            <span className="text-gray-700">Cancelar Suscripción</span>
-                                            <FontAwesomeIcon icon={faArrowRight} className="text-gray-400" />
+                                            <span className="text-[#242424]">Cancelar Suscripción</span>
+                                            <FontAwesomeIcon icon={faArrowRight} className="text-[#CEB58D]" />
                                         </div>
                                     </div>
                                 </div>
@@ -333,30 +309,7 @@ const DashboardView = () => {
                         </div>
                     )}
 
-                    {isNotificationModalOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                                <h2 className="text-xl text-center font-semibold mb-4 text-gray-800">Actualización de Datos</h2>
-                                <p className="text-gray-700 mb-6">
-                                    Por favor, completa tus datos de notificaciones para continuar.
-                                </p>
-                                <div className="flex justify-end space-x-4">
-                                    <button
-                                        onClick={() => setIsNotificationModalOpen(false)}
-                                        className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors"
-                                    >
-                                        Ahora no
-                                    </button>
-                                    <button
-                                        onClick={redirectToNotifications}
-                                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                                    >
-                                        Ir a Notificaciones
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    
 
                     {/* Sección de Reseñas */}
                     <div className="w-full px-6 py-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl shadow-sm">

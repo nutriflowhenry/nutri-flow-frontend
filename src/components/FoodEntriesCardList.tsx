@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getDailyFoodTracker, updateFoodTracker } from '@/helpers/foodEntriesHelper';
 import Cookies from 'js-cookie';
 import { IFoodTracker } from '@/types';
@@ -11,9 +11,10 @@ interface CardListProps {
   refreshTrigger?: number;
   currentDate: string;
   onRefresh: () => void;
+  optimisticFood?: IFoodTracker | null;
 }
 
-const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => {
+const CardList = ({ refreshTrigger, currentDate, onRefresh, optimisticFood }: CardListProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [foodEntries, setFoodEntries] = useState<IFoodTracker[]>([]);
   const [selectedFood, setSelectedFood] = useState<IFoodTracker | null>(null);
@@ -22,6 +23,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   const [editedCalories, setEditedCalories] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   // Obtener las entradas de comida al cambiar la fecha o el refreshTrigger
   useEffect(() => {
@@ -49,10 +51,60 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
     fetchFoodEntries();
   }, [refreshTrigger, currentDate]);
 
+  // Polling para la card optimista
+  useEffect(() => {
+    if (optimisticFood) {
+      // Iniciar polling
+      pollingRef.current = setInterval(async () => {
+        const token = Cookies.get('token');
+        if (token) {
+          try {
+            const data = await getDailyFoodTracker(currentDate, token);
+            if (data?.data?.results) {
+              const activeFoodEntries = data.data.results.filter((entry: IFoodTracker) => entry.isActive);
+              setFoodEntries(activeFoodEntries);
+              // Si la comida real con imagen ya está, detener polling
+              const existsWithImage = activeFoodEntries.some((e: IFoodTracker) =>
+                e.name === optimisticFood.name &&
+                e.calories === optimisticFood.calories &&
+                e.createdAt.slice(0, 10) === optimisticFood.createdAt.slice(0, 10) &&
+                !!e.image
+              );
+              if (existsWithImage && pollingRef.current) {
+                clearInterval(pollingRef.current);
+                pollingRef.current = null;
+              }
+            }
+          } catch {
+            // Ignorar errores de polling
+          }
+        }
+      }, 2000);
+      return () => {
+        if (pollingRef.current) {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
+      };
+    }
+  }, [optimisticFood, currentDate]);
+
   // Paginación
+  let allEntries = foodEntries;
+  // Si hay comida optimista, mantenerla hasta que la real esté en la lista
+  if (optimisticFood && optimisticFood.createdAt.startsWith(currentDate.slice(0, 10))) {
+    const existsInBackend = foodEntries.some(e =>
+      e.name === optimisticFood.name &&
+      e.calories === optimisticFood.calories &&
+      e.createdAt.slice(0, 10) === optimisticFood.createdAt.slice(0, 10)
+    );
+    if (!existsInBackend) {
+      allEntries = [optimisticFood, ...foodEntries.filter(e => e.id !== optimisticFood.id)];
+    }
+  }
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = foodEntries.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = allEntries.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextPage = () => {
     if (currentPage < Math.ceil(foodEntries.length / itemsPerPage)) {
@@ -125,11 +177,11 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Lista de tarjetas */}
-      <div className="flex flex-wrap justify-center gap-6">
+      <div className="flex flex-wrap flex-col sm:flex-row justify-center gap-6">
         {isLoading ? (
           <p className='text-gray-600'>Cargando...</p>
         ) : currentItems.length > 0 ? (
-          currentItems.map((foodEntry) => (
+          currentItems.map((foodEntry, idx) => (
             <div key={foodEntry.id}>
               <button
                 onClick={() => {
@@ -138,6 +190,7 @@ const CardList = ({ refreshTrigger, currentDate, onRefresh }: CardListProps) => 
                   setEditedDescription(foodEntry.description || '');
                   setEditedCalories(foodEntry.calories.toString());
                 }}
+                className={idx % 2 === 0 ? 'bg-[#f7f5ef]' : 'bg-white'}
               >
                 <FoodEntriesCard {...foodEntry} />
               </button>

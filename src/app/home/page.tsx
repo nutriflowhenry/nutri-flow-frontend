@@ -9,6 +9,8 @@ import CaloriesCounter from '@/components/caloriesCounter';
 import AddFoodButton from '@/assets/AddFoodButton';
 import WaterCounterView from '@/views/WaterCounterView';
 import { useAuth } from '@/context/AuthContext';
+import { IFoodTracker } from '@/types';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const {isLoading } = useAuth();
@@ -34,6 +36,7 @@ const Home = () => {
     );
     return midnightUTC.toISOString();
   });
+  const [optimisticFood, setOptimisticFood] = useState<IFoodTracker | null>(null);
 
   const token = Cookies.get('token');
 
@@ -64,15 +67,8 @@ const Home = () => {
           image: newFood.image || null,
         };
 
-        console.log('Enviando datos al backend para crear la comida:', adjustedFood);
         const response = await createFoodTracker(adjustedFood, token);
-        console.log('Respuesta del backend al crear la comida:', response);
-
         if (response) {
-          const { foodTracker } = response;
-          const foodTrackerId = foodTracker.id; // Obtener el ID generado por el backend
-          console.log('foodTrackerId obtenido:', foodTrackerId);
-
           setIsModalOpen(false);
           setNewFood({
             name: '',
@@ -82,24 +78,35 @@ const Home = () => {
             image: '',
           });
           setCurrentDate(adjustedFood.createdAt);
-
-          // Refrescar la lista de comidas
           handleRefresh();
-
-          // Devolver el foodTrackerId para usarlo en la subida de la imagen
-          return foodTrackerId;
+          return response.foodTracker.id;
         }
       } catch (error) {
+        setOptimisticFood(null);
         console.error('Error al crear la comida:', error);
       }
     }
   };
 
+  // Refrescar la lista solo después de que la imagen esté subida
+  const updateOptimisticFoodImage = () => {
+    handleRefresh();
+  };
+
   return (
     <div className="font-sora flex flex-col items-center py-8 relative">
-      <h1 className="text-center text-3xl font-bold text-[#242424] font-sora">
+      <motion.h1 
+        initial={{ opacity: 0, y: -30 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.8 }}
+        className="mt-8 text-center text-4xl font-extrabold text-[#9BA783] font-sora mb-2 flex items-center justify-center gap-3"
+      >
+        <span role="img" aria-label="comida">🥗</span>
         Bienvenido al Tracker de Comidas
-      </h1>
+      </motion.h1>
+      <div className="flex justify-center mb-8">
+        <div className="h-1 w-24 bg-[#CEB58D] rounded-full"></div>
+      </div>
 
       {token && (
         <CaloriesCounter
@@ -110,12 +117,13 @@ const Home = () => {
         />
       )}
 
-      <div className="w-full max-w-4xl mt-6">
+      <div className="w-full max-w-4xl mt-12">
         {/* Pasa onRefresh al componente CardList */}
         <CardList
           refreshTrigger={refreshTrigger}
           currentDate={currentDate}
-          onRefresh={handleRefresh} // Aquí pasas la función handleRefresh
+          onRefresh={handleRefresh}
+          optimisticFood={optimisticFood}
         />
       </div>
 
@@ -123,7 +131,7 @@ const Home = () => {
 {!isLoading && (
             <>
       <div className="w-full max-w-4xl mt-6">
-        <WaterCounterView />
+        <WaterCounterView currentDate={currentDate} />
       </div>
             
             </>)}
@@ -149,6 +157,7 @@ const Home = () => {
               setNewFood={setNewFood}
               handleCreateFood={handleCreateFood}
               closeModal={closeModal}
+              onImageUploaded={updateOptimisticFoodImage}
             />
           </div>
         </div>
