@@ -36,7 +36,7 @@ export default function PaymentSuccess() {
         };
 
         updateUserData();
-    }, []);
+    }, [setUserData, userData]);
 
     const handleRedirect = () => {
         router.push('/dashboard');

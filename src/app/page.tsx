@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { FaChartLine, FaAppleAlt, FaHeartbeat, FaUsers, FaArrowRight } from 'react-icons/fa';
+import { FaChartLine, FaAppleAlt, FaHeartbeat, FaArrowRight } from 'react-icons/fa';
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
