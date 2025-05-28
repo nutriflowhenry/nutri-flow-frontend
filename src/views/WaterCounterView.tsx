@@ -145,11 +145,11 @@ const WaterCounterView = ({ currentDate }: { currentDate: string }) => {
             {/* Contenido principal a la izquierda en lg */}
             <div className="flex-1 flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-semibold text-[#242424] flex items-center">
+                    <h2 className="text-sm md:text-2xl font-semibold text-[#242424] flex items-center">
                         <FontAwesomeIcon icon={faDroplet} className="mr-3 text-[#9BA783] text-2xl" />
                         Progreso de Hidratación
                     </h2>
-                    <span className="text-[#242424] font-bold text-lg bg-white/50 px-4 py-2 rounded-full">
+                    <span className="text-[#242424] font-bold text-xs md:text-lg bg-white/50 px-4 py-2 rounded-full">
                         {waterIntake} / {hydrationGoal} ml
                     </span>
                 </div>
@@ -188,6 +188,8 @@ const WaterCounterView = ({ currentDate }: { currentDate: string }) => {
                 </div>
 
                 {/* Mensaje de animación mejorado */}
+                <div className="h-10 mt-2">
+
                 {animateAmount && (
                     <div className="mt-2 text-center">
                         <div className="text-[#9BA783] animate-pulse bg-white/30 px-4 py-1 rounded-full inline-block backdrop-blur-sm">
@@ -195,6 +197,7 @@ const WaterCounterView = ({ currentDate }: { currentDate: string }) => {
                         </div>
                     </div>
                 )}
+                </div>
             </div>
 
             {/* Gráfico radial a la derecha en lg */}

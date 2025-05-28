@@ -86,10 +86,10 @@ const UsersListView = () => {
             {loading}
             {allUsers.length >= 0 ? (
                 <div>
-                    <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Usuarios NutriFlow</h1>
+                    <h1 className="text-gray-700 text-2xl font-bold mb-4 mt-10 text-center">Usuarios NutriFlow</h1>
                     <div className="bg-gray-100 p-6 rounded-lg m-6 shadow-sm">
                         
-                        <div className="flex gap-2 mb-4 justify-center">
+                        <div className="text-gray-600 flex gap-2 mb-4 justify-center">
                             <select 
                                 value={filterStatus} 
                                 onChange={(e) => setFilterStatus(e.target.value)}
@@ -167,7 +167,7 @@ const UsersListView = () => {
                                 <FontAwesomeIcon icon={faArrowLeft} className="text-lg" />
                             </button>
 
-                            <span className="px-4 py-2 bg-gray-200 rounded">{currentPage} de {totalPages}</span>
+                            <span className="text-gray-600 px-4 py-2 bg-gray-200 rounded">{currentPage} de {totalPages}</span>
 
                             <button
                                 disabled={currentPage === totalPages}

@@ -96,7 +96,7 @@ const PostsAdminView = () => {
           </div>
         ) : allPost && allPost.posts.length > 0 ? (
           <div>
-            <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Publicaciones Blog</h1>
+            <h1 className="text-gray-700 text-2xl font-bold mb-4 mt-10 text-center">Publicaciones Blog</h1>
             <div>
               {allPost.posts.map((post) => (
                 <CardPostAdmin key={post.id} post={post} handlePostStatus={handlePostStatus} />

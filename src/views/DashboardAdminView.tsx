@@ -110,7 +110,7 @@ const DashboardAdminView = () => {
                         <h3 className="text-xl font-bold text-black text-center">Lo mas reciente Blog</h3>
                     </div>
                     {latestPosts.map((post, index) => (
-                    <div key={post.id} className="relative flex bg-[#fbfbf7] shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
+                    <div key={post.id} className="text-black relative flex bg-[#fbfbf7] shadow-lg rounded-lg overflow-hidden h-[90px] my-2">
 
                         <div className="h-full flex items-center p-4 pr-0">
                             <Avatar name={post.author.name} />

@@ -15,7 +15,7 @@ const Footer = () => {
           <div className="flex flex-row p-3 space-x-5">
             <a href="/contact" className="hover:text-gray-300 text-[#242424] font-semibold text-xs font-sora transition-colors duration-300">Contacto</a>
             <a href="/blog" className="hover:text-gray-300 text-[#242424] font-semibold text-xs font-sora transition-colors duration-300">Blog</a>
-            <a href="/about" className="hover:text-gray-300 text-[#242424] font-semibold text-xs font-sora transition-colors duration-300">About</a>
+            <a href="/about" className="hover:text-gray-300 text-[#242424] font-semibold text-xs font-sora transition-colors duration-300">Sobre Nosotros</a>
           </div>
         </div>
         
