@@ -80,9 +80,9 @@ const UsersPaymentsView = () => {
             {isLoading}
             {processedUsers.length >= 0 ? ( 
                 <div>
-                    <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Historial de Transacciones</h1>
+                    <h1 className="text-gray-700 text-2xl font-bold mb-4 mt-10 text-center">Historial de Transacciones</h1>
                     <div className="bg-gray-100 p-6 m-6 rounded-lg shadow-sm">
-                        <div className="flex gap-2 mb-4 justify-center">
+                        <div className="text-gray-700 flex gap-2 mb-4 justify-center">
                             <select
                                 value={filterStatus}
                                 onChange={(e) => {
@@ -152,7 +152,7 @@ const UsersPaymentsView = () => {
                                 <FontAwesomeIcon icon={faArrowLeft} className="text-lg" />
                             </button>
 
-                            <span className="px-4 py-2 bg-gray-200 rounded">{currentPage} de {totalPages}</span>
+                            <span className="text-gray-700 px-4 py-2 bg-gray-200 rounded">{currentPage} de {totalPages}</span>
 
                             <button
                                 disabled={currentPage === totalPages}

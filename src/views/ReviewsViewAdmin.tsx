@@ -73,10 +73,10 @@ const ReviewsAdminView = () => {
                 </div>
             ) : allReviews && allReviews.data.results.length > 0 ? (
                 <div>
-                    <h1 className="text-2xl font-bold mb-4 mt-10 text-center">Reseñas Nutriflow</h1>
+                    <h1 className="text-gray-700 text-2xl font-bold mb-4 mt-10 text-center">Reseñas Nutriflow</h1>
                     <div className="max-w-lg mx-auto my-2">
                         {allReviews.data.results.map((review) => (
-                            <div key={review.id} className="relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[160px] my-2 ">
+                            <div key={review.id} className="text-gray-700 relative flex items-center bg-white shadow-lg rounded-lg overflow-hidden h-[160px] my-2 ">
 
                                 <div className="pl-4">
                                     <Avatar name={review.user.name} />
