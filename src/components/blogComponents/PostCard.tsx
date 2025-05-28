@@ -34,26 +34,32 @@ const PostCard: React.FC<PostCardProps> = ({
   const [imageError, setImageError] = useState(false);
   const [localIsFavorite, setLocalIsFavorite] = useState(isFavorite);
   const [localFavoriteId, setLocalFavoriteId] = useState(favoriteId);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     setLocalIsFavorite(isFavorite);
     setLocalFavoriteId(favoriteId);
   }, [isFavorite, favoriteId]);
 
+  // Función para acortar el texto si es muy largo
+  const previewContent = post.content.length > 150 && !isExpanded
+    ? `${post.content.substring(0, 150)}...`
+    : post.content;
+
   const handleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isProcessing || !onToggleFavorite) return;
-  
+
     setIsProcessing(true);
     try {
       const previousIsFavorite = localIsFavorite;
       const previousFavoriteId = localFavoriteId;
-      
+
       setLocalIsFavorite(!previousIsFavorite);
-      
+
       const result = await onToggleFavorite(
-        post.id, 
-        previousIsFavorite, 
+        post.id,
+        previousIsFavorite,
         previousFavoriteId
       );
 
@@ -80,7 +86,7 @@ const PostCard: React.FC<PostCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-4 w-full flex flex-col">
+    <div className="bg-white rounded-2xl shadow-lg p-4 w-full flex flex-col h-full transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl ">
       {post.image && !imageError && (
         <div className="w-full h-48 rounded-xl overflow-hidden mb-4">
           <img
@@ -91,7 +97,7 @@ const PostCard: React.FC<PostCardProps> = ({
           />
         </div>
       )}
-      
+
       <div className="flex-grow">
         <div className="flex justify-between items-start mb-3">
           <h3 className="text-lg font-sora font-semibold text-[#242424] break-words">
@@ -139,9 +145,21 @@ const PostCard: React.FC<PostCardProps> = ({
           </div>
         </div>
 
-        <p className="text-sm font-sora text-[#a2a2a2] mb-4 break-words whitespace-pre-line">
-        {formatContentWithLineBreaks(post.content)}
-      </p>
+        <div className="mb-4">
+          <p className={`text-sm font-sora text-[#a2a2a2] break-words whitespace-pre-line ${!isExpanded && post.content.length > 150 ? 'line-clamp-4' : ''
+            }`}>
+            {formatContentWithLineBreaks(previewContent)}
+          </p>
+
+          {post.content.length > 150 && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-[#9DC08B] text-sm mt-1 font-sora hover:underline"
+            >
+              {isExpanded ? 'Mostrar menos' : 'Leer más'}
+            </button>
+          )}
+        </div>
 
         {(post.tags?.length ?? 0) > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
