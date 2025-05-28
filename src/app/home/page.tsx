@@ -99,9 +99,9 @@ const Home = () => {
         initial={{ opacity: 0, y: -30 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.8 }}
-        className="mt-8 text-center text-4xl font-extrabold text-[#9BA783] font-sora mb-2 flex items-center justify-center gap-3"
+        className="mt-8 text-center text-2xl md:text-4xl font-extrabold text-[#9BA783] font-sora mb-2 flex items-center justify-center gap-3"
       >
-        <span role="img" aria-label="comida">🥗</span>
+        <span role="img" aria-label="comida" className='hidden md:inline'>🥗</span>
         Bienvenido al Tracker de Comidas
       </motion.h1>
       <div className="flex justify-center mb-8">

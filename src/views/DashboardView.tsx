@@ -144,7 +144,7 @@ const DashboardView = () => {
             {userData ? (
                 <>
                     {/* Banner */}
-                    <div className="h-48 bg-gradient-to-r from-[#9BA783] to-[#CEB58D] bg-cover bg-center relative">
+                    <div className="h-28 bg-gradient-to-r from-[#9BA783] to-[#CEB58D] bg-cover bg-center relative">
                         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
                         {/* Nombre y Título sobre el Banner */}
                         <div className="absolute bottom-6 text-white md:left-80 left-6" >
