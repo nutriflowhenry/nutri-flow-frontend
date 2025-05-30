@@ -26,7 +26,7 @@ const PhysicalFormView = () => {
         initialValues: {
             weight: 60,
             height: 1.65,
-            birthdate: '', 
+            birthdate: '1996-01-01',
             gender: '',
             activityLevel: 'moderate',
             weightGoal: 'maintain',
@@ -85,126 +85,130 @@ const PhysicalFormView = () => {
     });
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md text-black">
-            <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Registro Físico</h2>
-            <form onSubmit={formik.handleSubmit} className="space-y-4">
-                {/* Campo: Peso */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Peso (kg)</label>
-                    <input
-                        type="number"
-                        name="weight"
-                        value={formik.values.weight}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    {formik.touched.weight && formik.errors.weight && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.weight}</p>
-                    )}
-                </div>
+        <div className="flex flex-col min-h-[calc(80vh-20px)] md:min-h-[calc(100vh-60px)] justify-center">
+            <div className="flex justify-center items-center mt-6 mb-6">
+                <div className="w-full md:max-w-sm max-w-[350px] bg-gradient-to-br from-[#D3D4C4] to-[#B3B19C] p-6 rounded-[25px] shadow-[-20px_-20px_60px_#FFFFFF,10px_10px_30px_#778474] relative flex flex-col items-center">
+                    <h2 className="text-[24px] font-semibold text-center text-[#444B3B] tracking-[0.005em]">Registro Físico</h2>
+                    <form onSubmit={formik.handleSubmit} className="space-y-4">
+                        {/* Campo: Peso */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Peso (kg)</label>
+                            <input
+                                type="number"
+                                name="weight"
+                                value={formik.values.weight}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            />
+                            {formik.touched.weight && formik.errors.weight && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.weight}</p>
+                            )}
+                        </div>
 
-                {/* Campo: Altura */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Altura (m)</label>
-                    <input
-                        type="number"
-                        name="height"
-                        value={formik.values.height}
-                        step="0.01"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    {formik.touched.height && formik.errors.height && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.height}</p>
-                    )}
-                </div>
+                        {/* Campo: Altura */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Altura (m)</label>
+                            <input
+                                type="number"
+                                name="height"
+                                value={formik.values.height}
+                                step="0.01"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            />
+                            {formik.touched.height && formik.errors.height && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.height}</p>
+                            )}
+                        </div>
 
-                {/* Campo: Fecha de Cumpleaños */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Fecha de Cumpleaños</label>
-                    <input
-                        type="date"
-                        name="birthdate"
-                        value={formik.values.birthdate instanceof Date ? formik.values.birthdate.toISOString().split('T')[0] : formik.values.birthdate}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    {formik.touched.birthdate && formik.errors.birthdate && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.birthdate}</p>
-                    )}
-                </div>
+                        {/* Campo: Fecha de Cumpleaños */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Fecha de Nacimiento</label>
+                            <input
+                                type="date"
+                                name="birthdate"
+                                value={formik.values.birthdate instanceof Date ? formik.values.birthdate.toISOString().split('T')[0] : formik.values.birthdate }
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            />
+                            {formik.touched.birthdate && formik.errors.birthdate && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.birthdate}</p>
+                            )}
+                        </div>
 
-                {/* Campo: Género */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Género</label>
-                    <select
-                        name="gender"
-                        value={formik.values.gender}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">Seleccionar</option>
-                        <option value="masculino">Masculino</option>
-                        <option value="femenino">Femenino</option>
-                        <option value="otro">Otro</option>
-                    </select>
-                    {formik.touched.gender && formik.errors.gender && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.gender}</p>
-                    )}
-                </div>
+                        {/* Campo: Género */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Género</label>
+                            <select
+                                name="gender"
+                                value={formik.values.gender}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            >
+                                <option value="">Seleccionar</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                            {formik.touched.gender && formik.errors.gender && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.gender}</p>
+                            )}
+                        </div>
 
-                {/* Campo: Nivel de Actividad */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Nivel de Actividad</label>
-                    <select
-                        name="activityLevel"
-                        value={formik.values.activityLevel}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="sedentary">Sedentario</option>
-                        <option value="moderate">Moderado</option>
-                        <option value="active">Activo</option>
-                        <option value="very active">Muy Activo</option>
-                    </select>
-                    {formik.touched.activityLevel && formik.errors.activityLevel && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.activityLevel}</p>
-                    )}
-                </div>
+                        {/* Campo: Nivel de Actividad */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Nivel de Actividad</label>
+                            <select
+                                name="activityLevel"
+                                value={formik.values.activityLevel}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            >
+                                <option value="sedentary">Sedentario</option>
+                                <option value="moderate">Moderado</option>
+                                <option value="active">Activo</option>
+                                <option value="very active">Muy Activo</option>
+                            </select>
+                            {formik.touched.activityLevel && formik.errors.activityLevel && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.activityLevel}</p>
+                            )}
+                        </div>
 
-                {/* Campo: Objetivo de Peso */}
-                <div>
-                    <label className="block text-gray-700 font-medium">Objetivo de Peso</label>
-                    <select
-                        name="weightGoal"
-                        value={formik.values.weightGoal}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="lose weight">Perder Peso</option>
-                        <option value="maintain">Mantener Peso</option>
-                        <option value="gain muscle">Ganar Músculo</option>
-                    </select>
-                    {formik.touched.weightGoal && formik.errors.weightGoal && (
-                        <p className="text-red-500 text-sm mt-1">{formik.errors.weightGoal}</p>
-                    )}
-                </div>
+                        {/* Campo: Objetivo de Peso */}
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700">Objetivo de Peso</label>
+                            <select
+                                name="weightGoal"
+                                value={formik.values.weightGoal}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                className="w-full h-[42px] bg-white shadow-[inset_2px_2px_7px_#000000] rounded-[25px] p-2 pl-4 text-[#313131] focus:outline-none"
+                            >
+                                <option value="lose weight">Perder Peso</option>
+                                <option value="maintain">Mantener Peso</option>
+                                <option value="gain muscle">Ganar Músculo</option>
+                            </select>
+                            {formik.touched.weightGoal && formik.errors.weightGoal && (
+                                <p className="text-red-500 text-sm mt-1">{formik.errors.weightGoal}</p>
+                            )}
+                        </div>
 
-                <div>
-                    <button 
-                        type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
-                    >
-                        Enviar
-                    </button>
+                        <div>
+                            <button
+                                type="submit"
+                                className="w-full bg-[#f78707] text-white py-2 rounded-xl transition duration-300"
+                            >
+                                Enviar
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };
