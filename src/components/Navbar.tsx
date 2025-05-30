@@ -10,6 +10,7 @@ import Logo from "@/assets/Logo";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SideBar from "./SideBar";
+import Link from "next/link";
 
 
 const LoadingModal = () => {
@@ -70,7 +71,9 @@ const Navbar = () => {
         </div>
             
         <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-[40px] z-30" style={{ width: '76px', height: '63px' }}>
+          <Link href={"/"}>
           <Logo />
+          </Link>
         </div>
           
         <div className="flex items-center space-x-4">
