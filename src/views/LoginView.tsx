@@ -23,8 +23,8 @@ const LoginView = () => {
   });
 
   return (
-    <div className="flex flex-col min-h-[calc(80vh-30px)] justify-center">
-      <div className="flex justify-center items-center">
+    <div className="flex flex-col min-h-[calc(70vh-20px)] md:min-h-[calc(80vh-30px)]  justify-center">
+      <div className="flex justify-center items-center mt-6 mb-6">
         <div className="w-full md:max-w-md max-w-[350px] bg-gradient-to-br from-[#D3D4C4] to-[#B3B19C] p-6 rounded-[25px] shadow-[-20px_-20px_60px_#FFFFFF,10px_10px_30px_#778474] relative flex flex-col items-center">
           <h2 className="text-[24px] font-semibold text-center text-[#444B3B] tracking-[0.005em]">Iniciar Sesión</h2>
 
