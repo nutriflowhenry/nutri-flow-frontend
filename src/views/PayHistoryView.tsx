@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faFilter, faReceipt } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { fetchUserPayments } from '@/helpers/auth.helper';
@@ -65,7 +65,7 @@ const PayHistoryView = () => {
     };
 
     if (loading) {
-        return <p className="text-gray-700 text-center py-8">Cargando historial de compras...</p>;
+        return <p className="text-gray-700 text-center py-8 font-sora">Cargando historial de compras...</p>;
     }
 
     if (error) {
@@ -73,121 +73,148 @@ const PayHistoryView = () => {
     }
 
     return (
-        <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg max-w-4xl mx-auto mt-4 sm:mt-8">
-            <button
-                onClick={() => router.back()}
-                className="text-gray-600 hover:text-gray-800 mb-4 sm:mb-6"
-            >
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-                Volver
-            </button>
-            <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-black text-center">Historial de Compras</h1>
-
-            {/* Filtros */}
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 space-y-4 sm:space-y-0">
-                <div className="flex items-center space-x-2 sm:space-x-4">
-                    <label className="text-gray-700 text-sm sm:text-base">
-                        <FontAwesomeIcon icon={faFilter} className="mr-2" />
-                        Filtrar por estado:
-                    </label>
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'canceled')}
-                        className="p-2 border border-gray-300 rounded text-black text-sm sm:text-base"
+        <div className="min-h-screen bg-[#F4EAE0] py-8 px-4 sm:px-6 font-sora">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+                    <button
+                        onClick={() => router.back()}
+                        className="flex items-center text-[#6b8f71] hover:text-[#5a7c62] mb-4 sm:mb-0"
                     >
-                        <option value="all">Todos</option>
-                        <option value="active">Activas</option>
-                        <option value="canceled">Canceladas</option>
-                    </select>
-                </div>
-                <div className="flex items-center space-x-2 sm:space-x-4">
-                    <label className="text-gray-700 text-sm sm:text-base">Items por página:</label>
-                    <select
-                        value={limit}
-                        onChange={(e) => handleLimitChange(Number(e.target.value))}
-                        className="p-2 border border-gray-300 rounded text-black text-sm sm:text-base"
-                    >
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                    </select>
-                </div>
-            </div>
+                        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                        <span>Volver al perfil</span>
+                    </button>
 
-            {/* Tabla de compras */}
-            {filteredPurchases.length > 0 ? (
-                <div className="overflow-x-auto text-black">
-                    <table className="min-w-full bg-white border border-gray-200">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="py-2 px-2 sm:py-3 sm:px-4 border-b text-left text-sm sm:text-base">Fecha</th>
-                                <th className="py-2 px-2 sm:py-3 sm:px-4 border-b text-left text-sm sm:text-base">Estado</th>
-                                <th className="py-2 px-2 sm:py-3 sm:px-4 border-b text-left text-sm sm:text-base">Periodo</th>
-                                <th className="py-2 px-2 sm:py-3 sm:px-4 border-b text-left text-sm sm:text-base">ID</th>
-                                <th className="py-2 px-2 sm:py-3 sm:px-4 border-b text-left text-sm sm:text-base">Cancelada</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredPurchases.map((purchase) => (
-                                <tr key={purchase.id} className="hover:bg-gray-50">
-                                    <td className="py-2 px-2 sm:py-3 sm:px-4 border-b text-sm sm:text-base">
-                                        {new Date(purchase.created_at).toLocaleDateString('es-ES', {
-                                            day: '2-digit',
-                                            month: '2-digit',
-                                            year: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })}
-                                    </td>
-                                    <td className="py-2 px-2 sm:py-3 sm:px-4 border-b text-sm sm:text-base">
-                                        <span
-                                            className={`px-2 py-1 rounded ${
-                                                purchase.status === 'active'
+                    <div className="text-center sm:text-left">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-[#5a5f52] flex items-center justify-center sm:justify-start">
+                            <FontAwesomeIcon icon={faReceipt} className="mr-3 text-[#CEB58D]" />
+                            Historial de Pagos
+                        </h1>
+                        <p className="text-[#7A8B5C] mt-1">Revisa todas tus transacciones</p>
+                    </div>
+                </div>
+
+                {/* Filtros */}
+                <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div className="flex items-center">
+                            <FontAwesomeIcon icon={faFilter} className="text-[#CEB58D] mr-3" />
+                            <select
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'canceled')}
+                                className="bg-[#F4EAE0] border border-[#E7E3D8] rounded-lg px-4 py-2 text-[#5a5f52] focus:outline-none focus:ring-2 focus:ring-[#CEB58D]"
+                            >
+                                <option value="all">Todos los estados</option>
+                                <option value="active">Activas</option>
+                                <option value="canceled">Canceladas</option>
+                            </select>
+                        </div>
+
+                        <div className="flex items-center">
+                            <span className="text-[#5a5f52] mr-3">Mostrar:</span>
+                            <select
+                                value={limit}
+                                onChange={(e) => handleLimitChange(Number(e.target.value))}
+                                className="bg-[#F4EAE0] border border-[#E7E3D8] rounded-lg px-4 py-2 text-[#5a5f52] focus:outline-none focus:ring-2 focus:ring-[#CEB58D]"
+                            >
+                                <option value="5">5 items</option>
+                                <option value="10">10 items</option>
+                                <option value="20">20 items</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tabla de compras */}
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                {filteredPurchases.length > 0 ? (
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full">
+                            <thead>
+                                <tr className="bg-[#F4EAE0]">
+                                    <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a5f52]">Fecha</th>
+                                    <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a5f52]">Estado</th>
+                                    <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a5f52]">Periodo</th>
+                                    <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a5f52]">ID de Transacción</th>
+                                    <th className="px-6 py-4 text-left text-sm font-semibold text-[#5a5f52]">Cancelación</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[#E7E3D8]">
+                                {filteredPurchases.map((purchase) => (
+                                    <tr key={purchase.id} className="hover:bg-[#FFF6EA] transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#5a5f52]">
+                                            {new Date(purchase.created_at).toLocaleDateString('es-ES', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-semibold ${purchase.status === 'active'
                                                     ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
-                                            }`}
-                                        >
-                                            {purchase.status === 'active' ? 'Activa' : 'Cancelada'}
-                                        </span>
-                                    </td>
-                                    <td className="py-2 px-2 sm:py-3 sm:px-4 border-b text-sm sm:text-base">
-                                        {new Date(purchase.currentPeriodStart).toLocaleDateString('es-ES')} -{' '}
-                                        {new Date(purchase.currentPeriodEnd).toLocaleDateString('es-ES')}
-                                    </td>
-                                    <td className="py-2 px-2 sm:py-3 sm:px-4 border-b text-sm sm:text-base">{purchase.stripeSubscriptionId}</td>
-                                    <td className="py-2 px-2 sm:py-3 sm:px-4 border-b text-sm sm:text-base">
-                                        {purchase.canceled_at
-                                            ? new Date(purchase.canceled_at).toLocaleDateString('es-ES')
-                                            : 'N/A'}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <p className="text-gray-700 text-center">No hay compras registradas.</p>
-            )}
+                                                    }`}
+                                            >
+                                                {purchase.status === 'active' ? 'Activa' : 'Cancelada'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#5a5f52]">
+                                            {new Date(purchase.currentPeriodStart).toLocaleDateString('es-ES')} -{' '}
+                                            {new Date(purchase.currentPeriodEnd).toLocaleDateString('es-ES')}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#5a5f52] font-mono">{purchase.stripeSubscriptionId}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#5a5f52]">
+                                            {purchase.canceled_at
+                                                ? new Date(purchase.canceled_at).toLocaleDateString('es-ES')
+                                                : '-'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="p-8 text-center">
+                            <div className="inline-block bg-[#F4EAE0] p-4 rounded-full mb-4">
+                                <FontAwesomeIcon icon={faReceipt} className="text-2xl text-[#CEB58D]" />
+                            </div>
+                            <h3 className="text-lg font-medium text-[#5a5f52]">No hay transacciones registradas</h3>
+                            <p className="text-[#7A8B5C] mt-1">Cuando realices un pago, aparecerá aquí</p>
+                        </div>
+                )}
 
-            {/* Paginación */}
-            <div className="flex  flex-row justify-between items-center mt-4 sm:mt-6 space-y-4 sm:space-y-0">
-                <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="text-black p-2 bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-50 text-sm sm:text-base"
-                >
-                    Anterior
-                </button>
-                <span className="text-gray-700 text-sm sm:text-base">
-                    Página {currentPage} de {totalPages}
-                </span>
-                <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="text-black p-2 bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-50 text-sm sm:text-base"
-                >
-                    Siguiente
-                </button>
+                {/* Paginación */}
+                <div className="bg-[#F4EAE0] px-6 py-4 flex items-center justify-between border-t border-[#E7E3D8]">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'text-gray-400' : 'text-[#6b8f71] hover:bg-[#E6F0D9]'}`}
+                    >
+                        Anterior
+                    </button>
+                    <div className="flex items-center space-x-2">
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                        <button
+                                            key={page}
+                                            onClick={() => handlePageChange(page)}
+                                            className={`w-10 h-10 rounded-full ${currentPage === page ? 'bg-[#6b8f71] text-white' : 'text-[#5a5f52] hover:bg-[#E6F0D9]'}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? 'text-gray-400' : 'text-[#6b8f71] hover:bg-[#E6F0D9]'}`}
+                    >
+                        Siguiente
+                    </button>
+                </div>
+                </div>
+
             </div>
         </div>
     );

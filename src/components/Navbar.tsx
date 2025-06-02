@@ -171,8 +171,9 @@ const Navbar = () => {
               ) : (
                 <>
                   <div className="hidden sm:flex space-x-4">
-                    <button onClick={() => router.push('/login')} className="text-gray-700">Iniciar Sesión </button>
-                    <button onClick={() => router.push('/register')} className="text-gray-700">| Registrarse</button>
+                    <button onClick={() => router.push('/login')} className="text-gray-700 text-sm font-sora font-semibold">Iniciar Sesión</button>
+                    <p className="text-gray-700 font-sora font-semibold">|</p>
+                    <button onClick={() => router.push('/register')} className="text-gray-700 text-sm font-sora font-semibold md:pr-12">Registrarse</button>
                   </div>
                   <div className="sm:hidden flex space-x-8">
                     <button onClick={() => router.push('/login')} aria-label="Login">
