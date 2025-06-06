@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+
 import {
   UserCircleIcon,
-  UserIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
+import { FaUser, FaSignOutAlt, FaCog, FaHome, FaBlog, FaRobot } from "react-icons/fa";
 import Logo from "@/assets/Logo";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import SideBar from "./SideBar";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 
 const LoadingModal = () => {
@@ -69,42 +71,45 @@ const Navbar = () => {
             <LightBulbIcon className="w-6 h-6 text-gray-700" />
           </button> */}
         </div>
-            
+
         <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-[40px] z-30" style={{ width: '76px', height: '63px' }}>
           <Link href={"/"}>
-          <Logo />
+            <Logo />
           </Link>
         </div>
-          
-        <div className="flex items-center space-x-4">
+
+        <div className="flex items-center space-x-4 md:mr-5">
           {!isLoading && !isAdminDashboard && (
             <>
               {userData ? (
                 <>
-                  <button
+                  <motion.button
                     onClick={() => {
                       const redirectTo = "/home";
                       router.push(redirectTo);
                     }}
-                    className="text-gray-700 hover:text-gray-900 transition-colors"
+                    className="text-[#5a5f52] hover:text-[#6b8f71] transition-colors font-sora font-medium text-sm md:text-base"
                     disabled={userData.user.userProfile === null && userData.user.role == "admin"}
+                    whileHover={{ scale: 1.05 }}
                   >
                     Mi Bienestar
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
                     onClick={() => router.push("/blog")}
-                    className="hidden md:inline-block text-gray-700 hover:text-gray-900 transition-colors"
+                    className="hidden md:inline-block text-[#5a5f52] hover:text-[#6b8f71] transition-colors font-sora font-medium text-sm md:text-base"
                     disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
+                    whileHover={{ scale: 1.05 }}
                   >
                     Blog
-                  </button>
+                  </motion.button>
                   {userData?.user?.subscriptionType === "premium" && (
-                    <button
+                    <motion.button
                       onClick={() => router.push("/chatbot")}
-                      className="hidden md:inline-block text-gray-700 hover:text-gray-900 transition-colors"
+                      className="hidden md:inline-block text-[#5a5f52] hover:text-[#6b8f71] transition-colors font-sora font-medium text-sm md:text-base"
+                      whileHover={{ scale: 1.05 }}
                     >
                       Chatbot
-                    </button>
+                    </motion.button>
                   )}
                   <div
                     className="relative"
@@ -112,17 +117,17 @@ const Navbar = () => {
                     onMouseLeave={handleMenuClose}
                   >
 
-                    <button
+                    <motion.button
                       aria-label="User profile"
-                      className="md:px-4 py-2"
-                      onClick={() => router.push('/dashboard')}
+                      className="p-2 rounded-full bg-[#e7e3d8] hover:bg-[#d8d3c6] transition-colors"
                       disabled={userData.user.userProfile === null}
+                      whileHover={{ scale: 1.1 }}
                     >
-                      <UserIcon className="w-6 h-6 text-gray-700" />
-                    </button>
+                      <FaUser className="w-5 h-5 text-[#5a5f52]" />
+                    </motion.button>
                     {isMenuOpen && (
-                      <div className="absolute right-0 w-48 bg-white rounded-lg shadow-lg z-50">
-                        <button
+                      <div className="absolute right-0 w-56 bg-white rounded-lg shadow-lg z-50 ">
+                        <motion.button
                           onClick={() => {
                             if (userData.user.role !== "admin") {
                               router.push('/dashboard');
@@ -130,50 +135,63 @@ const Navbar = () => {
                               router.push('/dashboard/admin');
                             }
                           }}
-                          className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                          className=" w-full px-4 py-3 text-[#5a5f52] hover:bg-[#e7e3d8] text-left font-sora flex items-center gap-2"
                           disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                         >
-                          Mi Perfil
-                        </button>
-                        <button
+                          <FaHome className="text-[#6b8f71]" /> Mi Perfil
+                        </motion.button>
+                        <motion.button
                           onClick={() => router.push("/blog")}
-                          className="md:hidden block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                          className="md:hidden w-full px-4 py-3 text-[#5a5f52] hover:bg-[#e7e3d8] text-left font-sora flex items-center gap-2"
                           disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                         >
-                          Blog
-                        </button>
+                          <FaBlog className="text-[#6b8f71]" /> Blog
+                        </motion.button>
                         {userData?.user?.subscriptionType === "premium" && (
-                          <button
+                          <motion.button
                             onClick={() => router.push("/chatbot")}
-                            className="md:hidden block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                            className="md:hidden w-full px-4 py-3 text-[#5a5f52] hover:bg-[#e7e3d8] text-left font-sora flex items-center gap-2"
                             disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                           >
-                            ChatBot
-                          </button>
+                            <FaRobot className="text-[#6b8f71]" /> ChatBot
+                          </motion.button>
                         )}
-                        <button
+                        <motion.button
                           onClick={() => router.push("/dashboard/userSetting")}
-                          className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                          className="w-full px-4 py-3 text-[#5a5f52] hover:bg-[#e7e3d8] text-left font-sora flex items-center gap-2"
                           disabled={userData.user.userProfile === null && userData.user.role !== "admin"}
                         >
-                          Ajustes
-                        </button>
-                        <button
+                          <FaCog className="text-[#6b8f71]" /> Ajustes
+                        </motion.button>
+                        <motion.button
                           onClick={logout}
-                          className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+                          className="w-full px-4 py-3 text-[#5a5f52] hover:bg-[#e7e3d8] text-left font-sora flex items-center gap-2"
                         >
-                          Cerrar Sesión
-                        </button>
+                          <FaSignOutAlt className="text-[#6b8f71]" /> Cerrar Sesión
+                        </motion.button>
                       </div>
                     )}
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="hidden sm:flex space-x-4">
-                    <button onClick={() => router.push('/login')} className="text-gray-700 text-sm font-sora font-semibold">Iniciar Sesión</button>
-                    <p className="text-gray-700 font-sora font-semibold">|</p>
-                    <button onClick={() => router.push('/register')} className="text-gray-700 text-sm font-sora font-semibold md:pr-12">Registrarse</button>
+                  <div className="hidden sm:flex space-x-4 md:mr-12">
+                    <motion.button
+                      onClick={() => router.push('/login')}
+                      className="text-[#5a5f52] text-sm font-sora font-medium hover:text-[#6b8f71] transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      Iniciar Sesión
+                    </motion.button>
+
+                    <motion.button
+                      onClick={() => router.push('/register')}
+                      className="bg-[#6b8f71] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5a7c62] transition-colors font-sora font-medium text-sm "
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Registrarse
+                    </motion.button>
                   </div>
                   <div className="sm:hidden flex space-x-8">
                     <button onClick={() => router.push('/login')} aria-label="Login">
