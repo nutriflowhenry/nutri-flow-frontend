@@ -13,7 +13,7 @@ import {
   faBullseye,
   faRunning,
   faKey,
-  faUserSlash
+  faUserSlash, faBell
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { uploadImage } from '@/helpers/uploadImage';
@@ -21,6 +21,7 @@ import { getCurrentUser } from "@/helpers/auth.helper";
 import * as Yup from 'yup';
 import { userInfoValidationSchema, physicalFormValidationSchema } from '@/helpers/validationSchemas';
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface FormData {
   birthdate: Date | string;
@@ -79,6 +80,20 @@ const SettingsView = () => {
   const [userInfoValidationErrors, setUserInfoValidationErrors] = useState<{ [key: string]: string }>({})
   const [passwordValidationErrors, setPasswordValidationErrors] = useState<{ [key: string]: string }>({});
 
+  // Animaciones
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   const handleDeleteAccount = async () => {
     const result = await Swal.fire({
@@ -87,7 +102,7 @@ const SettingsView = () => {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      cancelButtonColor: '#6b8f71',
       confirmButtonText: 'Sí, eliminar cuenta',
       cancelButtonText: 'Cancelar',
     });
@@ -449,13 +464,35 @@ const SettingsView = () => {
   }
 
   return (
-    <div className="p-8 bg-white shadow-lg rounded-xl max-w-4xl mx-auto mt-10">
-      <h1 className="text-3xl font-bold mb-8 text-gray-900 text-center">Ajustes de Usuario</h1>
+    <div className="min-h-screen font-sora py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="max-w-4xl mx-auto"
+      >
+        <motion.h1
+          className="text-4xl font-bold text-[#5a5f52] mb-8 text-center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Configuración de Cuenta
+        </motion.h1>
+
       {userData ? (
-        <div className="flex flex-col space-y-8"> {/* Cambia a flex-col y añade espacio vertical */}
-          {/* FORMULARIO de Información del Usuario */}
-          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Detalles de la Cuenta</h2>
+        <motion.div
+          className="space-y-8"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
+          {/* Información del Usuario */}
+          <motion.div
+            variants={fadeInUp}
+            className="bg-[#e7e3d8] p-6 rounded-2xl shadow-lg"
+          >
+            <h2 className="text-2xl font-semibold text-[#5a5f52] mb-6">Detalles de la Cuenta</h2>
             {isEditingUserInfo ? (
               <form onSubmit={handleUserInfoSubmit} className="space-y-6">
                 <div>
@@ -465,7 +502,7 @@ const SettingsView = () => {
                     name="name"
                     value={userInfoFormData.name}
                     onChange={handleUserInfoChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
+                    className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
                   />
                   {userInfoValidationErrors.name && (
                     <p className="text-red-500 text-sm mt-1">{userInfoValidationErrors.name}</p>
@@ -481,7 +518,7 @@ const SettingsView = () => {
                     value={userInfoFormData.email}
                     onChange={handleUserInfoChange}
                     disabled={userData?.user?.provider === "auth0"}
-                    className={`mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white ${userData?.user?.provider === "auth0" ? "opacity-50 cursor-not-allowed" : ""
+                    className={`mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3 ${userData?.user?.provider === "auth0" ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                   />
                   {userInfoValidationErrors.email && (
@@ -492,13 +529,13 @@ const SettingsView = () => {
                   <button
                     type="button"
                     onClick={() => setIsEditingUserInfo(false)}
-                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                    className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-xl transition duration-300"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-xl transition duration-300"
                   >
                     Guardar
                   </button>
@@ -510,11 +547,11 @@ const SettingsView = () => {
                   console.log("Info:", userData.user.profilePicture);
                   return null; // Retorna null para no renderizar nada adicional
                 })()}
-                
+
                 <img
                   src={userData.user.profilePicture || defaultProfilePicture}
                   alt="Perfil"
-                  className="w-32 h-32 rounded-full mb-6 mx-auto  object-cover"
+                  className="w-32 h-32 rounded-full mb-4 mx-auto  object-cover border-4 border-[#a7b8a8] shadow-md"
                 />
                 <div className="flex relative justify-center items-center">
                   <input
@@ -524,267 +561,290 @@ const SettingsView = () => {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     id="profile-picture-upload"
                   />
-                  <label
+                  <motion.label
                     htmlFor="profile-picture-upload"
-                    className="block w-50 bg-gray-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-[25px] text-center cursor-pointer transition duration-300"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="block bg-[#6b8f71] hover:bg-[#5a7c62] text-white font-medium py-2 px-6 rounded-xl cursor-pointer transition duration-300"
                   >
                     Cambiar Foto de Perfil
-                  </label>
+                  </motion.label>
                 </div>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faSpellCheck} className="mr-3 text-orange-600" />
-                  <strong>Nombre:</strong> <span className="ml-2">{userData.user.name}</span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-orange-600" />
-                  <strong>Email:</strong> <span className="ml-2 truncate max-w-[180px] md:max-w-none">{userData.user.email}</span>
-                </p>
-                <button
+                <div className="space-y-4">
+                  <p className="flex items-center text-lg">
+                    <FontAwesomeIcon icon={faSpellCheck} className="mr-3 text-[#6b8f71]" />
+                    <strong className="w-24">Nombre:</strong> <span className="ml-2">{userData.user.name}</span>
+                  </p>
+                  <p className="flex items-center text-lg">
+                    <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-[#6b8f71]" />
+                    <strong className="w-24">Email:</strong> <span className="ml-2 truncate max-w-[180px] md:max-w-none">{userData.user.email}</span>
+                  </p>
+                </div>
+                <motion.button
                   onClick={() => setIsEditingUserInfo(true)}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-[#6b8f71] hover:bg-[#5a7c62] text-white font-medium py-3 px-6 rounded-xl transition duration-300 mt-4"
                 >
                   <FontAwesomeIcon icon={faEdit} className="mr-2" />
                   Editar Información
-                </button>
+                </motion.button>
               </div>
             )}
-          </div>
 
-          {/* FORMULARIO de Detalles del Perfil */}
-          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Detalles del Perfil</h2>
-            {isEditingProfile ? (
-              <form onSubmit={handleProfileSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
-                  <input
-                    type="date"
-                    name="birthdate"
-                    value={
-                      profileFormData.birthdate instanceof Date
-                        ? profileFormData.birthdate.toISOString().split('T')[0]
-                        : profileFormData.birthdate || ''
-                    }
-                    onChange={handleProfileInputChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  />
-                  {validationErrors.birthdate && <p className="text-red-500 text-sm mt-1">{validationErrors.birthdate}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Género</label>
-                  <select
-                    name="gender"
-                    value={profileFormData.gender}
-                    onChange={handleProfileInputChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  >
-                    <option value="male">Masculino</option>
-                    <option value="female">Femenino</option>
-                    <option value="other">Otro</option>
-                  </select>
-                  {validationErrors.gender && <p className="text-red-500 text-sm mt-1">{validationErrors.gender}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Peso (kg)</label>
-                  <input
-                    type="number"
-                    name="weight"
-                    value={profileFormData.weight}
-                    onChange={handleProfileInputChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  />
-                  {validationErrors.weight && <p className="text-red-500 text-sm mt-1">{validationErrors.weight}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Altura (cm)</label>
-                  <input
-                    type="number"
-                    name="height"
-                    value={profileFormData.height}
-                    onChange={handleProfileInputChange}
-                    step="0.01"
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  />
-                  {validationErrors.height && <p className="text-red-500 text-sm mt-1">{validationErrors.height}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nivel de Actividad Física</label>
-                  <select
-                    name="activityLevel"
-                    value={profileFormData.activityLevel}
-                    onChange={handleProfileInputChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  >
-                    <option value="sedentary">Sedentario</option>
-                    <option value="moderate">Moderado</option>
-                    <option value="active">Activo</option>
-                    <option value="very active">Muy Activo</option>
-                  </select>
-                  {validationErrors.activityLevel && <p className="text-red-500 text-sm mt-1">{validationErrors.activityLevel}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Objetivo de Peso</label>
-                  <select
-                    name="weightGoal"
-                    value={profileFormData.weightGoal}
-                    onChange={handleProfileInputChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  >
-                    <option value="lose weight">Perder Peso</option>
-                    <option value="maintain">Mantener Peso</option>
-                    <option value="gain muscle">Ganar Músculo</option>
-                  </select>
-                  {validationErrors.weightGoal && <p className="text-red-500 text-sm mt-1">{validationErrors.weightGoal}</p>}
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditingProfile(false)}
-                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Guardar
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="space-y-6 text-gray-700">
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faCakeCandles} className="mr-3 text-green-600" />
-                  <strong>Cumpleaños:</strong> <span className="ml-2">
-                    {userData.user.userProfile?.birthdate
-                      ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })
-                      : "--"}
-                  </span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faVenusMars} className="mr-3 text-green-600" />
-                  <strong>Género:</strong> <span className="ml-2">
-                    {userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}
-                  </span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faWeightScale} className="mr-3 text-green-600" />
-                  <strong>Peso:</strong> <span className="ml-2">{userData.user.userProfile?.weight || "--"} kg</span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faChildReaching} className="mr-3 text-green-600" />
-                  <strong>Altura:</strong> <span className="ml-2">{userData.user.userProfile?.height || "--"} cm</span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faRunning} className="mr-3 text-blue-600" />
-                  <strong>Nivel de Actividad:</strong> <span className="ml-2">
-                    {userData.user.userProfile?.activityLevel ? activityLevelMap[userData.user.userProfile.activityLevel as keyof typeof activityLevelMap] : "--"}
-                  </span>
-                </p>
-                <p className="flex items-center">
-                  <FontAwesomeIcon icon={faBullseye} className="mr-3 text-blue-600" />
-                  <strong>Objetivo de Peso:</strong> <span className="ml-2">
-                    {userData.user.userProfile?.weightGoal ? weightGoalMap[userData.user.userProfile.weightGoal as keyof typeof weightGoalMap] : "--"}
-                  </span>
-                </p>
-                <button
-                  onClick={() => setIsEditingProfile(true)}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
-                >
-                  <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                  Editar Perfil
-                </button>
-              </div>
-            )}
-          </div>
+        </motion.div>
+            {/* Detalles del Perfil */}
+            <motion.div
+              variants={fadeInUp}
+              className="bg-[#e7e3d8] p-6 rounded-2xl shadow-lg"
+            >
+              <h2 className="text-2xl font-semibold text-[#5a5f52] mb-6">Detalles del Perfil</h2>
+              {isEditingProfile ? (
+                <form onSubmit={handleProfileSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
+                    <input
+                      type="date"
+                      name="birthdate"
+                      value={
+                        profileFormData.birthdate instanceof Date
+                          ? profileFormData.birthdate.toISOString().split('T')[0]
+                          : profileFormData.birthdate || ''
+                      }
+                      onChange={handleProfileInputChange}
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    />
+                    {validationErrors.birthdate && <p className="text-red-500 text-sm mt-1">{validationErrors.birthdate}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Género</label>
+                    <select
+                      name="gender"
+                      value={profileFormData.gender}
+                      onChange={handleProfileInputChange}
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    >
+                      <option value="male">Masculino</option>
+                      <option value="female">Femenino</option>
+                      <option value="other">Otro</option>
+                    </select>
+                    {validationErrors.gender && <p className="text-red-500 text-sm mt-1">{validationErrors.gender}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Peso (kg)</label>
+                    <input
+                      type="number"
+                      name="weight"
+                      value={profileFormData.weight}
+                      onChange={handleProfileInputChange}
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    />
+                    {validationErrors.weight && <p className="text-red-500 text-sm mt-1">{validationErrors.weight}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Altura (cm)</label>
+                    <input
+                      type="number"
+                      name="height"
+                      value={profileFormData.height}
+                      onChange={handleProfileInputChange}
+                      step="0.01"
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    />
+                    {validationErrors.height && <p className="text-red-500 text-sm mt-1">{validationErrors.height}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Nivel de Actividad Física</label>
+                    <select
+                      name="activityLevel"
+                      value={profileFormData.activityLevel}
+                      onChange={handleProfileInputChange}
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    >
+                      <option value="sedentary">Sedentario</option>
+                      <option value="moderate">Moderado</option>
+                      <option value="active">Activo</option>
+                      <option value="very active">Muy Activo</option>
+                    </select>
+                    {validationErrors.activityLevel && <p className="text-red-500 text-sm mt-1">{validationErrors.activityLevel}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Objetivo de Peso</label>
+                    <select
+                      name="weightGoal"
+                      value={profileFormData.weightGoal}
+                      onChange={handleProfileInputChange}
+                      className="mt-1 block w-full rounded-lg border-[#a7b8a8] shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    >
+                      <option value="lose weight">Perder Peso</option>
+                      <option value="maintain">Mantener Peso</option>
+                      <option value="gain muscle">Ganar Músculo</option>
+                    </select>
+                    {validationErrors.weightGoal && <p className="text-red-500 text-sm mt-1">{validationErrors.weightGoal}</p>}
+                  </div>
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingProfile(false)}
+                      className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-xl transition duration-300"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-xl transition duration-300"
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-6 text-gray-700">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faCakeCandles} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Cumpleaños:</strong> <span className="ml-2">
+                        {userData.user.userProfile?.birthdate
+                          ? new Date(userData.user.userProfile.birthdate).toLocaleDateString("es-ES", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })
+                          : "--"}
+                      </span>
+                    </p>
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faVenusMars} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Género:</strong> <span className="ml-2">
+                        {userData.user.userProfile?.gender ? genderMap[userData.user.userProfile?.gender as keyof typeof genderMap] : "--"}
+                      </span>
+                    </p>
 
-          {/* Ajustes Avanzados */}
-          <div className="bg-gray-50 p-8 rounded-xl shadow-sm mx-auto w-full max-w-2xl"> {/* Centrado y ancho máximo */}
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Ajustes Avanzados</h2>
-            {isEditingPassword ? (
-              <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordFormData.newPassword}
-                    onChange={handlePasswordChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  />
-                  {passwordValidationErrors.newPassword && (
-                    <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.newPassword}</p>
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faWeightScale} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Peso:</strong> <span className="ml-2">{userData.user.userProfile?.weight || "--"} kg</span>
+                    </p>
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faChildReaching} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Altura:</strong> <span className="ml-2">{userData.user.userProfile?.height || "--"} cm</span>
+                    </p>
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faRunning} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Nivel de Actividad:</strong> <span className="ml-2">
+                        {userData.user.userProfile?.activityLevel ? activityLevelMap[userData.user.userProfile.activityLevel as keyof typeof activityLevelMap] : "--"}
+                      </span>
+                    </p>
+                    <p className="flex items-center text-lg">
+                      <FontAwesomeIcon icon={faBullseye} className="mr-3 text-[#6b8f71]" />
+                      <strong className="w-32">Objetivo de Peso:</strong> <span className="ml-2">
+                        {userData.user.userProfile?.weightGoal ? weightGoalMap[userData.user.userProfile.weightGoal as keyof typeof weightGoalMap] : "--"}
+                      </span>
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setIsEditingProfile(true)}
+                    className="w-full bg-[#6b8f71] hover:bg-[#5a7c62] text-white font-medium py-3 px-6 rounded-xl transition duration-300"
+                  >
+                    <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                    Editar Perfil
+                  </button>
+
+                </div>
+              )}
+            </motion.div>
+            {/* Ajustes Avanzados */}
+            <motion.div
+              variants={fadeInUp}
+              className="bg-[#e7e3d8] p-6 rounded-2xl shadow-lg"
+            >
+              <h2 className="text-2xl font-semibold text-[#5a5f52] mb-6">Ajustes Avanzados</h2>
+              {isEditingPassword ? (
+                <form onSubmit={handlePasswordSubmit} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña</label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={passwordFormData.newPassword}
+                      onChange={handlePasswordChange}
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    />
+                    {passwordValidationErrors.newPassword && (
+                      <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.newPassword}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Nueva Contraseña</label>
+                    <input
+                      type="password"
+                      name="confirmNewPassword"
+                      value={passwordFormData.confirmNewPassword}
+                      onChange={handlePasswordChange}
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#6b8f71] focus:ring-[#6b8f71] text-black bg-white p-3"
+                    />
+                    {passwordValidationErrors.confirmNewPassword && (
+                      <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.confirmNewPassword}</p>
+                    )}
+                  </div>
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingPassword(false)}
+                      className="bg-[#7f9c91] hover:bg-[#6d8a80] text-white font-medium py-2 px-6 rounded-xl transition duration-300"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#6b8f71] hover:bg-[#5a7c62] text-white font-medium py-2 px-6 rounded-xl transition duration-300"
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-4">
+                  <motion.button
+                    onClick={() => router.push("/notifications")}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-[#6b8f71] hover:bg-[#5a7c62] text-white font-medium py-3 px-6 rounded-xl transition duration-300 flex items-center justify-center"
+                  >
+                    <FontAwesomeIcon icon={faBell} className="mr-2" />
+                    Notificaciones
+                  </motion.button>
+                  {userData?.user?.provider !== "auth0" && (
+                    <motion.button
+                      onClick={() => setIsEditingPassword(true)}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full bg-[#7f9c91] hover:bg-[#6d8a80] text-white font-medium py-3 px-6 rounded-xl transition duration-300 flex items-center justify-center mt-4"
+                    >
+                      <FontAwesomeIcon icon={faKey} className="mr-2" />
+                      Cambiar Contraseña
+                    </motion.button>
                   )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Nueva Contraseña</label>
-                  <input
-                    type="password"
-                    name="confirmNewPassword"
-                    value={passwordFormData.confirmNewPassword}
-                    onChange={handlePasswordChange}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-black bg-white"
-                  />
-                  {passwordValidationErrors.confirmNewPassword && (
-                    <p className="text-red-500 text-sm mt-1">{passwordValidationErrors.confirmNewPassword}</p>
-                  )}
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditingPassword(false)}
-                    className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                  <motion.button
+                    onClick={handleDeleteAccount}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-[#6b8f71] hover:bg-red-600 text-white font-medium py-3 px-6 rounded-xl transition duration-300 flex items-center justify-center mt-4"
                   >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                  >
-                    Guardar
-                  </button>
+                    <FontAwesomeIcon icon={faUserSlash} className="mr-2" />
+                    Eliminar Cuenta
+                  </motion.button>
                 </div>
-              </form>
-            ) : (
-              <>
-                <button
-                  onClick={() => router.push("/notifications")}
-                  className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full"
-                >
-                  <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
-                  Notificaciones
-                </button>
-                {userData?.user?.provider !== "auth0" && (
-                  <button
-                    onClick={() => setIsEditingPassword(true)}
-                    className="bg-gray-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
-                  >
-                    <FontAwesomeIcon icon={faKey} className="mr-2" />
-                    Cambiar Contraseña
-                  </button>
-                )}
-                <button
-                  onClick={handleDeleteAccount}
-                  className="bg-gray-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-[25px] transition duration-300 w-full mt-5"
-                >
-                  <FontAwesomeIcon icon={faUserSlash} className="mr-2" />
-                  Eliminar Cuenta
-                </button>
-              </>
+              )}
 
-            )}
-          </div>
-        </div>
+          </motion.div>
+      </motion.div>
+
       ) : (
         <div className="text-gray-700 text-center">
           <p>No se encontraron datos del usuario.</p>
         </div>
       )}
+      </motion.div>
     </div>
   );
 };
