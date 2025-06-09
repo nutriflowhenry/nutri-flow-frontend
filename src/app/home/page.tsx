@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CardList from '@/components/FoodEntriesCardList';
 import FoodForm from '@/components/FoodForm';
 import { createFoodTracker } from '@/helpers/foodEntriesHelper';
@@ -9,11 +9,12 @@ import CaloriesCounter from '@/components/caloriesCounter';
 import AddFoodButton from '@/assets/AddFoodButton';
 import WaterCounterView from '@/views/WaterCounterView';
 import { useAuth } from '@/context/AuthContext';
+import Tutorial from '@/components/Tutorial';
 import { IFoodTracker } from '@/types';
 import { motion } from 'framer-motion';
 
 const Home = () => {
-  const {isLoading } = useAuth();
+  const { isLoading, userData } = useAuth();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newFood, setNewFood] = useState<{
@@ -37,8 +38,56 @@ const Home = () => {
     return midnightUTC.toISOString();
   });
   const [optimisticFood, setOptimisticFood] = useState<IFoodTracker | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const token = Cookies.get('token');
+
+  // Verificar si es un usuario nuevo al cargar el componente
+  useEffect(() => {
+    if (userData) {
+      const userTutorialKey = `tutorialCompleted_${userData.user.id}`;
+      const isNewUser = localStorage.getItem(userTutorialKey) !== 'true';
+      if (isNewUser) {
+        setShowTutorial(true);
+      }
+    }
+    
+  }, [userData]);
+
+
+  const tutorialSteps = [
+    {
+      title: "¡Bienvenido a NutriFlow!",
+      content: "Te guiaré para que aproveches al máximo tu experiencia de seguimiento nutricional.",
+      position: "center",
+      target: null
+    },
+    {
+      title: "Contador de Calorías",
+      content: "Aquí verás tu progreso diario de calorías consumidas.",
+      position: "top",
+      target: "calories-counter"
+    },
+    {
+      title: "Registro de Comidas",
+      content: "Tus comidas del día aparecerán aquí. Puedes agregar nuevas con el botón flotante.",
+      position: "left",
+      target: "food-list"
+    },
+    {
+      title: "Control de Hidratación",
+      content: "Registra cada vaso de agua que tomes para mantenerte hidratado durante el día.",
+      position: "right",
+      target: "water-counter"
+    },
+    {
+      title: "¡Listo para empezar!",
+      content: "Haz clic en el botón + para agregar tu primera comida y comenzar tu registro.",
+      position: "bottom",
+      target: "add-food-button"
+    }
+  ];
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -47,6 +96,29 @@ const Home = () => {
   const handleRefresh = () => {
     setRefreshTrigger((prev) => prev + 1); // Incrementa el refreshTrigger para forzar la recarga
   };
+
+  const handleNextStep = () => {
+    if (currentStep < tutorialSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setShowTutorial(false);
+      if (userData) {
+        const userTutorialKey = `tutorialCompleted_${userData.user.id}`;
+        localStorage.setItem(userTutorialKey, 'true');
+      }
+    }
+  
+  };
+
+  const handleSkipTutorial = () => {
+    if (userData) {
+      const userTutorialKey = `tutorialCompleted_${userData.user.id}`;
+      setShowTutorial(false);
+      localStorage.setItem(userTutorialKey, 'true');
+    }
+    
+  };
+
 
   const handleCreateFood = async () => {
     if (token) {
@@ -95,9 +167,16 @@ const Home = () => {
 
   return (
     <div className="font-sora flex flex-col items-center py-8 relative">
-      <motion.h1 
-        initial={{ opacity: 0, y: -30 }} 
-        animate={{ opacity: 1, y: 0 }} 
+      <Tutorial
+        showTutorial={showTutorial}
+        currentStep={currentStep}
+        tutorialSteps={tutorialSteps}
+        handleNextStep={handleNextStep}
+        handleSkipTutorial={handleSkipTutorial}
+      />
+      <motion.h1
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="mt-8 text-center text-2xl md:text-4xl font-extrabold text-[#9BA783] font-sora mb-2 flex items-center justify-center gap-3"
       >
@@ -128,13 +207,13 @@ const Home = () => {
       </div>
 
 
-{!isLoading && (
-            <>
-      <div className="w-full max-w-4xl mt-6">
-        <WaterCounterView currentDate={currentDate} />
-      </div>
-            
-            </>)}
+      {!isLoading && (
+        <>
+          <div className="w-full max-w-4xl mt-6">
+            <WaterCounterView currentDate={currentDate} />
+          </div>
+
+        </>)}
 
 
       {/* Modal */}

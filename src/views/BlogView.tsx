@@ -55,7 +55,7 @@ const BlogView: React.FC = () => {
     } finally {
       setIsLoadingPosts(false);
     }
-  }, [userData, currentPage]);
+  }, [userData]);
 
   const loadFavorites = useCallback(async () => {
     if (!userData?.token) return;
