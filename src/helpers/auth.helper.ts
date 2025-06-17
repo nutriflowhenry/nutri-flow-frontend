@@ -20,14 +20,14 @@ export async function register(userData: IRegisterProps) {
     return response.json();
 }
 
-export async function validateGoogleToken(googleToken: string) {
+export async function validateGoogleToken(googleToken: string, timezone: string) {
     try {
         const response = await fetch(`${APIURL}/auth/google`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ token: googleToken }),
+            body: JSON.stringify({ token: googleToken, timezone }),
         });
 
         if (response.ok) {

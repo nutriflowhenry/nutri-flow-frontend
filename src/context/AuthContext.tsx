@@ -12,7 +12,7 @@ export const AuthContext = createContext<AuthContextProps>({
     setUserData: () => { },
     loginWithGoogle: () => { },
     logout: () => { },
-    isLoading: true, 
+    isLoading: true,
 });
 
 export interface AuthProviderProps {
@@ -30,11 +30,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (status === "authenticated" && session?.user) {
             const googleToken = session?.accessToken;
 
+            // Recuperar timezone de sessionStorage o del navegador
+            const timezone = sessionStorage.getItem('googleAuthTimezone') ||
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
+
             if (googleToken) {
                 setIsLoading(true); // Activar el estado de carga
-                validateGoogleToken(googleToken)
+                validateGoogleToken(googleToken, timezone)
                     .then((response) => {
 
+                        // Limpiar después de uso exitoso
+                    sessionStorage.removeItem('googleAuthTimezone');
                         getCurrentUser(response.token)
                             .then((respuesta) => {
                                 const user = respuesta;
@@ -54,6 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
                             })
                             .catch((error) => {
+                                sessionStorage.removeItem('googleAuthTimezone');
                                 if (error instanceof Error) {
                                     Swal.fire({
                                         icon: "error",
@@ -148,27 +155,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const loginWithGoogle = async () => {
         try {
+
+            // 1. Obtener la zona horaria del navegador
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            // 2. Guardar en sessionStorage (persistente solo durante la sesión)
+            sessionStorage.setItem('googleAuthTimezone', timezone);
+
+            // 3. Iniciar autenticación con Google
             const result = await signIn("google");
             if (result?.error) {
-                
+                // Limpiar si hay error
+                sessionStorage.removeItem('googleAuthTimezone');
                 throw new Error(result.error); // Lanzar el error para que sea manejado en el bloque catch
             }
 
         } catch (error) {
+            sessionStorage.removeItem('googleAuthTimezone');
             if (error instanceof Error) {
                 await Swal.fire({
                     icon: "error",
                     title: "Error de autenticación",
                     text: error.message || "Ocurrió un error durante la autenticación con Google.",
                 });
-                
+
             } else {
                 await Swal.fire({
                     icon: "error",
                     title: "Error de autenticación",
                     text: "Ocurrió un error desconocido durante la autenticación con Google.",
                 });
-                
+
             }
         }
     };
