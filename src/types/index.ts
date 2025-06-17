@@ -3,6 +3,7 @@ export interface IRegisterProps {
     email: string;
     password: string;
     passwordConfirmation: string;
+    timezone: string;
 }
 
 export interface IRegisterErrors {
@@ -18,6 +19,7 @@ export interface IUserSession {
         id: string;
         email: string;
         name: string;
+        timezone?: string;
         profilePicture?: string;
         userProfile?: IUserProfile;
         auth0Id?: string;
@@ -292,4 +294,9 @@ export interface IReviewsList{
         totalPages:number
     }    
 
+}
+
+export interface CreateGoogleUserDto {
+    token: string;
+    timezone: string;
 }
