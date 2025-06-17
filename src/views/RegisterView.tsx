@@ -7,13 +7,19 @@ import Alert from '@/components/Alert';
 import { useAuth } from '@/context/AuthContext';
 import { FaGoogle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Swal from "sweetalert2";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const RegisterView = () => {
     const router = useRouter();
     const { loginWithGoogle } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [timezone, setTimezone] = useState('');
+
+    // Obtener la zona horaria del navegador al cargar el componente
+    useEffect(() => {
+        setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    }, []);
 
     return (
         <div className="flex flex-col min-h-[calc(80vh-20px)] md:min-h-[calc(100vh-60px)] justify-center">
@@ -26,11 +32,17 @@ const RegisterView = () => {
                             email: '',
                             password: '',
                             passwordConfirmation: '',
+                            timezone: timezone
                         }}
 
                         onSubmit={async (values, { setSubmitting }) => {
                             try {
-                                await register(values);
+                                const registrationData = {
+                                    ...values,
+                                    timezone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+                                };
+                                await register(registrationData);
+                                // await register(values);
                                 await Swal.fire({
                                     icon: "success",
                                     title: "Registro exitoso",
@@ -129,6 +141,8 @@ const RegisterView = () => {
                                     )}
                                 </div>
 
+                                <Field type="hidden" name="timezone" value={timezone} />
+
                                 <div className="flex items-center justify-center my-2">
                                     <div className="flex-grow border-t-2 border-gray-500"></div>
                                 </div>
@@ -150,6 +164,8 @@ const RegisterView = () => {
                                         Inicia sesión aquí
                                     </a>
                                 </p>
+
+                                
 
                             </Form>
                         )}
