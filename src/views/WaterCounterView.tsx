@@ -54,7 +54,7 @@ const WaterCounterView = ({ currentDate }: { currentDate: string }) => {
                 // Obtener fecha actual en UTC
                 const today = new Date();
                 // Sumar un día
-                today.setDate(today.getDate() + 1);
+                today.setDate(today.getDate());
                 // Formatear como YYYY-MM-DD
                 const tomorrowUTC = today.toISOString().split('T')[0];
 
