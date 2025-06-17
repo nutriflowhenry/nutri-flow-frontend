@@ -210,7 +210,7 @@ const Home = () => {
       {!isLoading && (
         <>
           <div className="w-full max-w-4xl mt-6">
-            <WaterCounterView currentDate={currentDate} />
+            <WaterCounterView currentDate={new Date().toISOString().split('T')[0]} />
           </div>
 
         </>)}
