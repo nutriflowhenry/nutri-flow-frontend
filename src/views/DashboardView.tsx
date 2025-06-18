@@ -263,7 +263,7 @@ const DashboardView = () => {
                             </div>
                         </div>
 
-                        <div className="lg:w-2/3 space-y-6">
+                        <div className="lg:w-2/3 space-y-6 text-black">
 
 
 
