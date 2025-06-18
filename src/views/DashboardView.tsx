@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from "next/navigation";
 import LoadingModal from '@/components/LoadingModal';
+import FavoritesView from "./FavoritesView";
 
 const genderMap = {
     male: 'Masculino',
@@ -190,9 +191,9 @@ const DashboardView = () => {
                     </div>
 
                     {/* Profile Content */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
                         {/* Left Column - Stats */}
-                        <div className="space-y-6">
+                        <div className="lg:w-1/3 space-y-6">
                             {/* Health Goals */}
                             <div className="bg-white rounded-2xl shadow-sm p-6 text-black">
                                 <h2 className="text-xl font-semibold text-[#5a5f52] mb-4">Mis Objetivos</h2>
@@ -262,8 +263,13 @@ const DashboardView = () => {
                             </div>
                         </div>
 
-                        {/* Right Column - Main Content */}
-                        <div className="lg:col-span-2 space-y-6 text-gray-700">
+                        <div className="lg:w-2/3 space-y-6">
+
+
+
+
+                            {/* Right Column - Main Content */}
+                            {/* <div className="lg:col-span-2 space-y-6 text-gray-700"> */}
                             {userData?.user?.subscriptionType === "premium" ? (
                                 <div className="bg-white rounded-2xl shadow-sm p-6">
                                     <h2 className="text-xl font-semibold text-[#5a5f52] mb-4">Tu Suscripción Premium</h2>
@@ -341,6 +347,11 @@ const DashboardView = () => {
                                     </div>
                                 </div>
                             )}
+
+                            <div className=" rounded-2xl shadow-sm p-6">
+
+                                <FavoritesView />
+                            </div>
 
                             {/* Review Section */}
                             <div className="bg-white rounded-2xl shadow-sm p-6">
